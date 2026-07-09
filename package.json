@@ -1,0 +1,14 @@
+{
+  "name": "angular-material-skill",
+  "version": "0.1.0",
+  "description": "Skill de IA para Angular Material, gerada e sincronizada a partir de angular/components.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "sync": "node tools/sync.mjs",
+    "check-release": "node tools/check-release.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

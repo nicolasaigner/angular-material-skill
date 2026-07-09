@@ -1,0 +1,10 @@
+angular-material-skill
+Copyright (c) 2026 Nicolas Aigner — MIT License
+
+Este projeto gera documentação derivada do repositório Angular Components:
+  https://github.com/angular/components
+  Copyright (c) Google LLC. Licença MIT.
+
+Os arquivos em skills/angular-material/references/ são gerados automaticamente a
+partir dos guias e exemplos daquele repositório e mantêm a atribuição no topo de
+cada arquivo. Angular e Angular Material são marcas da Google LLC.
