@@ -25,7 +25,7 @@ Ou clone o repo e crie um symlink. Depois, o agente passa a disparar a skill
 ## Manter atualizado
 
     npm run check-release            # avisa se saiu release novo (exit 10 = atrasado)
-    npm run sync -- --to <tag>       # regenera só os refs que mudaram
+    npm run sync -- <tag>            # regenera só os refs que mudaram
     git diff                          # revise
     git commit -am "sync: angular/components <tag>"
 

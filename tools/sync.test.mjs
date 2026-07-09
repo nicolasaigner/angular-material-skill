@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdtemp, rm, readFile, readdir } from 'node:fs/promises';
-import { runSync } from './sync.mjs';
+import { runSync, parseTag } from './sync.mjs';
 
 const files = {
   'https://raw.githubusercontent.com/angular/components/v1/src/material/button/button.md':
@@ -40,4 +40,34 @@ test('runSync gera reference, popula manifest e é idempotente', async () => {
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+// Fix B: runSync deve criar o refsDir quando ele ainda não existe.
+test('runSync cria refsDir quando ele não existe', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'ams-sync-'));
+  try {
+    const refsDir = join(dir, 'does', 'not', 'exist', 'references');
+    const manifestPath = join(dir, 'manifest.json');
+
+    const result = await runSync({ tag: 'v1', sources, rawGet, refsDir, manifestPath });
+    assert.deepEqual(result.changed, ['button']);
+
+    const md = await readFile(join(refsDir, 'button.md'), 'utf8');
+    assert.match(md, /# Button/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+// Fix E: parseTag deve ser puro, testável e aceitar forma posicional (npm 11 mangla --to).
+test('parseTag aceita --to <tag>', () => {
+  assert.equal(parseTag(['--to', '21.0.2']), '21.0.2');
+});
+
+test('parseTag aceita tag posicional', () => {
+  assert.equal(parseTag(['21.0.2']), '21.0.2');
+});
+
+test('parseTag retorna null sem argumentos', () => {
+  assert.equal(parseTag([]), null);
 });

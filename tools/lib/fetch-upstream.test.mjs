@@ -14,6 +14,12 @@ test('extractExampleNames pega os nomes dos comentários', () => {
   assert.deepEqual(extractExampleNames(p), ['button-overview', 'button-types']);
 });
 
+// Fix A: upstream table.md usa a variante de 3 traços.
+test('extractExampleNames tolera a variante de 3 traços <!--- example(x) --->', () => {
+  const p = 'a\n<!--- example(bar) --->';
+  assert.deepEqual(extractExampleNames(p), ['bar']);
+});
+
 test('fetchSources busca prosa + trio de exemplo via rawGet fake', async () => {
   const files = {
     'https://raw.githubusercontent.com/angular/components/v1/src/material/button/button.md':

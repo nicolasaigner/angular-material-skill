@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises';
+import { writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SOURCES } from './lib/sources.mjs';
@@ -14,6 +14,7 @@ export async function runSync({ tag, sources, rawGet, refsDir, manifestPath }) {
   }
   const manifest = await readManifest(manifestPath);
   const changed = changedSources(manifest, currentHashes);
+  if (changed.length) await mkdir(refsDir, { recursive: true });
   for (const name of changed) {
     const s = fetched[name];
     const md = distill({ name, category: s.category, prose: s.prose, examples: s.examples, tag });
@@ -25,19 +26,21 @@ export async function runSync({ tag, sources, rawGet, refsDir, manifestPath }) {
   return { changed, total: Object.keys(fetched).length };
 }
 
-function parseTag(argv) {
+export function parseTag(argv) {
   const i = argv.indexOf('--to');
-  if (i === -1 || !argv[i + 1]) {
-    console.error('uso: node tools/sync.mjs --to <tag>   (ex.: --to 18.2.0 ou --to main)');
-    process.exit(2);
-  }
-  return argv[i + 1];
+  if (i !== -1 && argv[i + 1]) return argv[i + 1];
+  const positional = argv.find((a) => !a.startsWith('-'));
+  return positional || null;
 }
 
 // Executa como CLI quando chamado diretamente.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
   const tag = parseTag(process.argv.slice(2));
+  if (!tag) {
+    console.error('uso: npm run sync -- <tag>   (ou: node tools/sync.mjs --to <tag>)');
+    process.exit(2);
+  }
   const refsDir = join(repoRoot, 'skills', 'angular-material', 'references');
   const manifestPath = join(repoRoot, 'manifest.json');
   const { changed, total } = await runSync({ tag, sources: SOURCES, rawGet: httpRawGet, refsDir, manifestPath });

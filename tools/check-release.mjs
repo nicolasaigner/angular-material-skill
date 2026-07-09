@@ -19,7 +19,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const manifestPath = join(repoRoot, 'manifest.json');
   const r = await checkRelease({ manifestPath, apiGet: httpApiGet });
   if (r.behind) {
-    console.log(`⚠️  angular/components ${r.latest} disponível (skill gerada em ${r.current}). Rode: npm run sync -- --to ${r.latest}`);
+    console.log(`⚠️  angular/components ${r.latest} disponível (skill gerada em ${r.current}). Rode: npm run sync -- ${r.latest}`);
     process.exit(10);
   } else {
     console.log(`✅ em dia com ${r.latest}`);

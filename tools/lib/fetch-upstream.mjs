@@ -1,6 +1,7 @@
 import { UPSTREAM_REPO } from './sources.mjs';
+import { EXAMPLE_TAG_PATTERN } from './example-tag.mjs';
 
-const EXAMPLE_TAG = /<!--\s*example\(([^)]+)\)\s*-->/g;
+const EXAMPLE_TAG = new RegExp(EXAMPLE_TAG_PATTERN, 'g');
 
 export function rawUrl(tag, path) {
   return `https://raw.githubusercontent.com/${UPSTREAM_REPO}/${tag}/${path}`;

@@ -53,3 +53,30 @@ test('determinístico: mesma entrada, mesma saída', () => {
   const b = distill({ name: 'button', category: 'component', prose, examples, tag: 'v1' });
   assert.equal(a, b);
 });
+
+// Fix A: upstream table.md usa a variante de 3 traços `<!--- example(x) --->`.
+test('tolera a variante de 3 traços <!--- example(x) ---> e inlineia o código', () => {
+  const p = 'Texto.\n\n<!--- example(foo) --->\n\nMais texto.';
+  const out = distill({ name: 'table', category: 'component', prose: p, examples: { foo: { ts: 'CODE' } }, tag: 'v1' });
+  assert.match(out, /CODE/);
+  assert.doesNotMatch(out, /<!--[-\s]*example\(/);
+});
+
+// Fix C: guias cuja prosa já começa com H1 não devem duplicar o título do template.
+test('guia cuja prosa já tem H1 não duplica o título (Theming)', () => {
+  const out = distill({ name: 'theming', category: 'guide', prose: '# Theming\nTexto.', examples: {}, tag: 'v1' });
+  const count = (out.match(/^# Theming/mg) || []).length;
+  assert.equal(count, 1);
+});
+
+// Fix C: componentes sem H1 próprio continuam recebendo o título do template.
+test('componente sem H1 próprio continua mostrando # Button', () => {
+  const out = distill({ name: 'button', category: 'component', prose, examples, tag: 'v18.2.0' });
+  assert.match(out, /^# Button/m);
+});
+
+// Fix D: siglas conhecidas (CDK) devem ficar maiúsculas no título.
+test('titleCase mantém CDK maiúsculo em cdk-overlay', () => {
+  const out = distill({ name: 'cdk-overlay', category: 'component', prose: 'Texto sem H1.', examples: {}, tag: 'v1' });
+  assert.match(out, /^# CDK Overlay/m);
+});

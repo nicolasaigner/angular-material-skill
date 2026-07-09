@@ -1,6 +1,6 @@
 <!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
 
-# Cdk Overlay
+# CDK Overlay
 
 > Fonte: [documentação oficial](https://material.angular.dev/components/cdk-overlay/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
 
