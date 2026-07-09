@@ -1,0 +1,525 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Form Field
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/form-field/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-form-field>` is a component used to wrap several Angular Material components and apply common
+[Text field](https://material.io/guidelines/components/text-fields.html) styles such as the
+underline, floating label, and hint messages.
+
+In this document, "form field" refers to the wrapper component `<mat-form-field>` and
+"form field control" refers to the component that the `<mat-form-field>` is wrapping
+(e.g. the input, textarea, select, etc.)
+
+The following Angular Material components are designed to work inside a `<mat-form-field>`:
+
+- [`<input matNativeControl>` &amp; `<textarea matNativeControl>`](https://material.angular.dev/components/input/overview)
+- [`<select matNativeControl>`](https://material.angular.dev/components/select/overview)
+- [`<mat-select>`](https://material.angular.dev/components/select/overview)
+- [`<mat-chip-set>`](https://material.angular.dev/components/chips/overview)
+
+#### Exemplo: `form-field-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatSelectModule} from '@angular/material/select';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Simple form field */
+@Component({
+  selector: 'form-field-overview-example',
+  templateUrl: 'form-field-overview-example.html',
+  styleUrl: 'form-field-overview-example.css',
+  imports: [MatFormFieldModule, MatInputModule, MatSelectModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFieldOverviewExample {}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Input</mat-label>
+  <input matInput>
+</mat-form-field>
+<mat-form-field>
+  <mat-label>Select</mat-label>
+  <mat-select>
+    <mat-option value="one">First option</mat-option>
+    <mat-option value="two">Second option</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field>
+  <mat-label>Textarea</mat-label>
+  <textarea matInput></textarea>
+</mat-form-field>
+```
+
+```css
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+```
+
+### Form field appearance variants
+
+`mat-form-field` supports two different appearance variants which can be set via the `appearance`
+input: `fill` and `outline`. The `fill` appearance displays the form field with a filled background
+box and an underline, while the `outline` appearance shows the form field with a border all the way
+around.
+
+Out of the box, if you do not specify an `appearance` for the `<mat-form-field>` it will default to
+`fill`. However, this can be configured using a global provider to choose a different default
+appearance for your app.
+
+```ts
+@NgModule({
+  providers: [
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}}
+  ]
+})
+```
+
+#### Exemplo: `form-field-appearance`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Form field appearance variants */
+@Component({
+  selector: 'form-field-appearance-example',
+  templateUrl: 'form-field-appearance-example.html',
+  imports: [MatFormFieldModule, MatInputModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFieldAppearanceExample {}
+```
+
+```html
+<p>
+  <mat-form-field appearance="fill">
+    <mat-label>Fill form field</mat-label>
+    <input matInput placeholder="Placeholder">
+    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+    <mat-hint>Hint</mat-hint>
+  </mat-form-field>
+</p>
+<p>
+  <mat-form-field appearance="outline">
+    <mat-label>Outline form field</mat-label>
+    <input matInput placeholder="Placeholder">
+    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+    <mat-hint>Hint</mat-hint>
+  </mat-form-field>
+</p>
+```
+
+### Floating label
+
+The floating label is a text label displayed on top of the form field control when
+the control does not contain any text or when `<select matNativeControl>` does not show any option
+text. By default, when text is present the floating label floats above the form field control. The
+label for a form field can be specified by adding a `mat-label` element.
+
+If the form field control is marked with a `required` attribute, an asterisk will be appended to the
+label to indicate the fact that it is a required field. If unwanted, this can be disabled by
+setting the `hideRequiredMarker` property on `<mat-form-field>`
+
+The `floatLabel` property of `<mat-form-field>` can be used to change this default floating
+behavior. It can be set to `always` to float the label even when no text is present in the form
+field control, or to `auto` to restore the default behavior.
+
+#### Exemplo: `form-field-label`
+
+```ts
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {FormBuilder, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {FloatLabelType, MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSelectModule} from '@angular/material/select';
+import {map} from 'rxjs/operators';
+
+/** @title Form field with label */
+@Component({
+  selector: 'form-field-label-example',
+  templateUrl: 'form-field-label-example.html',
+  styleUrl: 'form-field-label-example.css',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFieldLabelExample {
+  readonly hideRequiredControl = new FormControl(false);
+  readonly floatLabelControl = new FormControl('auto' as FloatLabelType);
+  readonly options = inject(FormBuilder).group({
+    hideRequired: this.hideRequiredControl,
+    floatLabel: this.floatLabelControl,
+  });
+  protected readonly hideRequired = toSignal(this.hideRequiredControl.valueChanges);
+  protected readonly floatLabel = toSignal(
+    this.floatLabelControl.valueChanges.pipe(map(v => v || 'auto')),
+    {initialValue: 'auto'},
+  );
+}
+```
+
+```html
+<div class="example-container">
+  <form [formGroup]="options">
+    <mat-checkbox [formControl]="hideRequiredControl">Hide required marker</mat-checkbox>
+    <div>
+      <label>Float label: </label>
+      <mat-radio-group [formControl]="floatLabelControl">
+        <mat-radio-button value="auto">Auto</mat-radio-button>
+        <mat-radio-button value="always">Always</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="example-form-fields">
+      <mat-form-field [hideRequiredMarker]="hideRequired()" [floatLabel]="floatLabel()">
+        <input matInput placeholder="Simple placeholder" required />
+      </mat-form-field>
+
+      <mat-form-field [floatLabel]="floatLabel()">
+        <mat-label>Both a label and a placeholder</mat-label>
+        <input matInput placeholder="Simple placeholder" />
+      </mat-form-field>
+
+      <mat-form-field [hideRequiredMarker]="hideRequired()" [floatLabel]="floatLabel()">
+        <mat-select required>
+          <mat-option>-- None --</mat-option>
+          <mat-option value="option">Option</mat-option>
+        </mat-select>
+        <mat-label><mat-icon>favorite</mat-icon> <strong> Fancy</strong> <em> label</em></mat-label>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+```
+
+```css
+.example-container mat-form-field + mat-form-field {
+  margin-left: 8px;
+}
+
+.example-container mat-form-field {
+  width: 220px;
+}
+
+.example-container form {
+  margin-bottom: 20px;
+}
+
+.example-container form > * {
+  margin: 12px 0;
+}
+
+.example-container .mat-radio-button {
+  margin: 0 12px;
+}
+
+.example-form-fields {
+  display: flex;
+  align-items: flex-start;
+}
+```
+
+The floating label behavior can be adjusted globally by providing a value for
+`MAT_FORM_FIELD_DEFAULT_OPTIONS` in your application's root module. Like the `floatLabel` input,
+the option can be either set to `always` or `auto`.
+
+```ts
+@NgModule({
+  providers: [
+    {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'always'}}
+  ]
+})
+```
+
+### Hint labels
+
+Hint labels are additional descriptive text that appears below the form field's underline. A
+`<mat-form-field>` can have up to two hint labels; one start-aligned (left in an LTR language, right
+in RTL), and one end-aligned.
+
+Hint labels are specified in one of two ways: either by using the `hintLabel` property of
+`<mat-form-field>`, or by adding a `<mat-hint>` element inside the form field. When adding a hint
+via the `hintLabel` property, it will be treated as the start hint. Hints added via the
+`<mat-hint>` hint element can be added to either side by setting the `align` property on
+`<mat-hint>` to either `start` or `end`. Attempting to add multiple hints to the same side will
+raise an error.
+
+#### Exemplo: `form-field-hint`
+
+```ts
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+
+/** @title Form field with hints */
+@Component({
+  selector: 'form-field-hint-example',
+  templateUrl: 'form-field-hint-example.html',
+  styleUrl: 'form-field-hint-example.css',
+  imports: [MatFormFieldModule, MatInputModule, MatSelectModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFieldHintExample {
+  protected readonly value = signal('');
+
+  protected onInput(event: Event) {
+    this.value.set((event.target as HTMLInputElement).value);
+  }
+}
+```
+
+```html
+<div class="example-container">
+  <mat-form-field hintLabel="Max 10 characters">
+    <mat-label>Enter some input</mat-label>
+    <input matInput #input maxlength="10" placeholder="Ex. Nougat" (input)="onInput($event)" />
+    <mat-hint align="end">{{value().length}}/10</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Select me</mat-label>
+    <mat-select>
+      <mat-option value="option">Option</mat-option>
+    </mat-select>
+    <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+  </mat-form-field>
+</div>
+```
+
+```css
+.example-container mat-form-field + mat-form-field {
+  margin-left: 8px;
+}
+```
+
+### Error messages
+
+Error messages can be shown under the form field underline by adding `mat-error` elements inside the
+form field. Errors are hidden initially and will be displayed on invalid form fields after the user
+has interacted with the element or the parent form has been submitted. Since the errors occupy the
+same space as the hints, the hints are hidden when the errors are shown.
+
+If a form field can have more than one error state, it is up to the consumer to toggle which
+messages should be displayed. This can be done with CSS, `@if` or `@switch`. Multiple error
+messages can be shown at the same time if desired, but the `<mat-form-field>` only reserves enough
+space to display one error message at a time. Ensuring that enough space is available to display
+multiple errors is up to the user.
+
+#### Exemplo: `form-field-error`
+
+```ts
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {merge} from 'rxjs';
+
+/** @title Form field with error messages */
+@Component({
+  selector: 'form-field-error-example',
+  templateUrl: 'form-field-error-example.html',
+  styleUrl: 'form-field-error-example.css',
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFieldErrorExample {
+  readonly email = new FormControl('', [Validators.required, Validators.email]);
+
+  errorMessage = signal('');
+
+  constructor() {
+    merge(this.email.statusChanges, this.email.valueChanges)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.updateErrorMessage());
+  }
+
+  updateErrorMessage() {
+    if (this.email.hasError('required')) {
+      this.errorMessage.set('You must enter a value');
+    } else if (this.email.hasError('email')) {
+      this.errorMessage.set('Not a valid email');
+    } else {
+      this.errorMessage.set('');
+    }
+  }
+}
+```
+
+```html
+<div class="example-container">
+  <mat-form-field>
+    <mat-label>Enter your email</mat-label>
+    <input
+      matInput
+      placeholder="pat@example.com"
+      [formControl]="email"
+      (blur)="updateErrorMessage()"
+      required
+    />
+    @if (email.invalid) {
+      <mat-error>{{errorMessage()}}</mat-error>
+    }
+  </mat-form-field>
+</div>
+```
+
+```css
+.example-container mat-form-field + mat-form-field {
+  margin-left: 8px;
+}
+```
+
+### Prefix & suffix
+
+Custom content can be included before and after the input tag, as a prefix or suffix. It will be
+included within the visual container that wraps the form control as per the Material specification.
+
+Adding the `matPrefix` directive to an element inside the `<mat-form-field>` will designate it as
+the prefix. Similarly, adding `matSuffix` will designate it as the suffix.
+
+If the prefix/suffix content is purely text-based, it is recommended to use the `matTextPrefix` or
+`matTextSuffix` directives which ensure that the text is aligned with the form control.
+
+#### Exemplo: `form-field-prefix-suffix`
+
+```ts
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Form field with prefix & suffix */
+@Component({
+  selector: 'form-field-prefix-suffix-example',
+  templateUrl: 'form-field-prefix-suffix-example.html',
+  styleUrl: 'form-field-prefix-suffix-example.css',
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FormFieldPrefixSuffixExample {
+  hide = signal(true);
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
+  }
+}
+```
+
+```html
+<div class="example-container">
+  <mat-form-field>
+    <mat-label>Enter your password</mat-label>
+    <input matInput [type]="hide() ? 'password' : 'text'" />
+    <button
+      matIconButton
+      matSuffix
+      (click)="clickEvent($event)"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide()"
+    >
+      <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field floatLabel="always">
+    <mat-label>Amount</mat-label>
+    <input matInput type="number" class="example-right-align" placeholder="0" />
+    <span matTextPrefix>$&nbsp;</span>
+    <span matTextSuffix>.00</span>
+  </mat-form-field>
+</div>
+```
+
+```css
+.example-container mat-form-field + mat-form-field {
+  margin-left: 8px;
+}
+
+.example-right-align {
+  text-align: right;
+}
+
+input.example-right-align::-webkit-outer-spin-button,
+input.example-right-align::-webkit-inner-spin-button {
+  display: none;
+}
+
+input.example-right-align {
+  -moz-appearance: textfield;
+}
+```
+
+### Custom form field controls
+
+In addition to the form field controls that Angular Material provides, it is possible to create
+custom form field controls that work with `<mat-form-field>` in the same way. For additional
+information on this see the guide on
+[Creating Custom mat-form-field Controls](/guide/creating-a-custom-form-field-control).
+
+### Theming
+
+The color of the form-field can be changed by specifying a `$color-variant` when applying the
+`mat.form-field-theme` or `mat.form-field-color` mixins (see the
+[theming guide](/guide/theming#using-component-color-variants) to learn more.) By default, the
+form-field uses the theme's primary palette. This can be changed to `'secondary'`, `'tertiary'`, or
+`'error'`.
+
+### Accessibility
+
+By itself, `MatFormField` does not apply any additional accessibility treatment to a control.
+However, several of the form field's optional features interact with the control contained within
+the form field.
+
+When you provide a label via `<mat-label>`, `MatFormField` automatically associates this label with
+the field's control via a native `<label>` element, using the `for` attribute to reference the
+control's ID.
+
+If a floating label is specified, it will be automatically used as the label for the form
+field control. If no floating label is specified, the user should label the form field control
+themselves using `aria-label`, `aria-labelledby` or `<label for=...>`.
+
+When you provide informational text via `<mat-hint>` or `<mat-error>`, `MatFormField` automatically
+adds these elements' IDs to the control's `aria-describedby` attribute. Additionally, `MatError`
+applies `aria-live="polite"` by default such that assistive technology will announce errors when
+they appear.
+
+### Troubleshooting
+
+#### Error: A hint was already declared for align="..."
+
+This error occurs if you have added multiple hints for the same side. Keep in mind that the
+`hintLabel` property adds a hint to the start side.
+
+#### Error: mat-form-field must contain a MatFormFieldControl
+
+This error occurs when you have not added a form field control to your form field. If your form
+field contains a native `<input>` or `<textarea>` element, make sure you've added the `matInput`
+directive to it and have imported `MatInputModule`. Other components that can act as a form field
+control include `<mat-select>`, `<mat-chip-grid>`, and any custom form field controls you've
+created.
