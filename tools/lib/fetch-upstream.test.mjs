@@ -46,3 +46,21 @@ test('fetchSources pula source sem prosa (404) com aviso', async () => {
   const out = await fetchSources('v1', sources, rawGet);
   assert.equal(out.fantasma, undefined);
 });
+
+// Fix 4: uma falha (throw, não 404) num source isola nele, não derruba os outros.
+test('fetchSources isola falha (throw) de um source e continua os demais', async () => {
+  const urlA = 'https://raw.githubusercontent.com/angular/components/v1/src/material/a/a.md';
+  const urlB = 'https://raw.githubusercontent.com/angular/components/v1/src/material/b/b.md';
+  const rawGet = async (url) => {
+    if (url === urlA) throw new Error('HTTP 500 simulado');
+    if (url === urlB) return 'Prosa de B.';
+    return null;
+  };
+  const sources = [
+    { name: 'a', category: 'component', prosePath: 'src/material/a/a.md' },
+    { name: 'b', category: 'component', prosePath: 'src/material/b/b.md' },
+  ];
+  const out = await fetchSources('v1', sources, rawGet);
+  assert.equal(out.a, undefined);
+  assert.match(out.b.prose, /Prosa de B/);
+});

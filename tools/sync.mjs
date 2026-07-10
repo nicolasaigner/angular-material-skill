@@ -21,7 +21,7 @@ export async function runSync({ tag, sources, rawGet, refsDir, manifestPath }) {
     await writeFile(join(refsDir, `${name}.md`), md, 'utf8');
     manifest.perFile[name] = currentHashes[name];
   }
-  manifest.generatedTag = tag;
+  if (Object.keys(fetched).length > 0) manifest.generatedTag = tag;
   await writeManifest(manifestPath, manifest);
   return { changed, total: Object.keys(fetched).length };
 }

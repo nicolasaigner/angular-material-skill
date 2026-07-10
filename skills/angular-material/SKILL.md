@@ -1,6 +1,6 @@
 ---
 name: angular-material
-description: Use ao construir UI com Angular Material ou CDK — componentes mat-* (button, form-field, input, table, dialog, select, menu, sidenav, snackbar, datepicker, etc.), theming/Material 3, tokens de tema, harnesses de teste, acessibilidade e o Angular CDK (overlay, portal, a11y, drag-drop). Dispara em menções a "Angular Material", "mat-", "MatButton", "form-field", "mat-table", "theming do Material", "MatDialog" ou "Angular CDK".
+description: Use ao trabalhar com Angular Material ou CDK nos temas cobertos pela v1 desta skill — button (MatButton, FAB, icon-button), form-field (mat-form-field, labels, hints, erros), table (mat-table, ordenação, paginação), dialog (MatDialog), CDK overlay, e theming/Material 3 (tokens de cor e tipografia). Dispara em "Angular Material", "mat-button", "mat-form-field", "mat-table", "MatDialog", "CDK overlay" ou "theming do Material". Mais componentes serão adicionados em versões futuras.
 ---
 
 # Angular Material

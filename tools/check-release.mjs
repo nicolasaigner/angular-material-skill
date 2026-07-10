@@ -17,12 +17,19 @@ async function httpApiGet(url) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
   const manifestPath = join(repoRoot, 'manifest.json');
-  const r = await checkRelease({ manifestPath, apiGet: httpApiGet });
-  if (r.behind) {
-    console.log(`⚠️  angular/components ${r.latest} disponível (skill gerada em ${r.current}). Rode: npm run sync -- ${r.latest}`);
-    process.exit(10);
-  } else {
+  try {
+    const r = await checkRelease({ manifestPath, apiGet: httpApiGet });
+    if (r.behind) {
+      console.log(`⚠️  angular/components ${r.latest} disponível (skill gerada em ${r.current}). Rode: npm run sync -- ${r.latest}`);
+      process.exit(10);
+    }
     console.log(`✅ em dia com ${r.latest}`);
     process.exit(0);
+  } catch (err) {
+    console.error(`✖ não foi possível consultar a API do GitHub: ${err.message}`);
+    console.error(`  A REST API tem rate-limit sem auth (HTTP 403). Ver docs/agendamento.md:`);
+    console.error(`  - defina GITHUB_TOKEN, ou descubra a tag via:`);
+    console.error(`    git ls-remote --tags --refs https://github.com/angular/components.git`);
+    process.exit(1);
   }
 }

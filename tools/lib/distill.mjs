@@ -5,7 +5,7 @@ import { EXAMPLE_TAG_PATTERN } from './example-tag.mjs';
 const EXAMPLE_TAG = new RegExp(EXAMPLE_TAG_PATTERN, 'g');
 
 function renderExample(name, ex) {
-  if (!ex) return `> _(exemplo \`${name}\` não encontrado no upstream)_`;
+  if (!ex) return `> _(exemplo \`${name.replace(/\s+/g, ' ').trim()}\` não encontrado no upstream)_`;
   const blocks = [`#### Exemplo: \`${name}\``, ''];
   if (ex.ts) blocks.push('```ts', ex.ts.trimEnd(), '```', '');
   if (ex.html) blocks.push('```html', ex.html.trimEnd(), '```', '');

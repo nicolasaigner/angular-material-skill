@@ -2,7 +2,7 @@
 
 # CDK Overlay
 
-> Fonte: [documentação oficial](https://material.angular.dev/components/cdk-overlay/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+> Fonte: [documentação oficial](https://material.angular.dev/cdk/overlay/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
 
 The `overlay` package provides a way to open floating panels on the screen.
 

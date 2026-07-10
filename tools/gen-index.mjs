@@ -6,7 +6,7 @@ import { SOURCES } from './lib/sources.mjs';
 export function renderIndex(sources) {
   const rows = sources
     .slice()
-    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
     .map((s) => `| [${s.name}](./${s.name}.md) | ${s.category} |`)
     .join('\n');
   return ['<!-- GENERATED. NÃO editar à mão. -->', '', '# Índice', '', '| Referência | Categoria |', '| --- | --- |', rows, ''].join('\n');

@@ -30,20 +30,29 @@ async function fetchExample(tag, examplesDir, exName, rawGet) {
 export async function fetchSources(tag, sources, rawGet) {
   const out = {};
   for (const s of sources) {
-    const prose = await rawGet(rawUrl(tag, s.prosePath));
-    if (prose == null) {
-      console.warn(`[fetch] pulando '${s.name}': prosa 404 em ${s.prosePath}`);
-      continue;
-    }
-    const examples = {};
-    if (s.examplesDir) {
-      for (const exName of extractExampleNames(prose)) {
-        const ex = await fetchExample(tag, s.examplesDir, exName, rawGet);
-        if (ex) examples[exName] = ex;
-        else console.warn(`[fetch] exemplo '${exName}' de '${s.name}' não encontrado`);
+    try {
+      const prose = await rawGet(rawUrl(tag, s.prosePath));
+      if (prose == null) {
+        console.warn(`[fetch] pulando '${s.name}': prosa 404 em ${s.prosePath}`);
+        continue;
       }
+      const examples = {};
+      if (s.examplesDir) {
+        for (const exName of extractExampleNames(prose)) {
+          let ex = null;
+          try {
+            ex = await fetchExample(tag, s.examplesDir, exName, rawGet);
+          } catch (err) {
+            console.warn(`[fetch] exemplo '${exName}' de '${s.name}' falhou: ${err.message}`);
+          }
+          if (ex) examples[exName] = ex;
+          else console.warn(`[fetch] exemplo '${exName}' de '${s.name}' não encontrado`);
+        }
+      }
+      out[s.name] = { category: s.category, prose, examples };
+    } catch (err) {
+      console.warn(`[fetch] falha em '${s.name}', pulando: ${err.message}`);
     }
-    out[s.name] = { category: s.category, prose, examples };
   }
   return out;
 }

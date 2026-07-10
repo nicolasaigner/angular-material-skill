@@ -5,9 +5,9 @@ function titleCase(name) {
 }
 
 export function officialUrl(name, category) {
-  return category === 'guide'
-    ? `https://material.angular.dev/guide/${name}`
-    : `https://material.angular.dev/components/${name}/overview`;
+  if (category === 'guide') return `https://material.angular.dev/guide/${name}`;
+  if (name.startsWith('cdk-')) return `https://material.angular.dev/cdk/${name.slice(4)}/overview`;
+  return `https://material.angular.dev/components/${name}/overview`;
 }
 
 export function referenceHeader({ name, category, tag, includeTitle = true }) {

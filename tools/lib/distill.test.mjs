@@ -80,3 +80,15 @@ test('titleCase mantém CDK maiúsculo em cdk-overlay', () => {
   const out = distill({ name: 'cdk-overlay', category: 'component', prose: 'Texto sem H1.', examples: {}, tag: 'v1' });
   assert.match(out, /^# CDK Overlay/m);
 });
+
+// Polish A: exemplo não encontrado cujo nome (upstream malformado) contém quebra
+// de linha não deve produzir um fallback multi-linha (JSON cru, etc).
+test('exemplo ausente com nome contendo quebra de linha renderiza fallback de uma linha só', () => {
+  const p = 'Texto.\n\n<!-- example(nao\nexiste) -->\n';
+  const out = distill({ name: 'dialog', category: 'component', prose: p, examples: {}, tag: 'v1' });
+  const fallbackLine = out.split('\n').find((l) => l.includes('não encontrado'));
+  assert.ok(fallbackLine, 'deve haver uma linha de fallback');
+  assert.ok(!fallbackLine.includes('\n'), 'a linha de fallback não deve conter quebra de linha embutida');
+  // a saída inteira não deve ter duas linhas consecutivas vazias quebrando o nome em partes
+  assert.doesNotMatch(out, /nao\nexiste/);
+});

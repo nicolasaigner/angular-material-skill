@@ -9,7 +9,7 @@ código `10` quando está atrasado e `0` quando está em dia, para um agendador 
 Rodar diariamente no diretório do repo:
 
 ```powershell
-$action  = New-ScheduledTaskAction -Execute "node" -Argument "tools\check-release.mjs" -WorkingDirectory "C:\Users\Nicolas\[redacted]\PROJETOS\angular-material-skill"
+$action  = New-ScheduledTaskAction -Execute "node" -Argument "tools\check-release.mjs" -WorkingDirectory "<caminho-do-repo>"
 $trigger = New-ScheduledTaskTrigger -Daily -At 9am
 Register-ScheduledTask -TaskName "angular-material-skill-check" -Action $action -Trigger $trigger -Description "Avisa se saiu release novo do angular/components"
 ```
