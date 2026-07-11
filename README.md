@@ -26,11 +26,15 @@ Ou clone o repo e crie um symlink. Depois, o agente passa a disparar a skill
 
 ## Manter atualizado
 
-```bash
-npm run check-release            # avisa se saiu release novo (exit 10 = atrasado)
-npm run sync -- <tag>            # regenera só os refs que mudaram
-git diff                          # revise
-git commit -am "sync: angular/components <tag>"
-```
+Manual:
 
-O `manifest.json` fixa a tag gerada. Nada é commitado automaticamente.
+    npm run check-release              # avisa se saiu release novo (exit 10 = atrasado)
+    npm run discover -- --to <tag>     # redescobre as fontes do upstream → sources.generated.json
+    npm run sync -- <tag>              # regenera só os refs que mudaram
+    node tools/gen-index.mjs           # regenera o _index.md agrupado
+    git diff                            # revise (inclui componentes novos/órfãos no JSON)
+    git commit -am "sync: angular/components <tag>"
+
+Automático: o workflow `.github/workflows/sync-upstream.yml` roda semanalmente,
+detecta release novo e **abre um Pull Request** com o diff pronto para revisão.
+Defina `GITHUB_TOKEN` (o Actions injeta o nativo) — nenhum segredo extra é necessário.

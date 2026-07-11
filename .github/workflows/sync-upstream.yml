@@ -1,0 +1,62 @@
+# .github/workflows/sync-upstream.yml
+name: sync-upstream
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # toda segunda, 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verificar release do upstream
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/check-release.mjs
+
+      - name: Regenerar se atrasado
+        if: steps.check.outputs.behind == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.check.outputs.latest }}"
+          node tools/discover-sources.mjs --to "$TAG"
+          node tools/sync.mjs "$TAG"
+          node tools/gen-index.mjs
+
+      - name: Abrir Pull Request
+        if: steps.check.outputs.behind == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.check.outputs.latest }}"
+          BRANCH="chore/sync-$TAG"
+          if git ls-remote --exit-code --heads origin "$BRANCH"; then
+            echo "branch $BRANCH já existe — PR presumido aberto, nada a fazer."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nada mudou apesar do behind=true — nada a commitar."
+            exit 0
+          fi
+          git commit -m "chore: sync angular/components $TAG"
+          git push -u origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" \
+            --title "chore: sync angular/components $TAG" \
+            --body "Atualização automática gerada pelo workflow **sync-upstream**. Revise o diff de \`references/\` e de \`tools/lib/sources.generated.json\` (componentes novos/órfãos) antes do merge."
