@@ -48,11 +48,26 @@ the header, usually through keyboard navigation.
 
 If a tab's label is only text then the simple tab-group API can be used.
 
-> _(exemplo `{"example": "tab-group-basic", "file": "tab-group-basic-example.html"}` não encontrado no upstream)_
+#### Exemplo: `tab-group-basic` — `tab-group-basic-example.html`
+
+```html
+<mat-tab-group>
+  <mat-tab label="First"> Content 1 </mat-tab>
+  <mat-tab label="Second"> Content 2 </mat-tab>
+  <mat-tab label="Third"> Content 3 </mat-tab>
+</mat-tab-group>
+```
 
 For more complex labels, add a template with the `mat-tab-label` directive inside the `mat-tab`.
 
-> _(exemplo `{"example": "tab-group-custom-label", "file": "tab-group-custom-label-example.html", "region": "label-directive"}` não encontrado no upstream)_
+#### Exemplo: `tab-group-custom-label` — `tab-group-custom-label-example.html` (região `label-directive`)
+
+```html
+<ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">thumb_up</mat-icon>
+      First
+    </ng-template>
+```
 
 ### Dynamic Height
 
@@ -60,13 +75,29 @@ By default, the tab group will not change its height to the height of the curren
 change this, set the `dynamicHeight` input to true. The tab body will animate its height according
  to the height of the active tab.
 
- > _(exemplo `{"example": "tab-group-dynamic-height", "file": "tab-group-dynamic-height-example.html", "region": "dynamic-height"}` não encontrado no upstream)_
+ #### Exemplo: `tab-group-dynamic-height` — `tab-group-dynamic-height-example.html` (região `dynamic-height`)
+
+```html
+<mat-tab-group dynamicHeight>
+```
 
 ### Tabs and navigation
 While `<mat-tab-group>` is used to switch between views within a single route, `<nav mat-tab-nav-bar>`
 provides a tab-like UI for navigating between routes.
 
- > _(exemplo `{"example": "tab-nav-bar-basic", "file": "tab-nav-bar-basic-example.html", "region": "mat-tab-nav"}` não encontrado no upstream)_
+ #### Exemplo: `tab-nav-bar-basic` — `tab-nav-bar-basic-example.html` (região `mat-tab-nav`)
+
+```html
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  @for (link of links; track link) {
+    <a mat-tab-link
+      (click)="activeLink = link"
+      [active]="activeLink == link"> {{link}} </a>
+  }
+  <a mat-tab-link disabled>Disabled Link</a>
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+```
 
 The `mat-tab-nav-bar` is not tied to any particular router; it works with normal `<a>` elements and
 uses the `active` property to determine which tab is currently active. The corresponding
@@ -86,20 +117,36 @@ to lazy load the tab's content.
 Tab contents can be lazy loaded by declaring the body in a `ng-template`
 with the `matTabContent` attribute.
 
- > _(exemplo `{"example": "tab-group-lazy-loaded", "file": "tab-group-lazy-loaded-example.html", "region": "mat-tab-content"}` não encontrado no upstream)_
+ #### Exemplo: `tab-group-lazy-loaded` — `tab-group-lazy-loaded-example.html` (região `mat-tab-content`)
+
+```html
+<mat-tab label="First">
+    <ng-template matTabContent>
+      Content 1 - Loaded: {{getTimeLoaded(1) | date:'medium'}}
+    </ng-template>
+  </mat-tab>
+```
 
 ### Label alignment
 If you want to align the tab labels in the center or towards the end of the container, you can
 do so using the `[mat-align-tabs]` attribute.
 
- > _(exemplo `{"example": "tab-group-align", "file": "tab-group-align-example.html", "region": "align-start"}` não encontrado no upstream)_
+ #### Exemplo: `tab-group-align` — `tab-group-align-example.html` (região `align-start`)
+
+```html
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+```
 
 ### Controlling the tab animation
 You can control the duration of the tabs' animation using the `animationDuration` input. If you
 want to disable the animation completely, you can do so by setting the properties to `0ms`. The
 duration can be configured globally using the `MAT_TABS_CONFIG` injection token.
 
- > _(exemplo `{"example": "tab-group-animations", "file": "tab-group-animations-example.html", "region": "slow-animation-duration"}` não encontrado no upstream)_
+ #### Exemplo: `tab-group-animations` — `tab-group-animations-example.html` (região `slow-animation-duration`)
+
+```html
+<mat-tab-group animationDuration="2000ms">
+```
 
 ### Keeping the tab content inside the DOM while it's off-screen
 By default the `<mat-tab-group>` will remove the content of off-screen tabs from the DOM until they

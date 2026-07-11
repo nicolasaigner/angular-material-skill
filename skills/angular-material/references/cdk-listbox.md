@@ -57,7 +57,20 @@ following directives:
 - `cdkListbox` - Added to the container element containing the options to be selected
 - `cdkOption` - Added to each selectable option in the listbox
 
-> _(exemplo `{ "example": "cdk-listbox-overview", "file": "cdk-listbox-overview-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-overview` — `cdk-listbox-overview-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-fav-color-label">
+    Favorite color
+  </label>
+  <ul cdkListbox
+      aria-labelledby="example-fav-color-label"
+      class="example-listbox">
+    <li cdkOption="red" class="example-option">Red</li>
+    <li cdkOption="green" class="example-option">Green</li>
+    <li cdkOption="blue" class="example-option">Blue</li>
+  </ul>
+```
 
 ### Option values
 
@@ -66,14 +79,33 @@ Each option in a listbox is bound to the value it represents when selected, e.g.
 an option is not explicitly given a value, its value is considered to be `''` (empty string), e.g.
 `<li cdkOption>No color preference</li>`.
 
-> _(exemplo `{ "example": "cdk-listbox-overview", "file": "cdk-listbox-overview-example.html", "region": "option" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-overview` — `cdk-listbox-overview-example.html` (região `option`)
+
+```html
+<li cdkOption="red" class="example-option">Red</li>
+```
 
 ### Single vs multiple selection
 
 Listboxes only support a single selected option at a time by default, but adding 
 `cdkListboxMultiple` will enable selecting more than one option.
 
-> _(exemplo `{ "example": "cdk-listbox-multiple", "file": "cdk-listbox-multiple-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-multiple` — `cdk-listbox-multiple-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-fav-cuisine-label">
+    Favorite cuisines
+  </label>
+  <ul cdkListbox
+      cdkListboxMultiple
+      aria-labelledby="example-fav-cuisine-label"
+      class="example-listbox">
+    <li cdkOption="chinese" class="example-option">Chinese</li>
+    <li cdkOption="french" class="example-option">French</li>
+    <li cdkOption="italian" class="example-option">Italian</li>
+    <li cdkOption="japanese" class="example-option">Japanese</li>
+  </ul>
+```
 
 ### Listbox value
 
@@ -81,22 +113,82 @@ The listbox's value is an array containing the values of the selected option(s).
 for the single selection listbox, whose value is an array containing a single element. The listbox's
 value can be bound using `[cdkListboxValue]` and `(cdkListboxValueChange)`.
 
-> _(exemplo `{ "example": "cdk-listbox-value-binding", "file": "cdk-listbox-value-binding-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-value-binding` — `cdk-listbox-value-binding-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-starter-pokemon-label">
+    Starter Pokemon
+  </label>
+  <ul cdkListbox
+      [cdkListboxValue]="starter"
+      (cdkListboxValueChange)="starter = $event.value"
+      aria-labelledby="example-starter-pokemon-label"
+      class="example-listbox">
+    @for (pokemon of starters; track pokemon) {
+      <li [cdkOption]="pokemon" class="example-option">{{pokemon}}</li>
+    }
+  </ul>
+```
 
 Internally the listbox compares the listbox value against the individual option values using
 `Object.is` to determine which options should appear selected. If your option values are complex
 objects, you should provide a custom comparison function instead. This can be set via the
 `cdkListboxCompareWith` input on the listbox.
 
-> _(exemplo `{ "example": "cdk-listbox-compare-with", "file": "cdk-listbox-compare-with-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-compare-with` — `cdk-listbox-compare-with-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-appointment-label">
+    Appointment Time
+  </label>
+  <ul cdkListbox
+      [cdkListboxValue]="appointment"
+      [cdkListboxCompareWith]="compareDate"
+      (cdkListboxValueChange)="appointment = $event.value"
+      aria-labelledby="example-appointment-label"
+      class="example-listbox">
+    @for (time of slots; track time) {
+      <li [cdkOption]="time" class="example-option">{{formatTime(time)}}</li>
+    }
+  </ul>
+```
 
 ### Angular Forms support 
 
 The CDK Listbox supports both template driven forms and reactive forms.
 
-> _(exemplo `{ "example": "cdk-listbox-template-forms", "file": "cdk-listbox-template-forms-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-template-forms` — `cdk-listbox-template-forms-example.html` (região `listbox`)
 
-> _(exemplo `{ "example": "cdk-listbox-reactive-forms", "file": "cdk-listbox-reactive-forms-example.html", "region": "listbox" }` não encontrado no upstream)_
+```html
+<label class="example-listbox-label" id="example-toppings-label">
+    Choose Toppings
+  </label>
+  <ul cdkListbox
+      cdkListboxMultiple
+      [(ngModel)]="order"
+      aria-labelledby="example-toppings-label"
+      class="example-listbox">
+    @for (topping of toppings; track topping) {
+      <li [cdkOption]="topping" class="example-option">{{topping}}</li>
+    }
+  </ul>
+```
+
+#### Exemplo: `cdk-listbox-reactive-forms` — `cdk-listbox-reactive-forms-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-language-label">
+    Preferred Language
+  </label>
+  <ul cdkListbox
+      [formControl]="languageCtrl"
+      aria-labelledby="example-language-label"
+      class="example-listbox">
+    @for (language of languages; track language) {
+      <li [cdkOption]="language" class="example-option">{{language}}</li>
+    }
+  </ul>
+```
 
 ### Disabling options
 
@@ -104,7 +196,35 @@ You can disable options for selection by setting `cdkOptionDisabled`.
 In addition, the entire listbox control can be disabled by setting `cdkListboxDisabled` on the
 listbox element.
 
-> _(exemplo `{ "example": "cdk-listbox-disabled", "file": "cdk-listbox-disabled-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-disabled` — `cdk-listbox-disabled-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-wine-type-label">
+        Wine Selection
+      </label>
+      <ul cdkListbox
+          [cdkListboxDisabled]="!canDrinkCtrl.value"
+          aria-labelledby="example-wine-type-label"
+          class="example-listbox">
+        <li cdkOption="cabernet"
+            class="example-option">
+          Cabernet Sauvignon
+        </li>
+        <li cdkOption="syrah"
+            class="example-option">
+          Syrah
+        </li>
+        <li cdkOption="zinfandel"
+            cdkOptionDisabled
+            class="example-option">
+          Zinfandel <span class="example-sold-out">(sold out)</span>
+        </li>
+        <li cdkOption="riesling"
+            class="example-option">
+          Riesling
+        </li>
+      </ul>
+```
 
 ### Accessibility
 
@@ -125,7 +245,22 @@ By default, the CDK listbox uses the [roving tabindex][roving-tabindex] strategy
 If you prefer to use the [aria-activedescendant][activedescendant] strategy instead, set
 `useActiveDescendant=true` on the listbox.
 
-> _(exemplo `{ "example": "cdk-listbox-activedescendant", "file": "cdk-listbox-activedescendant-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-activedescendant` — `cdk-listbox-activedescendant-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-spatula-label">
+    Spatula Features
+  </label>
+  <ul cdkListbox
+      cdkListboxMultiple
+      cdkListboxUseActiveDescendant
+      aria-labelledby="example-spatula-label"
+      class="example-listbox">
+    @for (feature of features; track feature) {
+      <li [cdkOption]="feature" class="example-option">{{feature}}</li>
+    }
+  </ul>
+```
 
 #### Orientation
 
@@ -133,7 +268,21 @@ Listboxes assume a vertical orientation by default, but can be customized by set
 `cdkListboxOrientation` input. Note that this only affects the keyboard navigation. You
 will still need to adjust your CSS styles to change the visual appearance.
 
-> _(exemplo `{ "example": "cdk-listbox-horizontal", "file": "cdk-listbox-horizontal-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-horizontal` — `cdk-listbox-horizontal-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-shirt-size-label">
+  Shirt Size
+</label>
+<ul cdkListbox
+    cdkListboxOrientation="horizontal"
+    aria-labelledby="example-shirt-size-label"
+    class="example-listbox">
+  @for (size of sizes; track size) {
+    <li [cdkOption]="size" class="example-option">{{size}}</li>
+  }
+</ul>
+```
 
 #### Option typeahead
 
@@ -141,7 +290,33 @@ The CDK listbox supports typeahead based on the option text. If the typeahead te
 needs to be different than the display text (e.g. to exclude emoji), this can be accomplished by
 setting the `cdkOptionTypeaheadLabel` on the option.
 
-> _(exemplo `{ "example": "cdk-listbox-custom-typeahead", "file": "cdk-listbox-custom-typeahead-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-custom-typeahead` — `cdk-listbox-custom-typeahead-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-satisfaction-label">
+    How was your service?
+  </label>
+  <ul cdkListbox
+      aria-labelledby="example-satisfaction-label"
+      class="example-listbox">
+    <li
+        [cdkOption]="1"
+        cdkOptionTypeaheadLabel="great"
+        class="example-option">
+      😀 Great
+    </li>
+    <li [cdkOption]="0"
+        cdkOptionTypeaheadLabel="okay"
+        class="example-option">
+      😐 Okay
+    </li>
+    <li [cdkOption]="-1"
+        cdkOptionTypeaheadLabel="bad"
+        class="example-option">
+      🙁 Bad
+    </li>
+  </ul>
+```
 
 #### Keyboard navigation options
 
@@ -152,7 +327,36 @@ to navigate past the start or end of the options. To change this, set
 Keyboard navigation skips disabled options by default. To change this set
 `cdkListboxNavigatesDisabledOptions` on the listbox.
 
-> _(exemplo `{ "example": "cdk-listbox-custom-navigation", "file": "cdk-listbox-custom-navigation-example.html", "region": "listbox" }` não encontrado no upstream)_
+#### Exemplo: `cdk-listbox-custom-navigation` — `cdk-listbox-custom-navigation-example.html` (região `listbox`)
+
+```html
+<label class="example-listbox-label" id="example-flavor-label">
+    Flavor
+  </label>
+  <ul cdkListbox
+      cdkListboxNavigatesDisabledOptions
+      cdkListboxNavigationWrapDisabled
+      aria-labelledby="example-flavor-label"
+      class="example-listbox">
+    <li cdkOption="chocolate"
+        class="example-option">
+      Chocolate
+    </li>
+    <li cdkOption="pumpkin-spice"
+        cdkOptionDisabled
+        class="example-option">
+      Pumpkin Spice (seasonal)
+    </li>
+    <li cdkOption="strawberry"
+        class="example-option">
+      Strawberry
+    </li>
+    <li cdkOption="vanilla"
+        class="example-option">
+      Vanilla
+    </li>
+  </ul>
+```
 
 <!-- links -->
 

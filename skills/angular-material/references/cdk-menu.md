@@ -54,7 +54,20 @@ menu directives to build your custom menu. A typical menu consists of the follow
 - `cdkMenu` - creates the menu content opened by the trigger
 - `cdkMenuItem` - added to each item in the menu
 
-> _(exemplo `{ "example": "cdk-menu-standalone-menu", "file": "cdk-menu-standalone-menu-example.html" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-menu` — `cdk-menu-standalone-menu-example.html`
+
+```html
+<button [cdkMenuTriggerFor]="menu" class="example-standalone-trigger">Click me!</button>
+
+<ng-template #menu>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Refresh</button>
+    <button class="example-menu-item" cdkMenuItem>Settings</button>
+    <button class="example-menu-item" cdkMenuItem>Help</button>
+    <button class="example-menu-item" cdkMenuItem>Sign out</button>
+  </div>
+</ng-template>
+```
 
 Most menu interactions consist of two parts: a trigger and a menu panel.
 
@@ -65,11 +78,19 @@ item to make it a trigger for a submenu. When adding this directive, be sure to 
 the template containing the menu it should open. Users can toggle the associated menu using a mouse
 or keyboard.
 
-> _(exemplo `{"example":"cdk-menu-standalone-menu", "file":"cdk-menu-standalone-menu-example.html", "region":"trigger"}` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-menu` — `cdk-menu-standalone-menu-example.html` (região `trigger`)
+
+```html
+<button [cdkMenuTriggerFor]="menu" class="example-standalone-trigger">Click me!</button>
+```
 
 When creating a submenu trigger, add both `cdkMenuItem` and `cdkMenuTriggerFor` like so,
 
-> _(exemplo `{"example":"cdk-menu-menubar", "file":"cdk-menu-menubar-example.html", "region":"file-trigger"}` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-menubar` — `cdk-menu-menubar-example.html` (região `file-trigger`)
+
+```html
+<button class="example-menu-bar-item" cdkMenuItem [cdkMenuTriggerFor]="file">File</button>
+```
 
 #### Menu content
 
@@ -94,7 +115,18 @@ items within an inline menus are logically grouped together, and you can navigat
 using your keyboard. You can create an inline menu by adding the `cdkMenu` directive to the element
 you want to serve as the menu content.
 
-> _(exemplo `{ "example": "cdk-menu-inline", "file": "cdk-menu-inline-example.html" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-inline` — `cdk-menu-inline-example.html`
+
+```html
+<div class="example-menu" cdkMenu>
+  <button class="example-menu-item" cdkMenuItem>Inbox</button>
+  <button class="example-menu-item" cdkMenuItem>Snoozed</button>
+  <button class="example-menu-item" cdkMenuItem>Important</button>
+  <button class="example-menu-item" cdkMenuItem>Sent</button>
+  <button class="example-menu-item" cdkMenuItem>Drafts</button>
+  <button class="example-menu-item" cdkMenuItem>All Mail</button>
+</div>
+```
 
 ### Pop-up Menus
 
@@ -103,7 +135,20 @@ element you want to serve as the content for your pop-up menu. Then wrap the con
 `ng-template` and reference the template from the `cdkMenuTriggerFor` property of the trigger. This
 will allow the trigger to show and hide the menu content as needed.
 
-> _(exemplo `{ "example": "cdk-menu-standalone-menu", "file": "cdk-menu-standalone-menu-example.html" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-menu` — `cdk-menu-standalone-menu-example.html`
+
+```html
+<button [cdkMenuTriggerFor]="menu" class="example-standalone-trigger">Click me!</button>
+
+<ng-template #menu>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Refresh</button>
+    <button class="example-menu-item" cdkMenuItem>Settings</button>
+    <button class="example-menu-item" cdkMenuItem>Help</button>
+    <button class="example-menu-item" cdkMenuItem>Sign out</button>
+  </div>
+</ng-template>
+```
 
 ### Menu Bars
 
@@ -111,7 +156,76 @@ Menu bars are a type of inline menu that you can create using the `cdkMenuBar` d
 follow the [ARIA menubar][menubar] spec and behave similarly to a desktop application menubar. Each
 bar consists of at least one `cdkMenuItem` that triggers a submenu.
 
-> _(exemplo `{ "example": "cdk-menu-menubar", "file": "cdk-menu-menubar-example.html" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-menubar` — `cdk-menu-menubar-example.html`
+
+```html
+<div cdkMenuBar>
+  <button class="example-menu-bar-item" cdkMenuItem [cdkMenuTriggerFor]="file">File</button>
+  <button class="example-menu-bar-item" cdkMenuItem [cdkMenuTriggerFor]="edit">Edit</button>
+  <button class="example-menu-bar-item" cdkMenuItem [cdkMenuTriggerFor]="format">Format</button>
+</div>
+
+<ng-template #file>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Share</button>
+    <hr />
+    <button class="example-menu-item" cdkMenuItem [cdkMenuTriggerFor]="new_doc">
+      New <span>&#10148;</span>
+    </button>
+    <button class="example-menu-item" cdkMenuItem>Open</button>
+    <button class="example-menu-item" cdkMenuItem>Make a Copy</button>
+    <hr />
+    <button class="example-menu-item" cdkMenuItem [cdkMenuTriggerFor]="download">
+      Download <span>&#10148;</span>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #edit>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Undo</button>
+    <button class="example-menu-item" cdkMenuItem>Redo</button>
+    <hr />
+    <button class="example-menu-item" cdkMenuItem>Cut</button>
+    <button class="example-menu-item" cdkMenuItem>Copy</button>
+    <button class="example-menu-item" cdkMenuItem>Paste</button>
+  </div>
+</ng-template>
+
+<ng-template #format >
+  <div class="example-menu" cdkMenu>
+    <div class="example-menu-group" cdkMenuGroup>
+      <button cdkMenuItemCheckbox class="example-menu-item" cdkMenuItemChecked>Bold</button>
+      <button cdkMenuItemCheckbox class="example-menu-item">Italic</button>
+    </div>
+    <hr />
+    <div class="example-menu-group" cdkMenuGroup>
+      <button cdkMenuItemRadio class="example-menu-item">Small</button>
+      <button cdkMenuItemRadio class="example-menu-item" cdkMenuItemChecked>Normal</button>
+      <button cdkMenuItemRadio class="example-menu-item">Big</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #new_doc>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Document</button>
+    <button class="example-menu-item" cdkMenuItem>From template</button>
+    <hr />
+    <button class="example-menu-item" cdkMenuItem>Spreadsheet</button>
+    <button class="example-menu-item" cdkMenuItem>Presentation</button>
+    <button class="example-menu-item" cdkMenuItem>Form</button>
+  </div>
+</ng-template>
+
+<ng-template #download>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Microsoft Word</button>
+    <button class="example-menu-item" cdkMenuItem>PDF</button>
+    <button class="example-menu-item" cdkMenuItem>Plain text</button>
+  </div>
+</ng-template>
+```
 
 ### Context Menus
 
@@ -121,12 +235,40 @@ container element with the `cdkContextMenuTriggerFor`, which behaves like `cdkMe
 that it responds to the browser's native `contextmenu` event. Custom context menus appear next to
 the cursor, similarly to native context menus.
 
-> _(exemplo `{ "example": "cdk-menu-context", "file": "cdk-menu-context-example.html" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-context` — `cdk-menu-context-example.html`
+
+```html
+<div [cdkContextMenuTriggerFor]="context_menu">
+  Did you ever hear the tragedy of Darth Plagueis The Wise? I thought not. It's not a story the Jedi
+  would tell you. It's a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so
+  wise he could use the Force to influence the midichlorians to create life… He had such a knowledge
+  of the dark side that he could even keep the ones he cared about from dying. The dark side of the
+  Force is a pathway to many abilities some consider to be unnatural. He became so powerful… the
+  only thing he was afraid of was losing his power, which eventually, of course, he did.
+  Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his
+  sleep. Ironic. He could save others from death, but not himself.
+</div>
+
+<ng-template #context_menu>
+  <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Cut</button>
+    <button class="example-menu-item" cdkMenuItem>Copy</button>
+    <button class="example-menu-item" cdkMenuItem>Link</button>
+  </div>
+</ng-template>
+```
 
 You can nest context menu container elements. Upon right-click, the menu associated with the closest
 container element will open.
 
-> _(exemplo `{ "example": "cdk-menu-nested-context", "file": "cdk-menu-nested-context-example.html", "region": "triggers" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-nested-context` — `cdk-menu-nested-context-example.html` (região `triggers`)
+
+```html
+<div class="example-context-area" [cdkContextMenuTriggerFor]="outer">
+  Outer context menu
+  <div class="example-context-area" [cdkContextMenuTriggerFor]="inner">Inner context menu</div>
+</div>
+```
 
 In the example above, right-clicking on "Inner context menu" will open up the "inner" menu and
 right-clicking inside "Outer context menu" will open up the "outer" menu.
@@ -136,11 +278,21 @@ right-clicking inside "Outer context menu" will open up the "outer" menu.
 The `cdkMenuItem` directive allows users to navigate menu items via keyboard.
 You can add a custom action to a menu item with the `cdkMenuItemTriggered` output.
 
-> _(exemplo `{"example":"cdk-menu-standalone-stateful-menu", "file":"cdk-menu-standalone-stateful-menu-example.html", "region":"reset-item"}` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-stateful-menu` — `cdk-menu-standalone-stateful-menu-example.html` (região `reset-item`)
+
+```html
+<button cdkMenuItem
+            class="example-menu-item"
+            (cdkMenuItemTriggered)="reset()">Reset</button>
+```
 
 You can create nested menus by using a menu item as the trigger for another menu.
 
-> _(exemplo `{"example":"cdk-menu-menubar", "file":"cdk-menu-menubar-example.html", "region":"file-trigger"}` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-menubar` — `cdk-menu-menubar-example.html` (região `file-trigger`)
+
+```html
+<button class="example-menu-bar-item" cdkMenuItem [cdkMenuTriggerFor]="file">File</button>
+```
 
 #### Menu Item Checkboxes
 
@@ -152,7 +304,17 @@ Checkbox items do not track their own state. You must bind the checked state usi
 `cdkMenuItemChecked` input and listen to `cdkMenuItemTriggered` to know when it is toggled. If you
 don't bind the state it will reset when the menu is closed and re-opened.
 
-> _(exemplo `{"example":"cdk-menu-standalone-stateful-menu", "file":"cdk-menu-standalone-stateful-menu-example.html", "region":"bold-item"}` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-stateful-menu` — `cdk-menu-standalone-stateful-menu-example.html` (região `bold-item`)
+
+```html
+<button
+        cdkMenuItemCheckbox
+        class="example-menu-item"
+        [cdkMenuItemChecked]="bold"
+        (cdkMenuItemTriggered)="bold = !bold">
+      Bold
+    </button>
+```
 
 #### Menu Item Radios
 
@@ -164,7 +326,19 @@ As with checkbox items, radio items do not track their own state, but you can tr
 `cdkMenuItemChecked` and listening for `cdkMenuItemTriggered`. If you do not bind the state the
 selection will reset when the menu is closed and reopened.
 
-> _(exemplo `{"example":"cdk-menu-standalone-stateful-menu", "file":"cdk-menu-standalone-stateful-menu-example.html", "region":"size-items"}` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-stateful-menu` — `cdk-menu-standalone-stateful-menu-example.html` (região `size-items`)
+
+```html
+@for (size of sizes; track size) {
+        <button
+            cdkMenuItemRadio
+            class="example-menu-item"
+            [cdkMenuItemChecked]="size === selectedSize"
+            (cdkMenuItemTriggered)="selectedSize = size">
+          {{size}}
+        </button>
+      }
+```
 
 #### Groups
 
@@ -175,7 +349,46 @@ can have the checked state.
 If you would like to have unrelated groups of radio buttons within a single menu you should use the
 `cdkMenuGroup` directive.
 
-> _(exemplo `{ "example": "cdk-menu-standalone-stateful-menu", "file": "cdk-menu-standalone-stateful-menu-example.html" }` não encontrado no upstream)_
+#### Exemplo: `cdk-menu-standalone-stateful-menu` — `cdk-menu-standalone-stateful-menu-example.html`
+
+```html
+<button [cdkMenuTriggerFor]="menu" class="example-standalone-item">Click me!</button>
+
+<ng-template #menu>
+  <div class="example-menu" cdkMenu>
+    <button
+        cdkMenuItemCheckbox
+        class="example-menu-item"
+        [cdkMenuItemChecked]="bold"
+        (cdkMenuItemTriggered)="bold = !bold">
+      Bold
+    </button>
+    <button
+        cdkMenuItemCheckbox
+        class="example-menu-item"
+        [cdkMenuItemChecked]="italic"
+        (cdkMenuItemTriggered)="italic = !italic">
+      Italic
+    </button>
+    <hr />
+    <div cdkMenuGroup>
+      @for (size of sizes; track size) {
+        <button
+            cdkMenuItemRadio
+            class="example-menu-item"
+            [cdkMenuItemChecked]="size === selectedSize"
+            (cdkMenuItemTriggered)="selectedSize = size">
+          {{size}}
+        </button>
+      }
+    </div>
+    <hr />
+    <button cdkMenuItem
+            class="example-menu-item"
+            (cdkMenuItemTriggered)="reset()">Reset</button>
+  </div>
+</ng-template>
+```
 
 ### Smart Menu Aim
 

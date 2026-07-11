@@ -12,7 +12,15 @@ Start by creating the autocomplete panel and the options displayed inside it. Ea
 defined by a `mat-option` tag. Set each option's value property to whatever you'd like the value
 of the text input to be when that option is selected.
 
-> _(exemplo `{"example":"autocomplete-simple", "file":"autocomplete-simple-example.html", "region":"mat-autocomplete"}` não encontrado no upstream)_
+#### Exemplo: `autocomplete-simple` — `autocomplete-simple-example.html` (região `mat-autocomplete`)
+
+```html
+<mat-autocomplete #auto="matAutocomplete">
+      @for (option of options; track option) {
+        <mat-option [value]="option">{{option}}</mat-option>
+      }
+    </mat-autocomplete>
+```
 
 Next, create the input and set the `matAutocomplete` input to refer to the template reference we assigned
 to the autocomplete. Let's assume you're using the `formControl` directive from `ReactiveFormsModule` to
@@ -28,7 +36,16 @@ Now we'll need to link the text input to its panel. We can do this by exporting 
 panel instance into a local template variable (here we called it "auto"), and binding that variable
 to the input's `matAutocomplete` property.
 
-> _(exemplo `{"example":"autocomplete-simple", "file":"autocomplete-simple-example.html", "region":"input"}` não encontrado no upstream)_
+#### Exemplo: `autocomplete-simple` — `autocomplete-simple-example.html` (região `input`)
+
+```html
+<input type="text"
+           placeholder="Pick one"
+           aria-label="Number"
+           matInput
+           [formControl]="myControl"
+           [matAutocomplete]="auto">
+```
 
 ### Adding a custom filter
 
@@ -515,7 +532,19 @@ autocomplete is attached to using the `matAutocompleteOrigin` directive together
 
 ### Option groups
 `mat-option` can be collected into groups using the `mat-optgroup` element:
-> _(exemplo `{"example":"autocomplete-optgroup", "file":"autocomplete-optgroup-example.html", "region":"mat-autocomplete"}` não encontrado no upstream)_
+#### Exemplo: `autocomplete-optgroup` — `autocomplete-optgroup-example.html` (região `mat-autocomplete`)
+
+```html
+<mat-autocomplete #autoGroup="matAutocomplete">
+        @for (group of stateGroupOptions | async; track group) {
+          <mat-optgroup [label]="group.letter">
+            @for (name of group.names; track name) {
+              <mat-option [value]="name">{{name}}</mat-option>
+            }
+          </mat-optgroup>
+        }
+    </mat-autocomplete>
+```
 
 ### Accessibility
 

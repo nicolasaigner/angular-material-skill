@@ -28,17 +28,13 @@ export class ExpansionOverviewExample {
 
 ```html
 <mat-accordion>
-  <!-- #docregion basic-panel -->
-  <!-- #docregion hide-toggle -->
   <mat-expansion-panel hideToggle>
-    <!-- #enddocregion hide-toggle -->
     <mat-expansion-panel-header>
       <mat-panel-title> This is the expansion title </mat-panel-title>
       <mat-panel-description> This is a summary of the content </mat-panel-description>
     </mat-expansion-panel-header>
     <p>This is the primary content of the panel.</p>
   </mat-expansion-panel>
-  <!-- #enddocregion basic-panel -->
   <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
     <mat-expansion-panel-header>
       <mat-panel-title> Self aware panel </mat-panel-title>
@@ -60,27 +56,51 @@ as the control for expanding and collapsing. This header may optionally contain 
 `<mat-panel-title>` and an `<mat-panel-description>`, which format the content of the
 header to align with Material Design specifications.
 
-> _(exemplo `{"example": "expansion-overview", "file": "expansion-overview-example.html", "region": "basic-panel"}` não encontrado no upstream)_
+#### Exemplo: `expansion-overview` — `expansion-overview-example.html` (região `basic-panel`)
+
+```html
+<mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title> This is the expansion title </mat-panel-title>
+      <mat-panel-description> This is a summary of the content </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>This is the primary content of the panel.</p>
+  </mat-expansion-panel>
+```
 
 By default, the expansion-panel header includes a toggle icon at the end of the
 header to indicate the expansion state. This icon can be hidden via the
 `hideToggle` property.
 
-> _(exemplo `{"example": "expansion-overview", "file": "expansion-overview-example.html", "region": "hide-toggle"}` não encontrado no upstream)_
+#### Exemplo: `expansion-overview` — `expansion-overview-example.html` (região `hide-toggle`)
+
+```html
+<mat-expansion-panel hideToggle>
+```
 
 #### Action bar
 
 Actions may optionally be included at the bottom of the panel, visible only when the expansion
 is in its expanded state.
 
-> _(exemplo `{"example": "expansion-steps", "file": "expansion-steps-example.html", "region": "action-bar"}` não encontrado no upstream)_
+#### Exemplo: `expansion-steps` — `expansion-steps-example.html` (região `action-bar`)
+
+```html
+<mat-action-row>
+      <button matButton (click)="nextStep()">Next</button>
+    </mat-action-row>
+```
 
 #### Disabling a panel
 
 Expansion panels can be disabled using the `disabled` attribute. A disabled expansion panel can't
 be toggled by the user, but can still be manipulated programmatically.
 
-> _(exemplo `{"example": "expansion-expand-collapse-all", "file": "expansion-expand-collapse-all-example.html", "region": "disabled"}` não encontrado no upstream)_
+#### Exemplo: `expansion-expand-collapse-all` — `expansion-expand-collapse-all-example.html` (região `disabled`)
+
+```html
+<mat-expansion-panel disabled>
+```
 
 ### Accordion
 
@@ -88,7 +108,11 @@ Multiple expansion-panels can be combined into an accordion. The `multi="true"` 
 expansions state to be set independently of each other. When `multi="false"` (default) just one
 panel can be expanded at a given time:
 
-> _(exemplo `{"example": "expansion-expand-collapse-all", "file": "expansion-expand-collapse-all-example.html", "region": "multi"}` não encontrado no upstream)_
+#### Exemplo: `expansion-expand-collapse-all` — `expansion-expand-collapse-all-example.html` (região `multi`)
+
+```html
+<mat-accordion class="example-headers-align" multi>
+```
 
 ### Lazy rendering
 

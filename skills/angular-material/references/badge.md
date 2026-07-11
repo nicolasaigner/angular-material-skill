@@ -39,38 +39,28 @@ export class BadgeOverviewExample {
 ```
 
 ```html
-<!-- #docregion mat-badge-overlap -->
-  <div matBadge="4" matBadgeOverlap="false" class="demo-section">Text with a badge</div>
-<!-- #enddocregion mat-badge-overlap -->
+<div matBadge="4" matBadgeOverlap="false" class="demo-section">Text with a badge</div>
 
-<!-- #docregion mat-badge-size -->
   <div matBadge="1" matBadgeSize="small" class="demo-section">Text with small badge</div>
   <div matBadge="1" matBadgeSize="large" class="demo-section">Text with large badge</div>
-<!-- #enddocregion mat-badge-size -->
 
 <div class="demo-section">
   Button with a badge on the left
-<!-- #docregion mat-badge-position -->
   <button matButton="elevated" matBadge="8" matBadgePosition="before">
     Action
   </button>
-<!-- #enddocregion mat-badge-position -->
 </div>
 
 <div class="demo-section">
     Button toggles badge visibility
-<!-- #docregion mat-badge-hide -->
     <button matButton="elevated" matBadge="7" [matBadgeHidden]="hidden" (click)="toggleBadgeVisibility()">
         Hide
     </button>
-<!-- #enddocregion mat-badge-hide -->
   </div>
 
 <div class="demo-section">
   Icon with a badge
-<!-- #docregion mat-badge-color -->
   <mat-icon matBadge="15">home</mat-icon>
-<!-- #enddocregion mat-badge-color -->
     <!-- Include text description of the icon's meaning for screen-readers -->
     <span class="cdk-visually-hidden">
       Example with a home icon with overlaid badge showing the number 15
@@ -94,13 +84,23 @@ export class BadgeOverviewExample {
 By default, the badge will be placed `above after`. The direction can be changed by defining
 the attribute `matBadgePosition` follow by `above|below` and `before|after`.
 
-> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-position"}` não encontrado no upstream)_
+#### Exemplo: `badge-overview` — `badge-overview-example.html` (região `mat-badge-position`)
+
+```html
+<button matButton="elevated" matBadge="8" matBadgePosition="before">
+    Action
+  </button>
+```
 
 The overlap of the badge in relation to its inner contents can also be defined
 using the `matBadgeOverlap` tag. Typically, you want the badge to overlap an icon and not
 a text phrase. By default it will overlap.
 
-> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-overlap"}` não encontrado no upstream)_
+#### Exemplo: `badge-overview` — `badge-overview-example.html` (região `mat-badge-overlap`)
+
+```html
+<div matBadge="4" matBadgeOverlap="false" class="demo-section">Text with a badge</div>
+```
 
 ### Badge sizing
 The badge has 3 sizes: `small`, `medium` and `large`. By default, the badge is set to `medium`.
@@ -109,12 +109,23 @@ Badges that are `small` do not show the label text. This can be useful in contex
 
 You can change the size by adding `matBadgeSize` to the host element.
 
-> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-size"}` não encontrado no upstream)_
+#### Exemplo: `badge-overview` — `badge-overview-example.html` (região `mat-badge-size`)
+
+```html
+<div matBadge="1" matBadgeSize="small" class="demo-section">Text with small badge</div>
+  <div matBadge="1" matBadgeSize="large" class="demo-section">Text with large badge</div>
+```
 
 ### Badge visibility
 The badge visibility can be toggled programmatically by defining `matBadgeHidden`.
 
-> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-hide"}` não encontrado no upstream)_
+#### Exemplo: `badge-overview` — `badge-overview-example.html` (região `mat-badge-hide`)
+
+```html
+<button matButton="elevated" matBadge="7" [matBadgeHidden]="hidden" (click)="toggleBadgeVisibility()">
+        Hide
+    </button>
+```
 
 ### Accessibility
 You must provide a meaningful description via `matBadgeDescription`. When attached to an interactive

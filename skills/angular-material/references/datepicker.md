@@ -30,12 +30,10 @@ export class DatepickerOverviewExample {}
 ```html
 <mat-form-field>
   <mat-label>Choose a date</mat-label>
-<!-- #docregion toggle -->
   <input matInput [matDatepicker]="picker">
   <mat-hint>MM/DD/YYYY</mat-hint>
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
-<!-- #enddocregion toggle -->
 </mat-form-field>
 ```
 
@@ -46,12 +44,29 @@ property on the text input.
 
 There is also an optional datepicker toggle button that gives the user an easy way to open the datepicker pop-up.
 
-> _(exemplo `{"example":"datepicker-overview", "file":"datepicker-overview-example.html", "region":"toggle"}` não encontrado no upstream)_
+#### Exemplo: `datepicker-overview` — `datepicker-overview-example.html` (região `toggle`)
+
+```html
+<input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+```
 
 This works exactly the same with an input that is part of an `<mat-form-field>` and the toggle
 can easily be used as a prefix or suffix on the Material input:
 
-> _(exemplo `{"example":"datepicker-overview", "file":"datepicker-overview-example.html"}` não encontrado no upstream)_
+#### Exemplo: `datepicker-overview` — `datepicker-overview-example.html`
+
+```html
+<mat-form-field>
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+```
 
 If you want to customize the icon that is rendered inside the `mat-datepicker-toggle`, you can do so
 by using the `matDatepickerToggleIcon` directive:
@@ -681,13 +696,31 @@ inside `<mat-datepicker>` with a "Cancel" and an "Apply" button marked with the
 datepicker to only assign the value to the data model if the user presses "Apply", whereas pressing
 "Cancel" will close popup without changing the value.
 
-> _(exemplo `{"example":"datepicker-actions", "file":"datepicker-actions-example.html", "region":"datepicker-actions"}` não encontrado no upstream)_
+#### Exemplo: `datepicker-actions` — `datepicker-actions-example.html` (região `datepicker-actions`)
+
+```html
+<mat-datepicker #datepicker>
+    <mat-datepicker-actions>
+      <button matButton matDatepickerCancel>Cancel</button>
+      <button matButton="elevated" matDatepickerApply>Apply</button>
+    </mat-datepicker-actions>
+  </mat-datepicker>
+```
 
 The actions element is also supported for `<mat-date-range-picker>` where that it is called
 `<mat-date-range-picker-actions>` and the buttons are called `matDateRangePickerCancel` and
 `matDateRangePickerApply` respectively.
 
-> _(exemplo `{"example":"datepicker-actions", "file":"datepicker-actions-example.html", "region":"date-range-picker-actions"}` não encontrado no upstream)_
+#### Exemplo: `datepicker-actions` — `datepicker-actions-example.html` (região `date-range-picker-actions`)
+
+```html
+<mat-date-range-picker #rangePicker>
+    <mat-date-range-picker-actions>
+      <button matButton matDateRangePickerCancel>Cancel</button>
+      <button matButton="elevated" matDateRangePickerApply>Apply</button>
+    </mat-date-range-picker-actions>
+  </mat-date-range-picker>
+```
 
 #### Exemplo: `datepicker-actions`
 
@@ -717,14 +750,12 @@ export class DatepickerActionsExample {}
   <input matInput [matDatepicker]="datepicker" />
   <mat-hint>MM/DD/YYYY</mat-hint>
   <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
-  <!-- #docregion datepicker-actions -->
   <mat-datepicker #datepicker>
     <mat-datepicker-actions>
       <button matButton matDatepickerCancel>Cancel</button>
       <button matButton="elevated" matDatepickerApply>Apply</button>
     </mat-datepicker-actions>
   </mat-datepicker>
-  <!-- #enddocregion datepicker-actions -->
 </mat-form-field>
 
 <mat-form-field class="example-form-field">
@@ -735,14 +766,12 @@ export class DatepickerActionsExample {}
   </mat-date-range-input>
   <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
   <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
-  <!-- #docregion date-range-picker-actions -->
   <mat-date-range-picker #rangePicker>
     <mat-date-range-picker-actions>
       <button matButton matDateRangePickerCancel>Cancel</button>
       <button matButton="elevated" matDateRangePickerApply>Apply</button>
     </mat-date-range-picker-actions>
   </mat-date-range-picker>
-  <!-- #enddocregion date-range-picker-actions -->
 </mat-form-field>
 ```
 

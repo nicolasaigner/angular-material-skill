@@ -81,7 +81,13 @@ export class ToolbarSimpleExample {}
 The Material Design spec used to describe toolbars with multiple rows. This can 
 be done by placing `<mat-toolbar-row>` elements inside a `<mat-toolbar>`.
 
-> _(exemplo `{"example":"toolbar-multirow", "file":"toolbar-multirow-example.html", "region":"toolbar-row"}` não encontrado no upstream)_
+#### Exemplo: `toolbar-multirow` — `toolbar-multirow-example.html` (região `toolbar-row`)
+
+```html
+<mat-toolbar-row>
+    <span>Custom Toolbar</span>
+  </mat-toolbar-row>
+```
 
 **Note**: Placing content outside a `<mat-toolbar-row>` when multiple rows are specified is not
 supported.
@@ -93,9 +99,23 @@ position the content as it suits their application.
 A common pattern is to position a title on the left with some actions on the right. This can be
 easily accomplished with `display: flex`:
 
-> _(exemplo `{"example":"toolbar-multirow", "file":"toolbar-multirow-example.html", "region":"toolbar-position-content"}` não encontrado no upstream)_
+#### Exemplo: `toolbar-multirow` — `toolbar-multirow-example.html` (região `toolbar-position-content`)
+
+```html
+<mat-toolbar-row>
+    <span>Second Line</span>
+    <span class="example-spacer"></span>
+    <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">verified_user</mat-icon>
+  </mat-toolbar-row>
+```
               
-> _(exemplo `{"example":"toolbar-multirow", "file":"toolbar-multirow-example.css", "region":"toolbar-position-content-style"}` não encontrado no upstream)_
+#### Exemplo: `toolbar-multirow` — `toolbar-multirow-example.css` (região `toolbar-position-content-style`)
+
+```css
+.example-spacer {
+  flex: 1 1 auto;
+}
+```
 
 ### Accessibility
 By default, the toolbar assumes that it will be used in a purely decorative fashion and thus sets

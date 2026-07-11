@@ -1,7 +1,5 @@
 <!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
 
-# Theming Your Components
-
 > Fonte: [documentação oficial](https://material.angular.dev/guide/theming-your-components) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
 
 <style>

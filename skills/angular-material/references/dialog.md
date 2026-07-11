@@ -410,4 +410,12 @@ sheet attempts to restore focus.
 
 You can add handling for this situation with the `afterClosed()` observable from `MatDialogRef`.
 
-> _(exemplo `{"example":"dialog-from-menu", "file":"dialog-from-menu-example.ts", "region":"focus-restoration"}` não encontrado no upstream)_
+#### Exemplo: `dialog-from-menu` — `dialog-from-menu-example.ts` (região `focus-restoration`)
+
+```ts
+const dialogRef = this.dialog.open(DialogFromMenuExampleDialog, {restoreFocus: false});
+
+    // Manually restore focus to the menu trigger since the element that
+    // opens the dialog won't be in the DOM any more when the dialog closes.
+    dialogRef.afterClosed().subscribe(() => this.menuTrigger().focus());
+```

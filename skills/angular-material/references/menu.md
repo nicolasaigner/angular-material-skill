@@ -25,9 +25,7 @@ export class MenuOverviewExample {}
 ```
 
 ```html
-<!-- #docregion mat-menu-trigger-for -->
 <button matButton [matMenuTriggerFor]="menu">Menu</button>
-<!-- #enddocregion mat-menu-trigger-for -->
 <mat-menu #menu="matMenu">
   <button mat-menu-item>Item 1</button>
   <button mat-menu-item>Item 2</button>
@@ -36,7 +34,11 @@ export class MenuOverviewExample {}
 
 By itself, the `<mat-menu>` element does not render anything. The menu is attached to and opened
 via application of the `matMenuTriggerFor` directive:
-> _(exemplo `{"example": "menu-overview", "file": "menu-overview-example.html", "region": "mat-menu-trigger-for"}` não encontrado no upstream)_
+#### Exemplo: `menu-overview` — `menu-overview-example.html` (região `mat-menu-trigger-for`)
+
+```html
+<button matButton [matMenuTriggerFor]="menu">Menu</button>
+```
 
 ### Toggling the menu programmatically
 The menu exposes an API to open/close programmatically. Please note that in this case, an
@@ -55,7 +57,27 @@ class MyComponent {
 ### Icons
 Menus support displaying `mat-icon` elements before the menu item text.
 
-> _(exemplo `{"example": "menu-icons", "file": "menu-icons-example.html"}` não encontrado no upstream)_
+#### Exemplo: `menu-icons` — `menu-icons-example.html`
+
+```html
+<button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item>
+    <mat-icon>dialpad</mat-icon>
+    <span>Redial</span>
+  </button>
+  <button mat-menu-item disabled>
+    <mat-icon>voicemail</mat-icon>
+    <span>Check voice mail</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>notifications_off</mat-icon>
+    <span>Disable alerts</span>
+  </button>
+</mat-menu>
+```
 
 ### Customizing menu position
 
@@ -64,7 +86,11 @@ its trigger. The position can be changed using the `xPosition` (`before | after`
 (`above | below`) attributes. The menu can be forced to overlap the trigger using the
 `overlapTrigger` attribute.
 
-> _(exemplo `{"example": "menu-position", "file": "menu-position-example.html", "region": "menu-position"}` não encontrado no upstream)_
+#### Exemplo: `menu-position` — `menu-position-example.html` (região `menu-position`)
+
+```html
+<mat-menu #aboveMenu="matMenu" yPosition="above">
+```
 
 ### Nested menu
 
@@ -72,7 +98,22 @@ Material supports the ability for an `mat-menu-item` to open a sub-menu. To do s
 your root menu and sub-menus, in addition to setting the `[matMenuTriggerFor]` on the `mat-menu-item`
 that should trigger the sub-menu:
 
-> _(exemplo `{"example": "menu-nested", "file": "menu-nested-example.html", "region": "sub-menu"}` não encontrado no upstream)_
+#### Exemplo: `menu-nested` — `menu-nested-example.html` (região `sub-menu`)
+
+```html
+<mat-menu #animals="matMenu">
+  <button mat-menu-item [matMenuTriggerFor]="vertebrates">Vertebrates</button>
+  <button mat-menu-item [matMenuTriggerFor]="invertebrates">Invertebrates</button>
+</mat-menu>
+
+<mat-menu #vertebrates="matMenu">
+  <button mat-menu-item [matMenuTriggerFor]="fish">Fishes</button>
+  <button mat-menu-item [matMenuTriggerFor]="amphibians">Amphibians</button>
+  <button mat-menu-item [matMenuTriggerFor]="reptiles">Reptiles</button>
+  <button mat-menu-item>Birds</button>
+  <button mat-menu-item>Mammals</button>
+</mat-menu>
+```
 
 ### Context menu
 A context menu is a menu that is triggered by right-clicking in a specific area, rather than

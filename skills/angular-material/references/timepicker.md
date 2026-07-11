@@ -30,11 +30,9 @@ export class TimepickerOverviewExample {}
 ```html
 <mat-form-field>
   <mat-label>Pick a time</mat-label>
-<!-- #docregion minimum-setup -->
   <input matInput [matTimepicker]="picker">
   <mat-timepicker-toggle matIconSuffix [for]="picker"/>
   <mat-timepicker #picker/>
-<!-- #enddocregion minimum-setup -->
 </mat-form-field>
 ```
 
@@ -45,11 +43,26 @@ binding on the input.
 
 There is also an optional timepicker toggle button that gives the user an easy way to open the dropdown.
 
-> _(exemplo `{"example":"timepicker-overview", "file":"timepicker-overview-example.html", "region":"minimum-setup"}` não encontrado no upstream)_
+#### Exemplo: `timepicker-overview` — `timepicker-overview-example.html` (região `minimum-setup`)
+
+```html
+<input matInput [matTimepicker]="picker">
+  <mat-timepicker-toggle matIconSuffix [for]="picker"/>
+  <mat-timepicker #picker/>
+```
 
 The timepicker input and toggle can be used either on their own or as a part of a `mat-form-field`:
 
-> _(exemplo `{"example":"timepicker-overview", "file":"timepicker-overview-example.html"}` não encontrado no upstream)_
+#### Exemplo: `timepicker-overview` — `timepicker-overview-example.html`
+
+```html
+<mat-form-field>
+  <mat-label>Pick a time</mat-label>
+  <input matInput [matTimepicker]="picker">
+  <mat-timepicker-toggle matIconSuffix [for]="picker"/>
+  <mat-timepicker #picker/>
+</mat-form-field>
+```
 
 ### Timepicker forms integration
 
