@@ -1,4 +1,4 @@
-import { UPSTREAM_REPO } from './sources.mjs';
+import { UPSTREAM_REPO } from './upstream.mjs';
 import { EXAMPLE_TAG_PATTERN } from './example-tag.mjs';
 
 const EXAMPLE_TAG = new RegExp(EXAMPLE_TAG_PATTERN, 'g');

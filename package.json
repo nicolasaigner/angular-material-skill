@@ -8,6 +8,7 @@
   "scripts": {
     "test": "node --test",
     "sync": "node tools/sync.mjs",
+    "discover": "node tools/discover-sources.mjs",
     "check-release": "node tools/check-release.mjs"
   },
   "engines": { "node": ">=22" }

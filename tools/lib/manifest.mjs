@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
-import { UPSTREAM_REPO } from './sources.mjs';
+import { UPSTREAM_REPO } from './upstream.mjs';
 
 export function hashContent(str) {
   return createHash('sha256').update(str, 'utf8').digest('hex').slice(0, 16);

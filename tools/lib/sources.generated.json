@@ -1,0 +1,404 @@
+{
+  "upstreamRepo": "angular/components",
+  "discoveredTag": "21.0.2",
+  "sources": [
+    {
+      "name": "autocomplete",
+      "category": "component",
+      "prosePath": "src/material/autocomplete/autocomplete.md",
+      "examplesDir": "src/components-examples/material/autocomplete"
+    },
+    {
+      "name": "badge",
+      "category": "component",
+      "prosePath": "src/material/badge/badge.md",
+      "examplesDir": "src/components-examples/material/badge"
+    },
+    {
+      "name": "bidirectionality",
+      "category": "guide",
+      "prosePath": "guides/bidirectionality.md"
+    },
+    {
+      "name": "bottom-sheet",
+      "category": "component",
+      "prosePath": "src/material/bottom-sheet/bottom-sheet.md",
+      "examplesDir": "src/components-examples/material/bottom-sheet"
+    },
+    {
+      "name": "button",
+      "category": "component",
+      "prosePath": "src/material/button/button.md",
+      "examplesDir": "src/components-examples/material/button"
+    },
+    {
+      "name": "button-toggle",
+      "category": "component",
+      "prosePath": "src/material/button-toggle/button-toggle.md",
+      "examplesDir": "src/components-examples/material/button-toggle"
+    },
+    {
+      "name": "card",
+      "category": "component",
+      "prosePath": "src/material/card/card.md",
+      "examplesDir": "src/components-examples/material/card"
+    },
+    {
+      "name": "cdk-a11y",
+      "category": "component",
+      "prosePath": "src/cdk/a11y/a11y.md",
+      "examplesDir": "src/components-examples/cdk/a11y"
+    },
+    {
+      "name": "cdk-accordion",
+      "category": "component",
+      "prosePath": "src/cdk/accordion/accordion.md",
+      "examplesDir": "src/components-examples/cdk/accordion"
+    },
+    {
+      "name": "cdk-bidi",
+      "category": "component",
+      "prosePath": "src/cdk/bidi/bidi.md",
+      "examplesDir": "src/components-examples/cdk/bidi"
+    },
+    {
+      "name": "cdk-clipboard",
+      "category": "component",
+      "prosePath": "src/cdk/clipboard/clipboard.md",
+      "examplesDir": "src/components-examples/cdk/clipboard"
+    },
+    {
+      "name": "cdk-coercion",
+      "category": "component",
+      "prosePath": "src/cdk/coercion/coercion.md",
+      "examplesDir": "src/components-examples/cdk/coercion"
+    },
+    {
+      "name": "cdk-collections",
+      "category": "component",
+      "prosePath": "src/cdk/collections/collections.md",
+      "examplesDir": "src/components-examples/cdk/collections"
+    },
+    {
+      "name": "cdk-dialog",
+      "category": "component",
+      "prosePath": "src/cdk/dialog/dialog.md",
+      "examplesDir": "src/components-examples/cdk/dialog"
+    },
+    {
+      "name": "cdk-drag-drop",
+      "category": "component",
+      "prosePath": "src/cdk/drag-drop/drag-drop.md",
+      "examplesDir": "src/components-examples/cdk/drag-drop"
+    },
+    {
+      "name": "cdk-keycodes",
+      "category": "component",
+      "prosePath": "src/cdk/keycodes/keycodes.md",
+      "examplesDir": "src/components-examples/cdk/keycodes"
+    },
+    {
+      "name": "cdk-layout",
+      "category": "component",
+      "prosePath": "src/cdk/layout/layout.md",
+      "examplesDir": "src/components-examples/cdk/layout"
+    },
+    {
+      "name": "cdk-listbox",
+      "category": "component",
+      "prosePath": "src/cdk/listbox/listbox.md",
+      "examplesDir": "src/components-examples/cdk/listbox"
+    },
+    {
+      "name": "cdk-menu",
+      "category": "component",
+      "prosePath": "src/cdk/menu/menu.md",
+      "examplesDir": "src/components-examples/cdk/menu"
+    },
+    {
+      "name": "cdk-observers",
+      "category": "component",
+      "prosePath": "src/cdk/observers/observers.md",
+      "examplesDir": "src/components-examples/cdk/observers"
+    },
+    {
+      "name": "cdk-overlay",
+      "category": "component",
+      "prosePath": "src/cdk/overlay/overlay.md",
+      "examplesDir": "src/components-examples/cdk/overlay"
+    },
+    {
+      "name": "cdk-platform",
+      "category": "component",
+      "prosePath": "src/cdk/platform/platform.md",
+      "examplesDir": "src/components-examples/cdk/platform"
+    },
+    {
+      "name": "cdk-portal",
+      "category": "component",
+      "prosePath": "src/cdk/portal/portal.md",
+      "examplesDir": "src/components-examples/cdk/portal"
+    },
+    {
+      "name": "cdk-private",
+      "category": "component",
+      "prosePath": "src/cdk/private/private.md",
+      "examplesDir": "src/components-examples/cdk/private"
+    },
+    {
+      "name": "cdk-scrolling",
+      "category": "component",
+      "prosePath": "src/cdk/scrolling/scrolling.md",
+      "examplesDir": "src/components-examples/cdk/scrolling"
+    },
+    {
+      "name": "cdk-stepper",
+      "category": "component",
+      "prosePath": "src/cdk/stepper/stepper.md",
+      "examplesDir": "src/components-examples/cdk/stepper"
+    },
+    {
+      "name": "cdk-table",
+      "category": "component",
+      "prosePath": "src/cdk/table/table.md",
+      "examplesDir": "src/components-examples/cdk/table"
+    },
+    {
+      "name": "cdk-text-field",
+      "category": "component",
+      "prosePath": "src/cdk/text-field/text-field.md",
+      "examplesDir": "src/components-examples/cdk/text-field"
+    },
+    {
+      "name": "cdk-tree",
+      "category": "component",
+      "prosePath": "src/cdk/tree/tree.md",
+      "examplesDir": "src/components-examples/cdk/tree"
+    },
+    {
+      "name": "checkbox",
+      "category": "component",
+      "prosePath": "src/material/checkbox/checkbox.md",
+      "examplesDir": "src/components-examples/material/checkbox"
+    },
+    {
+      "name": "chips",
+      "category": "component",
+      "prosePath": "src/material/chips/chips.md",
+      "examplesDir": "src/components-examples/material/chips"
+    },
+    {
+      "name": "core",
+      "category": "component",
+      "prosePath": "src/material/core/core.md",
+      "examplesDir": "src/components-examples/material/core"
+    },
+    {
+      "name": "creating-a-custom-form-field-control",
+      "category": "guide",
+      "prosePath": "guides/creating-a-custom-form-field-control.md"
+    },
+    {
+      "name": "creating-a-custom-stepper-using-the-cdk-stepper",
+      "category": "guide",
+      "prosePath": "guides/creating-a-custom-stepper-using-the-cdk-stepper.md"
+    },
+    {
+      "name": "datepicker",
+      "category": "component",
+      "prosePath": "src/material/datepicker/datepicker.md",
+      "examplesDir": "src/components-examples/material/datepicker"
+    },
+    {
+      "name": "dialog",
+      "category": "component",
+      "prosePath": "src/material/dialog/dialog.md",
+      "examplesDir": "src/components-examples/material/dialog"
+    },
+    {
+      "name": "divider",
+      "category": "component",
+      "prosePath": "src/material/divider/divider.md",
+      "examplesDir": "src/components-examples/material/divider"
+    },
+    {
+      "name": "expansion",
+      "category": "component",
+      "prosePath": "src/material/expansion/expansion.md",
+      "examplesDir": "src/components-examples/material/expansion"
+    },
+    {
+      "name": "form-field",
+      "category": "component",
+      "prosePath": "src/material/form-field/form-field.md",
+      "examplesDir": "src/components-examples/material/form-field"
+    },
+    {
+      "name": "getting-started",
+      "category": "guide",
+      "prosePath": "guides/getting-started.md"
+    },
+    {
+      "name": "grid-list",
+      "category": "component",
+      "prosePath": "src/material/grid-list/grid-list.md",
+      "examplesDir": "src/components-examples/material/grid-list"
+    },
+    {
+      "name": "icon",
+      "category": "component",
+      "prosePath": "src/material/icon/icon.md",
+      "examplesDir": "src/components-examples/material/icon"
+    },
+    {
+      "name": "input",
+      "category": "component",
+      "prosePath": "src/material/input/input.md",
+      "examplesDir": "src/components-examples/material/input"
+    },
+    {
+      "name": "list",
+      "category": "component",
+      "prosePath": "src/material/list/list.md",
+      "examplesDir": "src/components-examples/material/list"
+    },
+    {
+      "name": "material-2",
+      "category": "guide",
+      "prosePath": "guides/material-2.md"
+    },
+    {
+      "name": "menu",
+      "category": "component",
+      "prosePath": "src/material/menu/menu.md",
+      "examplesDir": "src/components-examples/material/menu"
+    },
+    {
+      "name": "paginator",
+      "category": "component",
+      "prosePath": "src/material/paginator/paginator.md",
+      "examplesDir": "src/components-examples/material/paginator"
+    },
+    {
+      "name": "progress-bar",
+      "category": "component",
+      "prosePath": "src/material/progress-bar/progress-bar.md",
+      "examplesDir": "src/components-examples/material/progress-bar"
+    },
+    {
+      "name": "progress-spinner",
+      "category": "component",
+      "prosePath": "src/material/progress-spinner/progress-spinner.md",
+      "examplesDir": "src/components-examples/material/progress-spinner"
+    },
+    {
+      "name": "radio",
+      "category": "component",
+      "prosePath": "src/material/radio/radio.md",
+      "examplesDir": "src/components-examples/material/radio"
+    },
+    {
+      "name": "schematics",
+      "category": "guide",
+      "prosePath": "guides/schematics.md"
+    },
+    {
+      "name": "select",
+      "category": "component",
+      "prosePath": "src/material/select/select.md",
+      "examplesDir": "src/components-examples/material/select"
+    },
+    {
+      "name": "sidenav",
+      "category": "component",
+      "prosePath": "src/material/sidenav/sidenav.md",
+      "examplesDir": "src/components-examples/material/sidenav"
+    },
+    {
+      "name": "slide-toggle",
+      "category": "component",
+      "prosePath": "src/material/slide-toggle/slide-toggle.md",
+      "examplesDir": "src/components-examples/material/slide-toggle"
+    },
+    {
+      "name": "slider",
+      "category": "component",
+      "prosePath": "src/material/slider/slider.md",
+      "examplesDir": "src/components-examples/material/slider"
+    },
+    {
+      "name": "snack-bar",
+      "category": "component",
+      "prosePath": "src/material/snack-bar/snack-bar.md",
+      "examplesDir": "src/components-examples/material/snack-bar"
+    },
+    {
+      "name": "sort",
+      "category": "component",
+      "prosePath": "src/material/sort/sort.md",
+      "examplesDir": "src/components-examples/material/sort"
+    },
+    {
+      "name": "stepper",
+      "category": "component",
+      "prosePath": "src/material/stepper/stepper.md",
+      "examplesDir": "src/components-examples/material/stepper"
+    },
+    {
+      "name": "table",
+      "category": "component",
+      "prosePath": "src/material/table/table.md",
+      "examplesDir": "src/components-examples/material/table"
+    },
+    {
+      "name": "tabs",
+      "category": "component",
+      "prosePath": "src/material/tabs/tabs.md",
+      "examplesDir": "src/components-examples/material/tabs"
+    },
+    {
+      "name": "theming",
+      "category": "guide",
+      "prosePath": "guides/theming.md"
+    },
+    {
+      "name": "theming-your-components",
+      "category": "guide",
+      "prosePath": "guides/theming-your-components.md"
+    },
+    {
+      "name": "timepicker",
+      "category": "component",
+      "prosePath": "src/material/timepicker/timepicker.md",
+      "examplesDir": "src/components-examples/material/timepicker"
+    },
+    {
+      "name": "toolbar",
+      "category": "component",
+      "prosePath": "src/material/toolbar/toolbar.md",
+      "examplesDir": "src/components-examples/material/toolbar"
+    },
+    {
+      "name": "tooltip",
+      "category": "component",
+      "prosePath": "src/material/tooltip/tooltip.md",
+      "examplesDir": "src/components-examples/material/tooltip"
+    },
+    {
+      "name": "tree",
+      "category": "component",
+      "prosePath": "src/material/tree/tree.md",
+      "examplesDir": "src/components-examples/material/tree"
+    },
+    {
+      "name": "using-component-harnesses",
+      "category": "guide",
+      "prosePath": "guides/using-component-harnesses.md"
+    },
+    {
+      "name": "v9-hammerjs-migration",
+      "category": "guide",
+      "prosePath": "guides/v9-hammerjs-migration.md"
+    }
+  ]
+}
