@@ -6,12 +6,11 @@ test('UPSTREAM_REPO aponta para angular/components', () => {
   assert.equal(UPSTREAM_REPO, 'angular/components');
 });
 
-test('a fatia v1 tem os 6 nomes esperados', () => {
-  const names = SOURCES.map((s) => s.name).sort();
-  assert.deepEqual(names, ['button', 'cdk-overlay', 'dialog', 'form-field', 'table', 'theming']);
+test('SOURCES é não-vazio e cobre a fatia completa (>= 50)', () => {
+  assert.ok(SOURCES.length >= 50, `esperado >= 50 sources, veio ${SOURCES.length}`);
 });
 
-test('todo source tem name, category válida e prosePath', () => {
+test('todo source tem name, category válida e prosePath .md', () => {
   for (const s of SOURCES) {
     assert.ok(s.name, 'name presente');
     assert.ok(['component', 'guide'].includes(s.category), `category válida: ${s.name}`);
@@ -19,10 +18,25 @@ test('todo source tem name, category válida e prosePath', () => {
   }
 });
 
-test('getSource retorna a entrada do button', () => {
-  assert.equal(getSource('button').prosePath, 'src/material/button/button.md');
+test('nomes são únicos', () => {
+  const names = SOURCES.map((s) => s.name);
+  assert.equal(new Set(names).size, names.length);
 });
 
-test('getSource lança para nome desconhecido', () => {
+test('todo cdk-* tem prosePath em src/cdk/', () => {
+  for (const s of SOURCES.filter((s) => s.name.startsWith('cdk-'))) {
+    assert.match(s.prosePath, /^src\/cdk\//, `cdk prosePath: ${s.name}`);
+  }
+});
+
+test('âncoras de smoke presentes', () => {
+  const names = new Set(SOURCES.map((s) => s.name));
+  for (const anchor of ['button', 'cdk-overlay', 'theming']) {
+    assert.ok(names.has(anchor), `âncora ${anchor} presente`);
+  }
+});
+
+test('getSource retorna a entrada do button e lança para desconhecido', () => {
+  assert.equal(getSource('button').prosePath, 'src/material/button/button.md');
   assert.throws(() => getSource('inexistente'), /desconhecid/i);
 });
