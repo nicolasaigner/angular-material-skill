@@ -1,0 +1,128 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Badge
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/badge/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+Badges are small status descriptors for UI elements. A badge consists of a small circle,
+typically containing a number or other short set of characters, that appears in proximity to
+another object.
+
+Badges must always be applied to [block-level elements][block-level].
+
+[block-level]: https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
+
+#### Exemplo: `badge-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatBadgeModule} from '@angular/material/badge';
+
+/**
+ * @title Badge overview
+ */
+@Component({
+  selector: 'badge-overview-example',
+  templateUrl: 'badge-overview-example.html',
+  styleUrl: 'badge-overview-example.css',
+  imports: [MatBadgeModule, MatButtonModule, MatIconModule],
+})
+export class BadgeOverviewExample {
+  hidden = false;
+
+  toggleBadgeVisibility() {
+    this.hidden = !this.hidden;
+  }
+}
+```
+
+```html
+<!-- #docregion mat-badge-overlap -->
+  <div matBadge="4" matBadgeOverlap="false" class="demo-section">Text with a badge</div>
+<!-- #enddocregion mat-badge-overlap -->
+
+<!-- #docregion mat-badge-size -->
+  <div matBadge="1" matBadgeSize="small" class="demo-section">Text with small badge</div>
+  <div matBadge="1" matBadgeSize="large" class="demo-section">Text with large badge</div>
+<!-- #enddocregion mat-badge-size -->
+
+<div class="demo-section">
+  Button with a badge on the left
+<!-- #docregion mat-badge-position -->
+  <button matButton="elevated" matBadge="8" matBadgePosition="before">
+    Action
+  </button>
+<!-- #enddocregion mat-badge-position -->
+</div>
+
+<div class="demo-section">
+    Button toggles badge visibility
+<!-- #docregion mat-badge-hide -->
+    <button matButton="elevated" matBadge="7" [matBadgeHidden]="hidden" (click)="toggleBadgeVisibility()">
+        Hide
+    </button>
+<!-- #enddocregion mat-badge-hide -->
+  </div>
+
+<div class="demo-section">
+  Icon with a badge
+<!-- #docregion mat-badge-color -->
+  <mat-icon matBadge="15">home</mat-icon>
+<!-- #enddocregion mat-badge-color -->
+    <!-- Include text description of the icon's meaning for screen-readers -->
+    <span class="cdk-visually-hidden">
+      Example with a home icon with overlaid badge showing the number 15
+    </span>
+</div>
+```
+
+```css
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.demo-section + .demo-section {
+  margin-top: 16px;
+}
+```
+
+### Badge position
+By default, the badge will be placed `above after`. The direction can be changed by defining
+the attribute `matBadgePosition` follow by `above|below` and `before|after`.
+
+> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-position"}` não encontrado no upstream)_
+
+The overlap of the badge in relation to its inner contents can also be defined
+using the `matBadgeOverlap` tag. Typically, you want the badge to overlap an icon and not
+a text phrase. By default it will overlap.
+
+> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-overlap"}` não encontrado no upstream)_
+
+### Badge sizing
+The badge has 3 sizes: `small`, `medium` and `large`. By default, the badge is set to `medium`.
+
+Badges that are `small` do not show the label text. This can be useful in contexts such as showing there are unread notifications but not needing to show the exact amount.
+
+You can change the size by adding `matBadgeSize` to the host element.
+
+> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-size"}` não encontrado no upstream)_
+
+### Badge visibility
+The badge visibility can be toggled programmatically by defining `matBadgeHidden`.
+
+> _(exemplo `{"example":"badge-overview", "file":"badge-overview-example.html", "region":"mat-badge-hide"}` não encontrado no upstream)_
+
+### Accessibility
+You must provide a meaningful description via `matBadgeDescription`. When attached to an interactive
+element, `MatBadge` applies this description to its host via `aria-describedby`. When attached to
+a non-interactive element, `MatBadge` appends a visually-hidden, inline description element. The
+badge determines interactivity based on whether the host element is focusable.
+
+When applying a badge to a `<mat-icon>`, it is important to know that `<mat-icon>` is
+`aria-hidden="true"` by default. If the combination of icon and badge communicates meaningful
+information, always surface this information in another way. [See the guidance on indicator
+icons for more information](https://material.angular.dev/components/icon/overview#indicator-icons).

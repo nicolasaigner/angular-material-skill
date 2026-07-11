@@ -1,0 +1,193 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Button Toggle
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/button-toggle/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-button-toggle>` are on/off toggles with the appearance of a button. These toggles can be
+configured to behave as either radio-buttons or checkboxes. While they can be standalone, they are
+typically part of a `mat-button-toggle-group`.
+
+
+#### Exemplo: `button-toggle-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
+/**
+ * @title Basic button-toggles
+ */
+@Component({
+  selector: 'button-toggle-overview-example',
+  templateUrl: 'button-toggle-overview-example.html',
+  imports: [MatButtonToggleModule],
+})
+export class ButtonToggleOverviewExample {}
+```
+
+```html
+<mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+  <mat-button-toggle value="bold">Bold</mat-button-toggle>
+  <mat-button-toggle value="italic">Italic</mat-button-toggle>
+  <mat-button-toggle value="underline">Underline</mat-button-toggle>
+</mat-button-toggle-group>
+```
+
+### Exclusive selection vs. multiple selection
+By default, `mat-button-toggle-group` acts like a radio-button group- only one item can be selected.
+In this mode, the `value` of the `mat-button-toggle-group` will reflect the value of the selected
+button and `ngModel` is supported.
+
+Adding the `multiple` attribute allows multiple items to be selected (checkbox behavior). In this
+mode the values of the toggles are not used, the `mat-button-toggle-group` does not have a value,
+and `ngModel` is not supported.
+
+#### Exemplo: `button-toggle-mode`
+
+```ts
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
+/**
+ * @title Button toggle selection mode
+ */
+@Component({
+  selector: 'button-toggle-mode-example',
+  templateUrl: 'button-toggle-mode-example.html',
+  imports: [MatButtonToggleModule, MatCheckboxModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ButtonToggleModeExample {
+  hideSingleSelectionIndicator = signal(false);
+  hideMultipleSelectionIndicator = signal(false);
+
+  toggleSingleSelectionIndicator() {
+    this.hideSingleSelectionIndicator.update(value => !value);
+  }
+
+  toggleMultipleSelectionIndicator() {
+    this.hideMultipleSelectionIndicator.update(value => !value);
+  }
+}
+```
+
+```html
+<section>
+  <mat-checkbox
+    [checked]="hideSingleSelectionIndicator()"
+    (change)="toggleSingleSelectionIndicator()"
+  >
+    Hide Single Selection Indicator
+  </mat-checkbox>
+  <mat-checkbox
+    [checked]="hideMultipleSelectionIndicator()"
+    (change)="toggleMultipleSelectionIndicator()"
+  >
+    Hide Multiple Selection Indicator
+  </mat-checkbox>
+</section>
+<section>
+  <h3>Single selection</h3>
+  <mat-button-toggle-group
+    name="favoriteColor"
+    aria-label="Favorite Color"
+    [hideSingleSelectionIndicator]="hideSingleSelectionIndicator()"
+  >
+    <mat-button-toggle value="red">Red</mat-button-toggle>
+    <mat-button-toggle value="green">Green</mat-button-toggle>
+    <mat-button-toggle value="blue">Blue</mat-button-toggle>
+  </mat-button-toggle-group>
+</section>
+<section>
+  <h3>Multiple selection</h3>
+  <mat-button-toggle-group
+    name="ingredients"
+    aria-label="Ingredients"
+    [hideMultipleSelectionIndicator]="hideMultipleSelectionIndicator()"
+    multiple
+  >
+    <mat-button-toggle value="flour">Flour</mat-button-toggle>
+    <mat-button-toggle value="eggs">Eggs</mat-button-toggle>
+    <mat-button-toggle value="sugar">Sugar</mat-button-toggle>
+  </mat-button-toggle-group>
+</section>
+```
+
+### Appearance
+By default, the appearance of `mat-button-toggle-group` and `mat-button-toggle` will follow the
+latest Material Design guidelines. If you want to, you can switch back to the appearance that was
+following a previous Material Design spec by using the `appearance` input. The `appearance` can
+be configured globally using the `MAT_BUTTON_TOGGLE_DEFAULT_OPTIONS` injection token.
+
+#### Exemplo: `button-toggle-appearance`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
+/**
+ * @title Button toggle appearance
+ */
+@Component({
+  selector: 'button-toggle-appearance-example',
+  templateUrl: 'button-toggle-appearance-example.html',
+  styleUrl: 'button-toggle-appearance-example.css',
+  imports: [MatButtonToggleModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ButtonToggleAppearanceExample {}
+```
+
+```html
+<p>
+  Default appearance:
+  <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+    <mat-button-toggle value="bold">Bold</mat-button-toggle>
+    <mat-button-toggle value="italic">Italic</mat-button-toggle>
+    <mat-button-toggle value="underline">Underline</mat-button-toggle>
+  </mat-button-toggle-group>
+</p>
+
+<p>
+  Legacy appearance:
+  <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style">
+    <mat-button-toggle value="bold">Bold</mat-button-toggle>
+    <mat-button-toggle value="italic">Italic</mat-button-toggle>
+    <mat-button-toggle value="underline">Underline</mat-button-toggle>
+  </mat-button-toggle-group>
+</p>
+```
+
+```css
+mat-button-toggle-group {
+  margin-left: 12px;
+}
+```
+
+### Use with `@angular/forms`
+`<mat-button-toggle-group>` is compatible with `@angular/forms` and supports both `FormsModule`
+and `ReactiveFormsModule`.
+
+### Orientation
+The button-toggles can be rendered in a vertical orientation by adding the `vertical` attribute.
+
+### Accessibility
+`MatButtonToggle` internally uses native `button` elements with `aria-pressed` to convey toggle
+state. If a toggle contains only an icon, you should specify a meaningful label via `aria-label`
+or `aria-labelledby`. For dynamic labels, `MatButtonToggle` provides input properties for binding
+`aria-label` and `aria-labelledby`. This means that you should not use the `attr.` prefix when
+binding these properties, as demonstrated below.
+
+```html
+<mat-button-toggle [aria-label]="alertsEnabled ? 'Disable alerts' : 'Enable alerts'">
+  <mat-icon>notifications</mat-icon>
+</mat-button-toggle>
+```
+
+The `MatButtonToggleGroup` surrounding the individual buttons applies
+`role="group"` to convey the association between the individual toggles. Each
+`<mat-button-toggle-group>` element should be given a label with `aria-label` or `aria-labelledby`
+that communicates the collective meaning of all toggles. For example, if you have toggles for
+"Bold", "Italic", and "Underline", you might label the parent group "Font styles".

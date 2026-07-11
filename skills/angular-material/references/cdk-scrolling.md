@@ -1,0 +1,715 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# CDK Scrolling
+
+> Fonte: [documentação oficial](https://material.angular.dev/cdk/scrolling/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The `scrolling` package provides helpers for directives that react to scroll events.
+
+### cdkScrollable and ScrollDispatcher
+The `cdkScrollable` directive and the `ScrollDispatcher` service together allow components to
+react to scrolling in any of its ancestor scrolling containers.
+
+The `cdkScrollable` directive should be applied to any element that acts as a scrolling container.
+This marks the element as a `Scrollable` and registers it with the `ScrollDispatcher`. The
+dispatcher, then, allows components to share both event listeners and knowledge of all of the
+scrollable containers in the application.
+
+### ViewportRuler
+The `ViewportRuler` is a service that can be injected and used to measure the bounds of the browser
+viewport.
+
+### Virtual scrolling
+The `<cdk-virtual-scroll-viewport>` displays large lists of elements performantly by only
+rendering the items that fit on-screen. Loading hundreds of elements can be slow in any browser;
+virtual scrolling enables a performant way to simulate all items being rendered by making the
+height of the container element the same as the height of total number of elements to be rendered,
+and then only rendering the items in view. Virtual scrolling is different from strategies like
+infinite scroll where it renders a set amount of elements and then when you hit the end renders the
+rest.
+
+#### Creating items in the viewport
+`*cdkVirtualFor` replaces `*ngFor` inside of a `<cdk-virtual-scroll-viewport>`, supporting the exact
+same API as [`*ngFor`](https://angular.dev/api/common/NgForOf). The simplest usage just specifies the
+list of items (note that the `itemSize` property on the viewport must be set):
+
+#### Exemplo: `cdk-virtual-scroll-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Basic virtual scroll */
+@Component({
+  selector: 'cdk-virtual-scroll-overview-example',
+  styleUrl: 'cdk-virtual-scroll-overview-example.css',
+  templateUrl: 'cdk-virtual-scroll-overview-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollOverviewExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+  <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+```
+
+`*cdkVirtualFor` makes the following context variables available to the template:
+
+| Context variable | Description                                        |
+|------------------|----------------------------------------------------|
+| `index`          | The index of the item in the data source.          |
+| `count`          | The total number of items in the data source.      |
+| `first`          | Whether this is the first item in the data source. |
+| `last`           | Whether this is the last item in the data source.  |
+| `even`           | Whether the `index` is even.                       |
+| `odd`            | Whether the `index` is odd.                        |
+
+All of these apply to the index of the item in the data source, not the index in the rendered
+portion of the data.
+
+#### Exemplo: `cdk-virtual-scroll-context`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scroll context variables */
+@Component({
+  selector: 'cdk-virtual-scroll-context-example',
+  styleUrl: 'cdk-virtual-scroll-context-example.css',
+  templateUrl: 'cdk-virtual-scroll-context-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollContextExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport [itemSize]="18 * 7" class="example-viewport">
+  <div *cdkVirtualFor="let item of items;
+                       let index = index;
+                       let count = count;
+                       let first = first;
+                       let last = last;
+                       let even = even;
+                       let odd = odd;" [class.example-alternate]="odd">
+    <div class="example-item-detail">Item: {{item}}</div>
+    <div class="example-item-detail">Index: {{index}}</div>
+    <div class="example-item-detail">Count: {{count}}</div>
+    <div class="example-item-detail">First: {{first ? 'Yes' : 'No'}}</div>
+    <div class="example-item-detail">Last: {{last ? 'Yes' : 'No'}}</div>
+    <div class="example-item-detail">Even: {{even ? 'Yes' : 'No'}}</div>
+    <div class="example-item-detail">Odd: {{odd ? 'Yes' : 'No'}}</div>
+  </div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item-detail {
+  height: 18px;
+}
+
+.example-alternate {
+  background: rgba(127, 127, 127, 0.3);
+}
+```
+
+A `trackBy` function can be specified and works the same as the `*ngFor` `trackBy`. The `index`
+passed to the tracking function will be the index in the data source, not the index in the rendered
+portion.
+
+##### View recycling
+To improve rendering performance, `*cdkVirtualFor` caches previously created views after
+they are no longer needed. When a new view would normally be created, a cached view
+is reused instead. The size of the view cache can be adjusted via the `templateCacheSize`
+property; setting this size to `0` disables caching. If your templates are expensive in terms of
+memory you may wish to reduce this number to avoid spending too much memory on the template cache.
+
+#### Exemplo: `cdk-virtual-scroll-template-cache`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scroll with no template caching */
+@Component({
+  selector: 'cdk-virtual-scroll-template-cache-example',
+  styleUrl: 'cdk-virtual-scroll-template-cache-example.css',
+  templateUrl: 'cdk-virtual-scroll-template-cache-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollTemplateCacheExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+  <div *cdkVirtualFor="let item of items; templateCacheSize: 0" class="example-item">{{item}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+```
+
+##### Specifying data
+`*cdkVirtualFor` accepts data from an `Array`, `Observable<Array>`, or `DataSource`. The
+`DataSource` for the virtual scroll is the same one used by the table and tree components. A
+`DataSource` is simply an abstract class that has two methods: `connect` and `disconnect`. The
+`connect` method will be called by the virtual scroll viewport to receive a stream that emits the
+data array that should be rendered. The viewport will call `disconnect` when the viewport is
+destroyed, which may be the right time to clean up any subscriptions that were registered during the
+connect process.
+
+#### Exemplo: `cdk-virtual-scroll-data-source`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {CollectionViewer, DataSource} from '@angular/cdk/collections';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scroll with a custom data source */
+@Component({
+  selector: 'cdk-virtual-scroll-data-source-example',
+  styleUrl: 'cdk-virtual-scroll-data-source-example.css',
+  templateUrl: 'cdk-virtual-scroll-data-source-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollDataSourceExample {
+  ds = new MyDataSource();
+}
+
+export class MyDataSource extends DataSource<string | undefined> {
+  private _length = 100000;
+  private _pageSize = 100;
+  private _cachedData = Array.from<string>({length: this._length});
+  private _fetchedPages = new Set<number>();
+  private readonly _dataStream = new BehaviorSubject<(string | undefined)[]>(this._cachedData);
+  private readonly _subscription = new Subscription();
+
+  connect(collectionViewer: CollectionViewer): Observable<(string | undefined)[]> {
+    this._subscription.add(
+      collectionViewer.viewChange.subscribe(range => {
+        const startPage = this._getPageForIndex(range.start);
+        const endPage = this._getPageForIndex(range.end - 1);
+        for (let i = startPage; i <= endPage; i++) {
+          this._fetchPage(i);
+        }
+      }),
+    );
+    return this._dataStream;
+  }
+
+  disconnect(): void {
+    this._subscription.unsubscribe();
+  }
+
+  private _getPageForIndex(index: number): number {
+    return Math.floor(index / this._pageSize);
+  }
+
+  private _fetchPage(page: number) {
+    if (this._fetchedPages.has(page)) {
+      return;
+    }
+    this._fetchedPages.add(page);
+
+    // Use `setTimeout` to simulate fetching data from server.
+    setTimeout(
+      () => {
+        this._cachedData.splice(
+          page * this._pageSize,
+          this._pageSize,
+          ...Array.from({length: this._pageSize}).map(
+            (_, i) => `Item #${page * this._pageSize + i}`,
+          ),
+        );
+        this._dataStream.next(this._cachedData);
+      },
+      Math.random() * 1000 + 200,
+    );
+  }
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+  <div *cdkVirtualFor="let item of ds" class="example-item">{{item || 'Loading...'}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+```
+
+#### Scrolling over fixed size items
+When all items are the same fixed size, you can use the `FixedSizeVirtualScrollStrategy`. This can
+be easily added to your viewport using the `itemSize` directive. The advantage of this constraint is
+that it allows for better performance, since items do not need to be measured as they are rendered. 
+
+The fixed size strategy also supports setting a couple of buffer parameters that determine how much
+extra content is rendered beyond what is visible in the viewport. The first of these parameters is
+`minBufferPx`. The `minBufferPx` is the minimum amount of content buffer (in pixels) that the
+viewport must render. If the viewport ever detects that there is less buffered content it will
+immediately render more. The second buffer parameter is `maxBufferPx`. This tells the viewport how 
+much buffer space to render back up to when it detects that more buffer is required.
+
+The interaction of these two buffer parameters can be best illustrated with an example. Supposed 
+that we have the following parameters: `itemSize = 50`, `minBufferPx = 100`, `maxBufferPx = 250`. As
+the user is scrolling through the content the viewport detects that there is only `90px` of buffer
+remaining. Since this is below `minBufferPx` the viewport must render more buffer. It must render at
+least enough buffer to get back to `maxBufferPx`. In this case, it renders 4 items (an additional
+`200px`) to bring the total buffer size to `290px`, back above `maxBufferPx`.
+
+#### Exemplo: `cdk-virtual-scroll-fixed-buffer`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Fixed size virtual scroll with custom buffer parameters */
+@Component({
+  selector: 'cdk-virtual-scroll-fixed-buffer-example',
+  styleUrl: 'cdk-virtual-scroll-fixed-buffer-example.css',
+  templateUrl: 'cdk-virtual-scroll-fixed-buffer-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollFixedBufferExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport itemSize="50" minBufferPx="200" maxBufferPx="400"
+                             class="example-viewport">
+  <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+```
+
+Other virtual scrolling strategies can be implemented by extending `VirtualScrollStrategy`. An
+autosize strategy that works on elements of differing sizes is currently being developed in
+`@angular/cdk-experimental`, but it is not ready for production use yet. 
+
+### Viewport orientation
+The virtual-scroll viewport defaults to a vertical orientation, but can also be set to
+`orientation="horizontal"`. When changing the orientation, ensure that the item are laid
+out horizontally via CSS. To do this you may want to target CSS at
+`.cdk-virtual-scroll-content-wrapper` which is the wrapper element that contains the rendered
+content.
+
+#### Exemplo: `cdk-virtual-scroll-horizontal`
+
+```ts
+import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Horizontal virtual scroll */
+@Component({
+  selector: 'cdk-virtual-scroll-horizontal-example',
+  styleUrl: 'cdk-virtual-scroll-horizontal-example.css',
+  templateUrl: 'cdk-virtual-scroll-horizontal-example.html',
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollHorizontalExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<div class="cdk-virtual-scroll-data-source-example">
+  <cdk-virtual-scroll-viewport orientation="horizontal" itemSize="50" class="example-viewport">
+    <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+  </cdk-virtual-scroll-viewport>
+</div>
+```
+
+```css
+.cdk-virtual-scroll-data-source-example .example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.cdk-virtual-scroll-data-source-example .example-viewport .cdk-virtual-scroll-content-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.cdk-virtual-scroll-data-source-example .example-item {
+  width: 50px;
+  height: 100%;
+  writing-mode: vertical-lr;
+}
+```
+
+### Elements with parent tag requirements
+Some HTML elements such as `<tr>` and `<li>` have limitations on the kinds of parent elements they
+can be placed inside. To enable virtual scrolling over these type of elements, place the elements in
+their proper parent, and then wrap the whole thing in a `cdk-virtual-scroll-viewport`. Be careful
+that the parent does not introduce additional space (e.g. via `margin` or `padding`) as it will
+interfere with the scrolling.
+
+#### Exemplo: `cdk-virtual-scroll-dl`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scrolling `<dl>` */
+@Component({
+  selector: 'cdk-virtual-scroll-dl-example',
+  styleUrl: 'cdk-virtual-scroll-dl-example.css',
+  templateUrl: 'cdk-virtual-scroll-dl-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollDlExample {
+  states = [
+    {name: 'Alabama', capital: 'Montgomery'},
+    {name: 'Alaska', capital: 'Juneau'},
+    {name: 'Arizona', capital: 'Phoenix'},
+    {name: 'Arkansas', capital: 'Little Rock'},
+    {name: 'California', capital: 'Sacramento'},
+    {name: 'Colorado', capital: 'Denver'},
+    {name: 'Connecticut', capital: 'Hartford'},
+    {name: 'Delaware', capital: 'Dover'},
+    {name: 'Florida', capital: 'Tallahassee'},
+    {name: 'Georgia', capital: 'Atlanta'},
+    {name: 'Hawaii', capital: 'Honolulu'},
+    {name: 'Idaho', capital: 'Boise'},
+    {name: 'Illinois', capital: 'Springfield'},
+    {name: 'Indiana', capital: 'Indianapolis'},
+    {name: 'Iowa', capital: 'Des Moines'},
+    {name: 'Kansas', capital: 'Topeka'},
+    {name: 'Kentucky', capital: 'Frankfort'},
+    {name: 'Louisiana', capital: 'Baton Rouge'},
+    {name: 'Maine', capital: 'Augusta'},
+    {name: 'Maryland', capital: 'Annapolis'},
+    {name: 'Massachusetts', capital: 'Boston'},
+    {name: 'Michigan', capital: 'Lansing'},
+    {name: 'Minnesota', capital: 'St. Paul'},
+    {name: 'Mississippi', capital: 'Jackson'},
+    {name: 'Missouri', capital: 'Jefferson City'},
+    {name: 'Montana', capital: 'Helena'},
+    {name: 'Nebraska', capital: 'Lincoln'},
+    {name: 'Nevada', capital: 'Carson City'},
+    {name: 'New Hampshire', capital: 'Concord'},
+    {name: 'New Jersey', capital: 'Trenton'},
+    {name: 'New Mexico', capital: 'Santa Fe'},
+    {name: 'New York', capital: 'Albany'},
+    {name: 'North Carolina', capital: 'Raleigh'},
+    {name: 'North Dakota', capital: 'Bismarck'},
+    {name: 'Ohio', capital: 'Columbus'},
+    {name: 'Oklahoma', capital: 'Oklahoma City'},
+    {name: 'Oregon', capital: 'Salem'},
+    {name: 'Pennsylvania', capital: 'Harrisburg'},
+    {name: 'Rhode Island', capital: 'Providence'},
+    {name: 'South Carolina', capital: 'Columbia'},
+    {name: 'South Dakota', capital: 'Pierre'},
+    {name: 'Tennessee', capital: 'Nashville'},
+    {name: 'Texas', capital: 'Austin'},
+    {name: 'Utah', capital: 'Salt Lake City'},
+    {name: 'Vermont', capital: 'Montpelier'},
+    {name: 'Virginia', capital: 'Richmond'},
+    {name: 'Washington', capital: 'Olympia'},
+    {name: 'West Virginia', capital: 'Charleston'},
+    {name: 'Wisconsin', capital: 'Madison'},
+    {name: 'Wyoming', capital: 'Cheyenne'},
+  ];
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport class="example-viewport" itemSize="60">
+  <dl class="example-dl">
+    <ng-container *cdkVirtualFor="let state of states">
+      <dt class="example-dt">{{state.name}}</dt>
+      <dd class="example-dd">{{state.capital}}</dd>
+    </ng-container>
+  </dl>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-dt {
+  height: 30px;
+  font-weight: bold;
+}
+
+.example-dd {
+  height: 30px;
+}
+```
+
+### Scrolling strategies
+In order to determine how large the overall content is and what portion of it actually needs to be
+rendered at any given time the viewport relies on a `VirtualScrollStrategy` being provided. The
+simplest way to provide it is to use the `itemSize` directive on the viewport
+(e.g. `<cdk-virtual-scroll-viewport itemSize="50">`). However it is also possible to provide a 
+custom strategy by creating a class that implements the `VirtualScrollStrategy` interface and
+providing it as the `VIRTUAL_SCROLL_STRATEGY` on the component containing your viewport.
+
+#### Exemplo: `cdk-virtual-scroll-custom-strategy`
+
+```ts
+import {
+  FixedSizeVirtualScrollStrategy,
+  ScrollingModule,
+  VIRTUAL_SCROLL_STRATEGY,
+} from '@angular/cdk/scrolling';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+
+export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy {
+  constructor() {
+    super(50, 250, 500);
+  }
+}
+
+/** @title Virtual scroll with a custom strategy */
+@Component({
+  selector: 'cdk-virtual-scroll-custom-strategy-example',
+  styleUrl: 'cdk-virtual-scroll-custom-strategy-example.css',
+  templateUrl: 'cdk-virtual-scroll-custom-strategy-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy}],
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollCustomStrategyExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport class="example-viewport">
+  <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+```
+
+### Append only mode
+Virtual scroll viewports that render nontrivial items may find it more performant to simply append
+to the list as the user scrolls without removing rendered views. The `appendOnly` input ensures
+views that are already rendered persist in the DOM after they scroll out of view.
+
+#### Exemplo: `cdk-virtual-scroll-append-only`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scroll with view recycling disabled. */
+@Component({
+  selector: 'cdk-virtual-scroll-append-only-example',
+  styleUrl: 'cdk-virtual-scroll-append-only-example.css',
+  templateUrl: 'cdk-virtual-scroll-append-only-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollAppendOnlyExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<cdk-virtual-scroll-viewport appendOnly itemSize="50" class="example-viewport">
+  <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+</cdk-virtual-scroll-viewport>
+```
+
+```css
+.example-viewport {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+```
+
+### Separate viewport and scrolling element
+The virtual scroll viewport itself acts as the scrolling element by default. However, there may be
+some cases where you want to have the viewport scroll one of its parent elements. For example,
+if you want to have some non-virtualized content that the user can scroll through before or after
+the virtualized content.
+
+To configure a `cdk-virtual-scroll-viewport` to use one of its parent elements as the scrolling
+element, apply `cdkVirtualScrollingElement` to the scrolling parent element.
+
+#### Exemplo: `cdk-virtual-scroll-parent-scrolling`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scrolling viewport parent element */
+@Component({
+  selector: 'cdk-virtual-scroll-parent-scrolling-example',
+  styleUrl: 'cdk-virtual-scroll-parent-scrolling-example.css',
+  templateUrl: 'cdk-virtual-scroll-parent-scrolling-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollParentScrollingExample {
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+<div class="example-viewport" cdkVirtualScrollingElement>
+  <div class="example-header">Content before</div>
+  <cdk-virtual-scroll-viewport itemSize="50">
+    <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+  </cdk-virtual-scroll-viewport>
+  <div class="example-footer">Content after</div>
+</div>
+```
+
+```css
+.example-viewport {
+  flex: 1;
+  width: 200px;
+  min-height: 200px;
+  border: 1px solid black;
+}
+
+.example-item {
+  height: 50px;
+}
+
+.example-header,
+.example-footer {
+  height: 100px;
+  background: lightgray;
+}
+```
+
+Another common scenario is using the window itself as the scrolling element. This is often a better
+user experience on mobile devices, as it allows the browser chrome to scroll away. To use the
+window as the scrolling element, add the `scrollWindow` attribute to the 
+`cdk-virtual-scroll-viewport`.
+
+#### Exemplo: `cdk-virtual-scroll-window-scrolling`
+
+```ts
+import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+
+/** @title Virtual scrolling window */
+@Component({
+  selector: 'cdk-virtual-scroll-window-scrolling-example',
+  styleUrl: 'cdk-virtual-scroll-window-scrolling-example.css',
+  templateUrl: 'cdk-virtual-scroll-window-scrolling-example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ScrollingModule],
+})
+export class CdkVirtualScrollWindowScrollingExample {
+  readonly shouldRun = input(/(^|.)(stackblitz|webcontainer).(io|com)$/.test(window.location.host));
+
+  items = Array.from({length: 100000}).map((_, i) => `Item #${i}`);
+}
+```
+
+```html
+@if (shouldRun()) {
+  <div class="example-header">Content before</div>
+  <cdk-virtual-scroll-viewport scrollWindow itemSize="50">
+    <div *cdkVirtualFor="let item of items" class="example-item">{{item}}</div>
+  </cdk-virtual-scroll-viewport>
+  <div class="example-footer">Content after</div>
+}
+
+@if (!shouldRun()) {
+  <div>Please open on StackBlitz to see result</div>
+}
+```
+
+```css
+.example-item {
+  height: 50px;
+}
+
+.example-header,
+.example-footer {
+  height: 100px;
+  background: lightgray;
+}
+```

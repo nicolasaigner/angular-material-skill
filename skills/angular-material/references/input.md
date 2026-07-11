@@ -1,0 +1,228 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Input
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/input/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`matInput` is a directive that allows native `<input>` and `<textarea>` elements to work with
+[`<mat-form-field>`](https://material.angular.dev/components/form-field/overview).
+
+#### Exemplo: `input-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+
+/**
+ * @title Basic Inputs
+ */
+@Component({
+  selector: 'input-overview-example',
+  styleUrl: 'input-overview-example.css',
+  templateUrl: 'input-overview-example.html',
+  imports: [FormsModule, MatFormFieldModule, MatInputModule],
+})
+export class InputOverviewExample {}
+```
+
+```html
+<form class="example-form">
+  <mat-form-field class="example-full-width">
+    <mat-label>Favorite food</mat-label>
+    <input matInput placeholder="Ex. Pizza" value="Sushi">
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Leave a comment</mat-label>
+    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+  </mat-form-field>
+</form>
+```
+
+```css
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+```
+
+### `<input>` and `<textarea>` attributes
+
+All of the attributes that can be used with `<input>` and `<textarea>` elements can be used
+on elements inside `<mat-form-field>` as well. This includes Angular directives such as `ngModel`
+and `formControl`.
+
+The only limitation is that the `type` attribute can only be one of the values supported by
+`matNativeControl`.
+
+### Supported `<input>` types
+
+The following [input types](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input) can
+be used with `matNativeControl`:
+* color
+* date
+* datetime-local
+* email
+* month
+* number
+* password
+* search
+* tel
+* text
+* time
+* url
+* week
+
+### Form field features
+
+There are a number of `<mat-form-field>` features that can be used with any `<input matNativeControl>` or
+`<textarea matNativeControl>`. These include error messages, hint text, prefix & suffix, and theming. For
+additional information about these features, see the
+[form field documentation](https://material.angular.dev/components/form-field/overview).
+
+### Placeholder
+
+The placeholder is text shown when the `<mat-form-field>` label is floating but the input is empty.
+It is used to give the user an additional hint about what they should type in the input. The
+placeholder can be specified by setting the `placeholder` attribute on the `<input>` or `<textarea>`
+element. In some cases that `<mat-form-field>` may use the placeholder as the label (see the
+[form field label documentation](https://material.angular.dev/components/form-field/overview#floating-label)).
+
+### Changing when error messages are shown
+
+The `<mat-form-field>` allows you to
+[associate error messages](https://material.angular.dev/components/form-field/overview#error-messages)
+with your `matNativeControl`. By default, these error messages are shown when the control is invalid and
+the user has interacted with (touched) the element or the parent form has been submitted. If
+you wish to override this behavior (e.g. to show the error as soon as the invalid control is dirty
+or when a parent form group is invalid), you can use the `errorStateMatcher` property of the
+`matNativeControl`. The property takes an instance of an `ErrorStateMatcher` object. An `ErrorStateMatcher`
+must implement a single method `isErrorState` which takes the `FormControl` for this `matNativeControl` as
+well as the parent form and returns a boolean indicating whether errors should be shown. (`true`
+indicating that they should be shown, and `false` indicating that they should not.)
+
+#### Exemplo: `input-error-state-matcher`
+
+```ts
+import {Component} from '@angular/core';
+import {
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {ErrorStateMatcher} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
+/** @title Input with a custom ErrorStateMatcher */
+@Component({
+  selector: 'input-error-state-matcher-example',
+  templateUrl: './input-error-state-matcher-example.html',
+  styleUrl: './input-error-state-matcher-example.css',
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+})
+export class InputErrorStateMatcherExample {
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+
+  matcher = new MyErrorStateMatcher();
+}
+```
+
+```html
+<form class="example-form">
+  <mat-form-field class="example-full-width">
+    <mat-label>Email</mat-label>
+    <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+           placeholder="Ex. pat@example.com">
+    <mat-hint>Errors appear instantly!</mat-hint>
+    @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
+      <mat-error>Please enter a valid email address</mat-error>
+    }
+    @if (emailFormControl.hasError('required')) {
+      <mat-error>Email is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+</form>
+```
+
+```css
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+```
+
+A global error state matcher can be specified by setting the `ErrorStateMatcher` provider. This
+applies to all inputs. For convenience, `ShowOnDirtyErrorStateMatcher` is available in order to
+globally cause input errors to show when the input is dirty and invalid.
+
+```ts
+@NgModule({
+  providers: [
+    {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}
+  ]
+})
+```
+
+### Auto-resizing `<textarea>` elements
+
+`<textarea>` elements can be made to automatically resize by using the
+[`cdkTextareaAutosize` directive](https://material.angular.dev/cdk/text-field/overview#automatically-resizing-a-textarea)
+available in the CDK.
+
+### Responding to changes in the autofill state of an `<input>`
+
+The CDK provides
+[utilities](https://material.angular.dev/cdk/text-field/overview#monitoring-the-autofill-state-of-an-input)
+for detecting when an input becomes autofilled and changing the appearance of the autofilled state.
+
+### Accessibility
+
+The `matNativeControl` directive works with native `<input>` to provide an accessible experience.
+
+#### Aria attributes
+
+If the containing `<mat-form-field>` has a label it will automatically be used as the `aria-label`
+for the `<input>`. However, if there's no label specified in the form field, `aria-label`,
+`aria-labelledby` or `<label for=...>` should be added.
+
+#### Errors and hints
+
+Any `mat-error` and `mat-hint` are automatically added to the input's `aria-describedby` list, and
+`aria-invalid` is automatically updated based on the input's validity state.
+
+When conveying an error, be sure to not rely solely on color. In the message itself, you can use an
+icon or text such as "Error:" to indicate the message is an error message.
+
+### Troubleshooting
+
+#### Error: Input type "..." isn't supported by matInput
+
+This error is thrown when you attempt to set an input's `type` property to a value that isn't
+supported by the `matInput` directive. If you need to use an unsupported input type with
+`<mat-form-field>` consider writing a
+[custom form field control](https://material.angular.dev/guide/creating-a-custom-form-field-control)
+for it.

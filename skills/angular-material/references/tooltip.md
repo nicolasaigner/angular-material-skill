@@ -1,0 +1,317 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Tooltip
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/tooltip/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The Angular Material tooltip provides a text label that is displayed when the user hovers
+over or longpresses an element.
+
+#### Exemplo: `tooltip-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
+
+/**
+ * @title Basic tooltip
+ */
+@Component({
+  selector: 'tooltip-overview-example',
+  templateUrl: 'tooltip-overview-example.html',
+  imports: [MatButtonModule, MatTooltipModule],
+})
+export class TooltipOverviewExample {}
+```
+
+```html
+<button matButton="elevated"
+        matTooltip="Info about the action"
+        aria-label="Button that displays a tooltip when focused or hovered over">
+  Action
+</button>
+```
+
+### Positioning
+
+The tooltip will be displayed below the element by default, but this can be configured using the
+`matTooltipPosition` input.
+The tooltip can be displayed above, below, left, or right of the element. If the tooltip should 
+switch left/right positions in an RTL layout direction, then the input values `before` and `after` 
+should be used instead of `left` and `right`, respectively.
+
+| Position  | Description                                                                          |
+|-----------|--------------------------------------------------------------------------------------|
+| `above`   | Always display above the element                                                     |
+| `below`   | Always display beneath the element                                                   |
+| `left`    | Always display to the left of the element                                            |
+| `right`   | Always display to the right of the element                                           |
+| `before`  | Display to the left in left-to-right layout and to the right in right-to-left layout |
+| `after`   | Display to the right in left-to-right layout and to the left in right-to-left layout |
+
+Based on the position in which the tooltip is shown, the `.mat-tooltip-panel` element will receive a
+CSS class that can be used for style (e.g. to add an arrow). The possible classes are
+`mat-tooltip-panel-above`, `mat-tooltip-panel-below`, `mat-tooltip-panel-left`,
+`mat-tooltip-panel-right`.
+
+#### Exemplo: `tooltip-position`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {TooltipPosition, MatTooltipModule} from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/**
+ * @title Tooltip with a custom position
+ */
+@Component({
+  selector: 'tooltip-position-example',
+  templateUrl: 'tooltip-position-example.html',
+  styleUrl: 'tooltip-position-example.css',
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatTooltipModule,
+  ],
+})
+export class TooltipPositionExample {
+  positionOptions: TooltipPosition[] = ['after', 'before', 'above', 'below', 'left', 'right'];
+  position = new FormControl(this.positionOptions[0]);
+}
+```
+
+```html
+<mat-form-field class="example-user-input">
+  <mat-label>Tooltip position</mat-label>
+  <mat-select [formControl]="position">
+    @for (positionOption of positionOptions; track positionOption) {
+      <mat-option [value]="positionOption">{{positionOption}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<button matButton="elevated"
+        matTooltip="Info about the action"
+        [matTooltipPosition]="position.value!"
+        aria-label="Button that displays a tooltip in various positions">
+  Action
+</button>
+```
+
+```css
+.example-user-input {
+  margin-right: 8px;
+}
+```
+
+To display the tooltip relative to the mouse or touch that triggered it, use the
+`matTooltipPositionAtOrigin` input.
+With this setting turned on, the tooltip will display relative to the origin of the trigger rather
+than the host element. In cases where the tooltip is not triggered by a touch event or mouse click,
+it will display the same as if this setting was turned off.
+
+### Showing and hiding
+
+By default, the tooltip will be immediately shown when the user's mouse hovers over the tooltip's
+trigger element and immediately hides when the user's mouse leaves.
+
+On mobile, the tooltip displays when the user longpresses the element and hides after a
+delay of 1500ms.
+
+#### Show and hide delays
+
+To add a delay before showing or hiding the tooltip, you can use the inputs `matTooltipShowDelay`
+and `matTooltipHideDelay` to provide a delay time in milliseconds.
+
+The following example has a tooltip that waits one second to display after the user
+hovers over the button, and waits two seconds to hide after the user moves the mouse away.
+
+#### Exemplo: `tooltip-delay`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/**
+ * @title Tooltip with a show and hide delay
+ */
+@Component({
+  selector: 'tooltip-delay-example',
+  templateUrl: 'tooltip-delay-example.html',
+  styleUrl: 'tooltip-delay-example.css',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatTooltipModule,
+  ],
+})
+export class TooltipDelayExample {
+  showDelay = new FormControl(1000);
+  hideDelay = new FormControl(2000);
+}
+```
+
+```html
+<mat-form-field class="example-user-input">
+  <mat-label>Show delay</mat-label>
+  <input matInput type="number" [formControl]="showDelay"
+         aria-label="Adds a delay between hovering over the button and displaying the tooltip">
+  <mat-hint>milliseconds</mat-hint>
+</mat-form-field>
+
+<mat-form-field class="example-user-input">
+  <mat-label>Hide delay</mat-label>
+  <input matInput type="number" [formControl]="hideDelay"
+         aria-label="Adds a delay between hovering away from the button and hiding the tooltip">
+  <mat-hint>milliseconds</mat-hint>
+</mat-form-field>
+
+<button matButton="elevated" matTooltip="Info about the action"
+        [matTooltipShowDelay]="showDelay.value"
+        [matTooltipHideDelay]="hideDelay.value"
+        aria-label="Button that displays a tooltip with a customized delay in showing and hiding">
+  Action
+</button>
+```
+
+```css
+.mat-form-field + .mat-form-field,
+.mat-raised-button {
+  margin-left: 8px;
+}
+```
+
+#### Changing the default delay behavior
+
+You can configure your app's tooltip default show/hide delays by configuring and providing
+your options using the `MAT_TOOLTIP_DEFAULT_OPTIONS` injection token.
+
+#### Exemplo: `tooltip-modified-defaults`
+
+```ts
+import {Component} from '@angular/core';
+import {
+  MAT_TOOLTIP_DEFAULT_OPTIONS,
+  MatTooltipDefaultOptions,
+  MatTooltipModule,
+} from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
+
+/** Custom options the configure the tooltip's default show/hide delays. */
+export const myCustomTooltipDefaults: MatTooltipDefaultOptions = {
+  showDelay: 1000,
+  hideDelay: 1000,
+  touchendHideDelay: 1000,
+};
+
+/**
+ * @title Tooltip with a show and hide delay
+ */
+@Component({
+  selector: 'tooltip-modified-defaults-example',
+  templateUrl: 'tooltip-modified-defaults-example.html',
+  providers: [{provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: myCustomTooltipDefaults}],
+  imports: [MatButtonModule, MatTooltipModule],
+})
+export class TooltipModifiedDefaultsExample {}
+```
+
+```html
+<button matButton="elevated"
+        matTooltip="By default, I delay"
+        aria-label="Button that displays a tooltip that has custom delays through a default config">
+  Button with delay-default tooltip
+</button>
+```
+
+#### Manually showing and hiding the tooltip
+
+To manually cause the tooltip to show or hide, you can call the `show` and `hide` directive methods,
+which both accept a number in milliseconds to delay before applying the display change.
+
+#### Exemplo: `tooltip-manual`
+
+```ts
+import {Component} from '@angular/core';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
+
+/**
+ * @title Tooltip that can be manually shown/hidden.
+ */
+@Component({
+  selector: 'tooltip-manual-example',
+  templateUrl: 'tooltip-manual-example.html',
+  styleUrl: 'tooltip-manual-example.css',
+  imports: [MatButtonModule, MatTooltipModule],
+})
+export class TooltipManualExample {}
+```
+
+```html
+<div>
+  <span> Click the following buttons to... </span>
+  <button matButton
+          (click)="tooltip.show()"
+          aria-label="Show tooltip on the button at the end of this section"
+          class="example-action-button">
+    show
+  </button>
+  <button matButton
+          (click)="tooltip.hide()"
+          aria-label="Hide tooltip on the button at the end of this section"
+          class="example-action-button">
+    hide
+  </button>
+  <button matButton
+          (click)="tooltip.toggle()"
+          aria-label="Show/Hide tooltip on the button at the end of this section"
+          class="example-action-button">
+    toggle show/hide
+  </button>
+</div>
+
+<button matButton="elevated" #tooltip="matTooltip"
+        matTooltip="Info about the action"
+        matTooltipPosition="right"
+        aria-tooltip="Button that displays and hides a tooltip triggered by other buttons">
+  Action
+</button>
+```
+
+```css
+.example-action-button {
+  margin-top: 16px;
+}
+```
+
+#### Disabling the tooltip from showing
+
+To completely disable a tooltip, set `matTooltipDisabled`. While disabled, a tooltip will never be
+shown.
+
+### Accessibility
+
+`MatTooltip` adds an `aria-describedby` description that provides a reference
+to a visually hidden element containing the tooltip's message. This provides screen-readers
+the information needed to read out the tooltip's contents when the user focuses on
+tooltip's trigger. The element referenced by `aria-describedby` is not the tooltip itself,
+but instead an invisible copy of the tooltip content that is always present in the DOM.
+
+Avoid interactions that exclusively show a tooltip with pointer events like click and mouseenter.
+Always ensure that keyboard users can perform the same set of actions available to mouse and
+touch users.

@@ -1,0 +1,99 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Divider
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/divider/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-divider>` is a component that allows for Material styling of a line separator with various orientation options.
+
+#### Exemplo: `divider-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+
+/**
+ * @title Basic divider
+ */
+@Component({
+  selector: 'divider-overview-example',
+  templateUrl: 'divider-overview-example.html',
+  imports: [MatListModule, MatDividerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DividerOverviewExample {}
+```
+
+```html
+<mat-list>
+  <mat-list-item>Item 1</mat-list-item>
+  <mat-divider></mat-divider>
+  <mat-list-item>Item 2</mat-list-item>
+  <mat-divider></mat-divider>
+  <mat-list-item>Item 3</mat-list-item>
+</mat-list>
+```
+
+
+### Simple divider
+
+A `<mat-divider>` element can be used on its own to create a horizontal or vertical line styled with a Material theme
+
+```html
+<mat-divider></mat-divider>
+```
+
+### Inset divider
+
+Add the `inset` attribute in order to set whether or not the divider is an inset divider.
+
+```html
+<mat-divider [inset]="true"></mat-divider>
+```
+
+### Vertical divider
+
+Add the `vertical` attribute in order to set whether or not the divider is vertically-oriented.
+
+```html
+<mat-divider [vertical]="true"></mat-divider>
+```
+
+
+### Lists with inset dividers
+
+Dividers can be added to lists as a means of separating content into distinct sections.
+Inset dividers can also be added to provide the appearance of distinct elements in a list without cluttering content
+like avatar images or icons. Make sure to avoid adding an inset divider to the last element
+in a list, because it will overlap with the section divider.
+
+```html
+<mat-list>
+   <h3 mat-subheader>Folders</h3>
+   @for (folder of folders; track folder) {
+      <mat-list-item>
+         <mat-icon mat-list-icon>folder</mat-icon>
+         <h4 mat-line>{{folder.name}}</h4>
+         <p mat-line class="demo-2">{{folder.updated}}</p>
+         @if (!$last) {
+            <mat-divider [inset]="true"></mat-divider>
+         }
+      </mat-list-item>
+   }
+   <mat-divider></mat-divider>
+   <h3 mat-subheader>Notes</h3>
+   @for (note of notes; track node) {
+      <mat-list-item>
+         <mat-icon mat-list-icon>note</mat-icon>
+         <h4 mat-line>{{note.name}}</h4>
+         <p mat-line class="demo-2"> {{note.updated}} </p>
+      </mat-list-item>
+   }
+</mat-list>
+```
+
+### Accessibility
+
+`MatDivider` applies the ARIA `role="separator"` attribute, exclusively implementing the
+non-focusable style of separator that distinguishes sections of content.

@@ -1,0 +1,189 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Checkbox
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/checkbox/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-checkbox>` provides the same functionality as a native `<input type="checkbox">`
+enhanced with Material Design styling and animations.
+
+#### Exemplo: `checkbox-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component, computed, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
+export interface Task {
+  name: string;
+  completed: boolean;
+  subtasks?: Task[];
+}
+
+/**
+ * @title Basic checkboxes
+ */
+@Component({
+  selector: 'checkbox-overview-example',
+  templateUrl: 'checkbox-overview-example.html',
+  styleUrl: 'checkbox-overview-example.css',
+  imports: [MatCheckboxModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CheckboxOverviewExample {
+  readonly task = signal<Task>({
+    name: 'Parent task',
+    completed: false,
+    subtasks: [
+      {name: 'Child task 1', completed: false},
+      {name: 'Child task 2', completed: false},
+      {name: 'Child task 3', completed: false},
+    ],
+  });
+
+  readonly partiallyComplete = computed(() => {
+    const task = this.task();
+    if (!task.subtasks) {
+      return false;
+    }
+    return task.subtasks.some(t => t.completed) && !task.subtasks.every(t => t.completed);
+  });
+
+  update(completed: boolean, index?: number) {
+    this.task.update(task => {
+      if (index === undefined) {
+        task.completed = completed;
+        task.subtasks?.forEach(t => (t.completed = completed));
+      } else {
+        task.subtasks![index].completed = completed;
+        task.completed = task.subtasks?.every(t => t.completed) ?? true;
+      }
+      return {...task};
+    });
+  }
+}
+```
+
+```html
+<section class="example-section">
+  <mat-checkbox class="example-margin">Check me!</mat-checkbox>
+  <mat-checkbox class="example-margin" [disabled]="true">Disabled</mat-checkbox>
+</section>
+
+<section class="example-section">
+  <span class="example-list-section">
+    <mat-checkbox
+      class="example-margin"
+      [checked]="task().completed"
+      [indeterminate]="partiallyComplete()"
+      (change)="update($event.checked)"
+    >
+      {{task().name}}
+    </mat-checkbox>
+  </span>
+  <span class="example-list-section">
+    <ul>
+      @for (subtask of task().subtasks; track subtask; let i = $index) {
+        <li>
+          <mat-checkbox [checked]="subtask.completed" (change)="update($event.checked, i)">
+            {{subtask.name}}
+          </mat-checkbox>
+        </li>
+      }
+    </ul>
+  </span>
+</section>
+```
+
+```css
+.example-section {
+  margin: 12px 0;
+}
+
+.example-margin {
+  margin: 0 12px;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 4px;
+}
+```
+
+### Checkbox label
+
+The checkbox label is provided as the content to the `<mat-checkbox>` element. The label can be
+positioned before or after the checkbox by setting the `labelPosition` property to `'before'` or
+`'after'`.
+
+If you don't want the label to appear next to the checkbox, you can use
+[`aria-label`](https://www.w3.org/TR/wai-aria/states_and_properties#aria-label) or
+[`aria-labelledby`](https://www.w3.org/TR/wai-aria/states_and_properties#aria-labelledby) to
+specify an appropriate label.
+
+### Use with `@angular/forms`
+
+`<mat-checkbox>` is compatible with `@angular/forms` and supports both `FormsModule`
+and `ReactiveFormsModule`.
+
+### Indeterminate state
+
+`<mat-checkbox>` supports an `indeterminate` state, similar to the native `<input type="checkbox">`.
+While the `indeterminate` property of the checkbox is true, it will render as indeterminate
+regardless of the `checked` value. Any interaction with the checkbox by a user (i.e., clicking) will
+remove the indeterminate state.
+
+### Click action config
+
+When user clicks on the `mat-checkbox`, the default behavior is toggle `checked` value and set
+`indeterminate` to `false`. This behavior can be customized by
+[providing a new value](https://angular.dev/guide/di/dependency-injection)
+of `MAT_CHECKBOX_DEFAULT_OPTIONS` to the checkbox.
+
+```
+providers: [
+  {provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions}
+]
+```
+
+The possible values are:
+
+#### `noop`
+
+Do not change the `checked` value or `indeterminate` value. Developers have the power to
+implement customized click actions.
+
+#### `check`
+
+Toggle `checked` value of the checkbox, ignore `indeterminate` value. If the
+checkbox is in `indeterminate` state, the checkbox will display as an `indeterminate` checkbox
+regardless the `checked` value.
+
+#### `check-indeterminate`
+
+Default behavior of `mat-checkbox`. Always set `indeterminate` to `false`
+when user click on the `mat-checkbox`.
+This matches the behavior of native `<input type="checkbox">`.
+
+### Accessibility
+
+`MatCheckbox` uses an internal `<input type="checkbox">` to provide an accessible experience.
+This internal checkbox receives focus and is automatically labelled by the text content of the
+`<mat-checkbox>` element. Avoid adding other interactive controls into the content of
+`<mat-checkbox>`, as this degrades the experience for users of assistive technology.
+
+Always provide an accessible label via `aria-label` or `aria-labelledby` for checkboxes without
+descriptive text content. For dynamic labels, `MatCheckbox` provides input properties for binding
+`aria-label` and `aria-labelledby`. This means that you should not use the `attr.` prefix when
+binding these properties, as demonstrated below.
+
+```html
+<mat-checkbox [aria-label]="isSubscribedToEmailsMessage">
+</mat-checkbox>
+```
+
+Additionally, `MatCheckbox` now supports the following accessibility properties:
+
+- **`aria-expanded`**: Indicates whether the checkbox controls the visibility of another element. This should be a boolean value (`true` or `false`).
+- **`aria-controls`**: Specifies the ID of the element that the checkbox controls.
+- **`aria-owns`**: Specifies the ID of the element that the checkbox visually owns.

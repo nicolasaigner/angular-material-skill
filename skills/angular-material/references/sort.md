@@ -1,0 +1,205 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Sort
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/sort/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The `matSort` and `mat-sort-header` are used, respectively, to add sorting state and display
+to tabular data.
+
+#### Exemplo: `sort-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {Sort, MatSortModule} from '@angular/material/sort';
+
+export interface Dessert {
+  calories: number;
+  carbs: number;
+  fat: number;
+  name: string;
+  protein: number;
+}
+
+/**
+ * @title Sorting overview
+ */
+@Component({
+  selector: 'sort-overview-example',
+  templateUrl: 'sort-overview-example.html',
+  styleUrl: 'sort-overview-example.css',
+  imports: [MatSortModule],
+})
+export class SortOverviewExample {
+  desserts: Dessert[] = [
+    {name: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4},
+    {name: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4},
+    {name: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6},
+    {name: 'Cupcake', calories: 305, fat: 4, carbs: 67, protein: 4},
+    {name: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 4},
+  ];
+
+  sortedData: Dessert[];
+
+  constructor() {
+    this.sortedData = this.desserts.slice();
+  }
+
+  sortData(sort: Sort) {
+    const data = this.desserts.slice();
+    if (!sort.active || sort.direction === '') {
+      this.sortedData = data;
+      return;
+    }
+
+    this.sortedData = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'name':
+          return compare(a.name, b.name, isAsc);
+        case 'calories':
+          return compare(a.calories, b.calories, isAsc);
+        case 'fat':
+          return compare(a.fat, b.fat, isAsc);
+        case 'carbs':
+          return compare(a.carbs, b.carbs, isAsc);
+        case 'protein':
+          return compare(a.protein, b.protein, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+}
+
+function compare(a: number | string, b: number | string, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+}
+```
+
+```html
+<table matSort (matSortChange)="sortData($event)">
+  <tr>
+    <th mat-sort-header="name">Dessert (100g)</th>
+    <th mat-sort-header="calories">Calories</th>
+    <th mat-sort-header="fat">Fat (g)</th>
+    <th mat-sort-header="carbs">Carbs (g)</th>
+    <th mat-sort-header="protein">Protein (g)</th>
+  </tr>
+
+  @for (dessert of sortedData; track dessert) {
+    <tr>
+      <td>{{dessert.name}}</td>
+      <td>{{dessert.calories}}</td>
+      <td>{{dessert.fat}}</td>
+      <td>{{dessert.carbs}}</td>
+      <td>{{dessert.protein}}</td>
+    </tr>
+  }
+</table>
+```
+
+```css
+.mat-sort-header-container {
+  align-items: center;
+}
+```
+
+### Adding sort to table headers
+
+To add sorting behavior and styling to a set of table headers, add the `<mat-sort-header>` component
+to each header and provide an `id` that will identify it. These headers should be contained within a
+parent element with the `matSort` directive, which will emit a `matSortChange` event when the user
+ triggers sorting on the header.
+
+Users can trigger the sort header through a mouse click or keyboard action. When this happens, the
+`matSort` will emit a `matSortChange` event that contains the ID of the header triggered and the
+direction to sort (`asc` or `desc`).
+
+#### Changing the sort order
+
+By default, a sort header starts its sorting at `asc` and then `desc`. Triggering the sort header
+after `desc` will remove sorting.
+
+To reverse the sort order for all headers, set the `matSortStart` to `desc` on the `matSort`
+directive. To reverse the order only for a specific header, set the `start` input only on the header
+instead.
+
+To prevent the user from clearing the sort state from an already sorted column, set
+`matSortDisableClear` to `true` on the `matSort` to affect all headers, or set `disableClear` to
+`true` on a specific header.
+
+#### Disabling sorting
+
+If you want to prevent the user from changing the sorting order of any column, you can use the
+`matSortDisabled` binding on the `mat-sort`, or the `disabled` on a single `mat-sort-header`.
+
+#### Using sort with the mat-table
+
+When used on a `mat-table` header, it is not required to set a `mat-sort-header` id on because
+by default it will use the id of the column.
+
+> _(exemplo `table-sorting` não encontrado no upstream)_
+
+#### Customizing the icon
+
+You can set your own icon for a `mat-sort-header` by projecting in an element with the
+`matSortHeaderIcon` attribute.
+
+#### Exemplo: `sort-custom-icon`
+
+```ts
+import {Component} from '@angular/core';
+import {MatIcon} from '@angular/material/icon';
+import {MatSortModule} from '@angular/material/sort';
+
+/**
+ * @title Sort header with a custom icon
+ */
+@Component({
+  selector: 'sort-custom-icon-example',
+  templateUrl: 'sort-custom-icon-example.html',
+  imports: [MatSortModule, MatIcon],
+})
+export class SortCustomIconExample {}
+```
+
+```html
+<table matSort matSortActive="emoji" matSortDirection="asc">
+  <tr>
+    <th mat-sort-header="emoji">
+      Emoji icon
+      <span matSortHeaderIcon>⬆️</span>
+    </th>
+    <th mat-sort-header="material">
+      Material Icon
+      <mat-icon matSortHeaderIcon>keyboard_arrow_up</mat-icon>
+    </th>
+  </tr>
+
+  <tbody>
+    <tr>
+      <td>Lorem, ipsum dolor sit amet.</td>
+      <td>Lorem, ipsum dolor sit amet.</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+### Accessibility
+
+When you apply `MatSortHeader` to a header cell element, the component wraps the content of the
+header cell inside a button. The text content of the header cell then becomes the accessible
+label for the sort button. However, the header cell text typically describes the column and does
+not indicate that interacting with the control performs a sorting action. To clearly communicate
+that the header performs sorting, always use the `sortActionDescription` input to provide a
+description for the button element, such as "Sort by last name".
+
+`MatSortHeader` applies the `aria-sort` attribute to communicate the active sort state to
+assistive technology. However, most screen readers do not announce changes to the value of
+`aria-sort`, meaning that screen reader users do not receive feedback that sorting occurred. To
+remedy this, use the `matSortChange` event on the `MatSort` directive to announce state
+updates with the `LiveAnnouncer` service from `@angular/cdk/a11y`.
+
+If your application contains many tables and sort headers, consider creating a custom
+directives to consistently apply `sortActionDescription` and announce sort state changes.

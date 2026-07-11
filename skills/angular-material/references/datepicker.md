@@ -1,0 +1,1724 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Datepicker
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/datepicker/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The datepicker allows users to enter a date either through text input, or by choosing a date from
+the calendar. It is made up of several components, directives and [the date implementation](#choosing-a-date-implementation-and-date-format-settings) that work together.
+
+#### Exemplo: `datepicker-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {provideNativeDateAdapter} from '@angular/material/core';
+
+/** @title Basic datepicker */
+@Component({
+  selector: 'datepicker-overview-example',
+  templateUrl: 'datepicker-overview-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerOverviewExample {}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Choose a date</mat-label>
+<!-- #docregion toggle -->
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+<!-- #enddocregion toggle -->
+</mat-form-field>
+```
+
+### Connecting a datepicker to an input
+
+A datepicker is composed of a text input and a calendar pop-up, connected via the `matDatepicker`
+property on the text input.
+
+There is also an optional datepicker toggle button that gives the user an easy way to open the datepicker pop-up.
+
+> _(exemplo `{"example":"datepicker-overview", "file":"datepicker-overview-example.html", "region":"toggle"}` não encontrado no upstream)_
+
+This works exactly the same with an input that is part of an `<mat-form-field>` and the toggle
+can easily be used as a prefix or suffix on the Material input:
+
+> _(exemplo `{"example":"datepicker-overview", "file":"datepicker-overview-example.html"}` não encontrado no upstream)_
+
+If you want to customize the icon that is rendered inside the `mat-datepicker-toggle`, you can do so
+by using the `matDatepickerToggleIcon` directive:
+
+#### Exemplo: `datepicker-custom-icon`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker with custom icon */
+@Component({
+  selector: 'datepicker-custom-icon-example',
+  templateUrl: 'datepicker-custom-icon-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerCustomIconExample {}
+```
+
+```html
+<mat-form-field class="example-full-width">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker">
+    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+```
+
+### Date range selection
+
+If you want your users to select a range of dates, instead of a single date, you can use the
+`mat-date-range-input` and `mat-date-range-picker` components. They work in tandem, similarly to the
+`mat-datepicker` and the basic datepicker input.
+
+The `mat-date-range-input` component requires two `input` elements for the start and end dates,
+respectively:
+
+```html
+<mat-date-range-input>
+  <input matStartDate placeholder="Start date">
+  <input matEndDate placeholder="End date">
+</mat-date-range-input>
+```
+
+The `mat-date-range-picker` component acts as the pop-up panel for selecting dates. This works in
+the same way as `mat-datepicker`, but allows the user to select multiple times:
+
+```html
+<mat-date-range-picker #picker></mat-date-range-picker>
+```
+
+Connect the range picker and range input using the `rangePicker` property:
+
+```html
+<mat-date-range-input [rangePicker]="picker">
+  <input matStartDate placeholder="Start date">
+  <input matEndDate placeholder="End date">
+</mat-date-range-input>
+
+<mat-date-range-picker #picker></mat-date-range-picker>
+```
+
+#### Exemplo: `date-range-picker-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Basic date range picker */
+@Component({
+  selector: 'date-range-picker-overview-example',
+  templateUrl: 'date-range-picker-overview-example.html',
+  imports: [MatFormFieldModule, MatDatepickerModule],
+  providers: [provideNativeDateAdapter()],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DateRangePickerOverviewExample {}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Enter a date range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="Start date">
+    <input matEndDate placeholder="End date">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+```
+
+### Date range input forms integration
+
+The `mat-date-range-input` component can be used together with the `FormGroup` directive from
+`@angular/forms` to group the start and end values together and to validate them as a group.
+
+#### Exemplo: `date-range-picker-forms`
+
+```ts
+import {JsonPipe} from '@angular/common';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Date range picker forms integration */
+@Component({
+  selector: 'date-range-picker-forms-example',
+  templateUrl: 'date-range-picker-forms-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, JsonPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DateRangePickerFormsExample {
+  readonly range = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Enter a date range</mat-label>
+  <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+    <input matStartDate formControlName="start" placeholder="Start date">
+    <input matEndDate formControlName="end" placeholder="End date">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+
+  @if (range.controls.start.hasError('matStartDateInvalid')) {
+    <mat-error>Invalid start date</mat-error>
+  }
+  @if (range.controls.end.hasError('matEndDateInvalid')) {
+    <mat-error>Invalid end date</mat-error>
+  }
+</mat-form-field>
+
+<p>Selected range: {{range.value | json}}</p>
+```
+
+### Setting the calendar starting view
+
+The `startView` property of `<mat-datepicker>` can be used to set the view that will show up when
+the calendar first opens. It can be set to `month`, `year`, or `multi-year`; by default it will open
+to month view.
+
+The month, year, or range of years that the calendar opens to is determined by first checking if any
+date is currently selected, if so it will open to the month or year containing that date. Otherwise
+it will open to the month or year containing today's date. This behavior can be overridden by using
+the `startAt` property of `<mat-datepicker>`. In this case the calendar will open to the month or
+year containing the `startAt` date.
+
+#### Exemplo: `datepicker-start-view`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker start date */
+@Component({
+  selector: 'datepicker-start-view-example',
+  templateUrl: 'datepicker-start-view-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerStartViewExample {
+  readonly startDate = new Date(1990, 0, 1);
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+</mat-form-field>
+```
+
+#### Watching the views for changes on selected years and months
+
+When a year or a month is selected in `multi-year` and `year` views respectively, the `yearSelected`
+and `monthSelected` outputs emit a normalized date representing the chosen year or month. By
+"normalized" we mean that the dates representing years will have their month set to January and
+their day set to the 1st. Dates representing months will have their day set to the 1st of the
+month. For example, if `<mat-datepicker>` is configured to work with javascript native Date
+objects, the `yearSelected` will emit `new Date(2017, 0, 1)` if the user selects 2017 in
+`multi-year` view. Similarly, `monthSelected` will emit `new Date(2017, 1, 1)` if the user
+selects **February** in `year` view and the current date value of the connected `<input>` was
+set to something like `new Date(2017, MM, dd)` when the calendar was opened (the month and day are
+irrelevant in this case).
+
+Notice that the emitted value does not affect the current value in the connected `<input>`, which
+is only bound to the selection made in the `month` view. So if the end user closes the calendar
+after choosing a year in `multi-view` mode (by pressing the `ESC` key, for example), the selected
+year, emitted by `yearSelected` output, will not cause any change in the value of the date in the
+associated `<input>`.
+
+The following example uses `yearSelected` and `monthSelected` outputs to emulate a month and year
+picker (if you're not familiar with the usage of `LuxonDateAdapter` and `MAT_DATE_FORMATS`
+you can [read more about them](#choosing-a-date-implementation-and-date-format-settings) below in
+this document to fully understand the example).
+
+#### Exemplo: `datepicker-views-selection`
+
+```ts
+import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {provideLuxonDateAdapter} from '@angular/material-luxon-adapter';
+import {MatDatepicker, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {DateTime} from 'luxon';
+
+// See the Luxon docs for the meaning of these formats:
+// https://moment.github.io/luxon/#/formatting
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/yyyy',
+  },
+  display: {
+    dateInput: 'MM/yyyy',
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'DD',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
+};
+
+/** @title Datepicker emulating a Year and month picker */
+@Component({
+  selector: 'datepicker-views-selection-example',
+  templateUrl: 'datepicker-views-selection-example.html',
+  styleUrl: 'datepicker-views-selection-example.css',
+  providers: [
+    // Luxon can be provided globally to your app by adding `provideLuxonDateAdapter`
+    // to your app config. We provide it at the component level here, due to limitations
+    // of our example generation script.
+    provideLuxonDateAdapter(MY_FORMATS),
+  ],
+  encapsulation: ViewEncapsulation.None,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerViewsSelectionExample {
+  readonly date = new FormControl<DateTime>(DateTime.now());
+
+  setMonthAndYear(normalizedMonthAndYear: DateTime, datepicker: MatDatepicker<DateTime>) {
+    const ctrlValue = DateTime.fromObject({
+      month: normalizedMonthAndYear.month,
+      year: normalizedMonthAndYear.year,
+    });
+    this.date.setValue(ctrlValue);
+    datepicker.close();
+  }
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Month and Year</mat-label>
+  <input matInput [matDatepicker]="dp" [formControl]="date">
+  <mat-hint>MM/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp
+                  startView="multi-year"
+                  (monthSelected)="setMonthAndYear($event, dp)"
+                  panelClass="example-month-picker">
+  </mat-datepicker>
+</mat-form-field>
+```
+
+```css
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+```
+
+### Setting the selected date
+
+The type of values that the datepicker expects depends on the type of `DateAdapter` provided in your
+application. The `NativeDateAdapter`, for example, works directly with plain JavaScript `Date`
+objects. When using the `LuxonDateAdapter`, however, the values will all be `DateTime` instances.
+This use of the adapter pattern allows the datepicker component to work with any arbitrary date
+representation with a custom `DateAdapter`.
+See [_Choosing a date implementation_](#choosing-a-date-implementation-and-date-format-settings)
+for more information.
+
+Depending on the `DateAdapter` being used, the datepicker may automatically deserialize certain date
+formats for you as well. For example, both the `NativeDateAdapter` and `LuxonDateAdapter` allow
+[ISO 8601](https://tools.ietf.org/html/rfc3339) strings to be passed to the datepicker and
+automatically converted to the proper object type. This can be convenient when binding data directly
+from your backend to the datepicker. However, the datepicker will not accept date strings formatted
+in user format such as `"1/2/2017"` as this is ambiguous and will mean different things depending on
+the locale of the browser running the code.
+
+As with other types of `<input>`, the datepicker works with `@angular/forms` directives such as
+`formGroup`, `formControl`, `ngModel`, etc.
+
+#### Exemplo: `datepicker-value`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker selected value */
+@Component({
+  selector: 'datepicker-value-example',
+  templateUrl: 'datepicker-value-example.html',
+  styleUrl: 'datepicker-value-example.css',
+  providers: [provideNativeDateAdapter()],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerValueExample {
+  readonly date = new FormControl(new Date());
+  readonly serializedDate = new FormControl(new Date().toISOString());
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Angular forms</mat-label>
+  <input matInput [matDatepicker]="picker1" [formControl]="date">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+  <mat-datepicker #picker1></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Angular forms (w/ deserialization)</mat-label>
+  <input matInput [matDatepicker]="picker2"
+         [formControl]="serializedDate">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+  <mat-datepicker #picker2></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Value binding</mat-label>
+  <input matInput [matDatepicker]="picker3" [value]="date.value">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+  <mat-datepicker #picker3></mat-datepicker>
+</mat-form-field>
+```
+
+```css
+mat-form-field {
+  margin-right: 12px;
+}
+```
+
+### Date validation
+
+There are three properties that add date validation to the datepicker input. The first two are the
+`min` and `max` properties. In addition to enforcing validation on the input, these properties will
+disable all dates on the calendar popup before or after the respective values and prevent the user
+from advancing the calendar past the `month` or `year` (depending on current view) containing the
+`min` or `max` date.
+
+#### Exemplo: `datepicker-min-max`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker with min & max validation */
+@Component({
+  selector: 'datepicker-min-max-example',
+  templateUrl: 'datepicker-min-max-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerMinMaxExample {
+  // Set the minimum to January 1st 20 years in the past and December 31st a year in the future.
+  private readonly _currentYear = new Date().getFullYear();
+  readonly minDate = new Date(this._currentYear - 20, 0, 1);
+  readonly maxDate = new Date(this._currentYear + 1, 11, 31);
+}
+```
+
+```html
+<mat-form-field class="example-full-width">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" />
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+```
+
+The second way to add date validation is using the `matDatepickerFilter` property of the datepicker
+input. This property accepts a function of `<D> => boolean` (where `<D>` is the date type used by
+the datepicker, see
+[_Choosing a date implementation_](#choosing-a-date-implementation-and-date-format-settings)).
+A result of `true` indicates that the date is valid and a result of `false` indicates that it is
+not. Again this will also disable the dates on the calendar that are invalid. However, one important
+difference between using `matDatepickerFilter` vs using `min` or `max` is that filtering out all
+dates before or after a certain point, will not prevent the user from advancing the calendar past
+that point.
+
+#### Exemplo: `datepicker-filter`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker with filter validation */
+@Component({
+  selector: 'datepicker-filter-example',
+  templateUrl: 'datepicker-filter-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerFilterExample {
+  myFilter = (d: Date | null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
+}
+```
+
+```html
+<mat-form-field class="example-full-width">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+```
+
+In this example the user cannot select any date that falls on a Saturday or Sunday, but all of the
+dates which fall on other days of the week are selectable.
+
+Each validation property has a different error that can be checked:
+
+- A value that violates the `min` property will have a `matDatepickerMin` error.
+- A value that violates the `max` property will have a `matDatepickerMax` error.
+- A value that violates the `matDatepickerFilter` property will have a `matDatepickerFilter` error.
+
+### Input and change events
+
+The input's native `(input)` and `(change)` events will only trigger due to user interaction with
+the input element; they will not fire when the user selects a date from the calendar popup.
+Therefore, the datepicker input also has support for `(dateInput)` and `(dateChange)` events. These
+trigger when the user interacts with either the input or the popup.
+
+The `(dateInput)` event will fire whenever the value changes due to the user typing or selecting a
+date from the calendar. The `(dateChange)` event will fire whenever the user finishes typing input
+(on `<input>` blur), or when the user chooses a date from the calendar.
+
+#### Exemplo: `datepicker-events`
+
+```ts
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker input and change events */
+@Component({
+  selector: 'datepicker-events-example',
+  templateUrl: 'datepicker-events-example.html',
+  styleUrl: 'datepicker-events-example.css',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerEventsExample {
+  events = signal<string[]>([]);
+
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.events.update(events => [...events, `${type}: ${event.value}`]);
+  }
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Input & change events</mat-label>
+  <input
+    matInput
+    [matDatepicker]="picker"
+    (dateInput)="addEvent('input', $event)"
+    (dateChange)="addEvent('change', $event)"
+  />
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+
+<div class="example-events">
+  @for (e of events(); track e) {
+    <div>{{e}}</div>
+  }
+</div>
+```
+
+```css
+.example-events {
+  height: 200px;
+  border: 1px solid #555;
+  overflow: auto;
+}
+```
+
+### Disabling parts of the datepicker
+
+As with any standard `<input>`, it is possible to disable the datepicker input by adding the
+`disabled` property. By default, the `<mat-datepicker>` and `<mat-datepicker-toggle>` will inherit
+their disabled state from the `<input>`, but this can be overridden by setting the `disabled`
+property on the datepicker or toggle elements. This can be useful if you want to disable text input
+but allow selection via the calendar or vice-versa.
+
+#### Exemplo: `datepicker-disabled`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Disabled datepicker */
+@Component({
+  selector: 'datepicker-disabled-example',
+  templateUrl: 'datepicker-disabled-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerDisabledExample {}
+```
+
+```html
+<p>
+  <mat-form-field>
+    <mat-label>Completely disabled</mat-label>
+    <input matInput [matDatepicker]="dp1" disabled>
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
+    <mat-datepicker #dp1></mat-datepicker>
+  </mat-form-field>
+</p>
+
+<p>
+  <mat-form-field>
+    <mat-label>Popup disabled</mat-label>
+    <input matInput [matDatepicker]="dp2">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="dp2" disabled></mat-datepicker-toggle>
+    <mat-datepicker #dp2></mat-datepicker>
+  </mat-form-field>
+</p>
+
+<p>
+  <mat-form-field>
+    <mat-label>Input disabled</mat-label>
+    <input matInput [matDatepicker]="dp3" disabled>
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
+    <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+  </mat-form-field>
+</p>
+```
+
+### Confirmation action buttons
+
+By default, clicking on a date in the calendar will select it and close the calendar popup. In some
+cases this may not be desirable, because the user doesn't have a quick way of going back if they've
+changed their mind. If you want your users to be able to cancel their selection and to have to
+explicitly accept the value that they've selected, you can add a `<mat-datepicker-actions>` element
+inside `<mat-datepicker>` with a "Cancel" and an "Apply" button marked with the
+`matDatepickerCancel` and `matDatepickerApply` attributes respectively. Doing so will cause the
+datepicker to only assign the value to the data model if the user presses "Apply", whereas pressing
+"Cancel" will close popup without changing the value.
+
+> _(exemplo `{"example":"datepicker-actions", "file":"datepicker-actions-example.html", "region":"datepicker-actions"}` não encontrado no upstream)_
+
+The actions element is also supported for `<mat-date-range-picker>` where that it is called
+`<mat-date-range-picker-actions>` and the buttons are called `matDateRangePickerCancel` and
+`matDateRangePickerApply` respectively.
+
+> _(exemplo `{"example":"datepicker-actions", "file":"datepicker-actions-example.html", "region":"date-range-picker-actions"}` não encontrado no upstream)_
+
+#### Exemplo: `datepicker-actions`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {provideNativeDateAdapter} from '@angular/material/core';
+
+/** @title Datepicker action buttons */
+@Component({
+  selector: 'datepicker-actions-example',
+  templateUrl: 'datepicker-actions-example.html',
+  styleUrl: 'datepicker-actions-example.css',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, MatButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerActionsExample {}
+```
+
+```html
+<mat-form-field class="example-form-field">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="datepicker" />
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+  <!-- #docregion datepicker-actions -->
+  <mat-datepicker #datepicker>
+    <mat-datepicker-actions>
+      <button matButton matDatepickerCancel>Cancel</button>
+      <button matButton="elevated" matDatepickerApply>Apply</button>
+    </mat-datepicker-actions>
+  </mat-datepicker>
+  <!-- #enddocregion datepicker-actions -->
+</mat-form-field>
+
+<mat-form-field class="example-form-field">
+  <mat-label>Enter a date range</mat-label>
+  <mat-date-range-input [rangePicker]="rangePicker">
+    <input matStartDate placeholder="Start date" />
+    <input matEndDate placeholder="End date" />
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+  <!-- #docregion date-range-picker-actions -->
+  <mat-date-range-picker #rangePicker>
+    <mat-date-range-picker-actions>
+      <button matButton matDateRangePickerCancel>Cancel</button>
+      <button matButton="elevated" matDateRangePickerApply>Apply</button>
+    </mat-date-range-picker-actions>
+  </mat-date-range-picker>
+  <!-- #enddocregion date-range-picker-actions -->
+</mat-form-field>
+```
+
+```css
+.example-form-field {
+  margin-right: 20px;
+}
+```
+
+### Comparison ranges
+
+If your users need to compare the date range that they're currently selecting with another range,
+you can provide the comparison range start and end dates to the `mat-date-range-input` using the
+`comparisonStart` and `comparisonEnd` bindings. The comparison range will be rendered statically
+within the calendar, but it will change colors to indicate which dates overlap with the user's
+selected range. The comparison and overlap colors can be customized using the
+`datepicker-date-range-colors` mixin.
+
+#### Exemplo: `date-range-picker-comparison`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+const today = new Date();
+const month = today.getMonth();
+const year = today.getFullYear();
+
+/** @title Date range picker comparison ranges */
+@Component({
+  selector: 'date-range-picker-comparison-example',
+  templateUrl: 'date-range-picker-comparison-example.html',
+  styleUrl: 'date-range-picker-comparison-example.css',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DateRangePickerComparisonExample {
+  readonly campaignOne = new FormGroup({
+    start: new FormControl(new Date(year, month, 13)),
+    end: new FormControl(new Date(year, month, 16)),
+  });
+  readonly campaignTwo = new FormGroup({
+    start: new FormControl(new Date(year, month, 15)),
+    end: new FormControl(new Date(year, month, 19)),
+  });
+}
+```
+
+```html
+<mat-form-field class="example-form-field">
+  <mat-label>First campaign</mat-label>
+  <mat-date-range-input
+    [formGroup]="campaignOne"
+    [rangePicker]="campaignOnePicker"
+    [comparisonStart]="campaignTwo.value.start"
+    [comparisonEnd]="campaignTwo.value.end">
+    <input matStartDate placeholder="Start date" formControlName="start">
+    <input matEndDate placeholder="End date" formControlName="end">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+  <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+</mat-form-field>
+
+<mat-form-field class="example-form-field">
+  <mat-label>Second campaign</mat-label>
+  <mat-date-range-input
+    [formGroup]="campaignTwo"
+    [rangePicker]="campaignTwoPicker"
+    [comparisonStart]="campaignOne.value.start"
+    [comparisonEnd]="campaignOne.value.end">
+    <input matStartDate placeholder="Start date" formControlName="start">
+    <input matEndDate placeholder="End date" formControlName="end">
+  </mat-date-range-input>
+  <mat-datepicker-toggle matIconSuffix [for]="campaignTwoPicker"></mat-datepicker-toggle>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-date-range-picker #campaignTwoPicker></mat-date-range-picker>
+</mat-form-field>
+```
+
+```css
+.example-form-field {
+  margin: 0 8px 16px 0;
+}
+```
+
+```scss
+@use '@angular/material' as mat;
+
+@include mat.datepicker-date-range-colors(hotpink, teal, yellow, purple);
+```
+
+### Customizing the date selection logic
+
+The `mat-date-range-picker` supports custom behaviors for range previews and selection. To customize
+this, you first create a class that implements `MatDateRangeSelectionStrategy`, and then provide
+the class via the `MAT_DATE_RANGE_SELECTION_STRATEGY` injection token. The following example
+uses the range selection strategy to create a custom range picker that limits the user to five-day
+ranges.
+
+#### Exemplo: `date-range-picker-selection-strategy`
+
+```ts
+import {ChangeDetectionStrategy, Component, Injectable, inject} from '@angular/core';
+import {DateAdapter, provideNativeDateAdapter} from '@angular/material/core';
+import {
+  DateRange,
+  MAT_DATE_RANGE_SELECTION_STRATEGY,
+  MatDateRangeSelectionStrategy,
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+@Injectable()
+export class FiveDayRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter<D>);
+
+  selectionFinished(date: D | null): DateRange<D> {
+    return this._createFiveDayRange(date);
+  }
+
+  createPreview(activeDate: D | null): DateRange<D> {
+    return this._createFiveDayRange(activeDate);
+  }
+
+  private _createFiveDayRange(date: D | null): DateRange<D> {
+    if (date) {
+      const start = this._dateAdapter.addCalendarDays(date, -2);
+      const end = this._dateAdapter.addCalendarDays(date, 2);
+      return new DateRange<D>(start, end);
+    }
+
+    return new DateRange<D>(null, null);
+  }
+}
+
+/** @title Date range picker with a custom selection strategy */
+@Component({
+  selector: 'date-range-picker-selection-strategy-example',
+  templateUrl: 'date-range-picker-selection-strategy-example.html',
+  providers: [
+    {
+      provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
+      useClass: FiveDayRangeSelectionStrategy,
+    },
+    provideNativeDateAdapter(),
+  ],
+  imports: [MatFormFieldModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DateRangePickerSelectionStrategyExample {}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Enter a date range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="Start date">
+    <input matEndDate placeholder="End date">
+  </mat-date-range-input>
+  <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+```
+
+### Touch UI mode
+
+The datepicker normally opens as a popup under the input. However this is not ideal for touch
+devices that don't have as much screen real estate and need bigger click targets. For this reason
+`<mat-datepicker>` has a `touchUi` property that can be set to `true` in order to enable a more
+touch friendly UI where the calendar opens in a large dialog.
+
+#### Exemplo: `datepicker-touch`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {provideNativeDateAdapter} from '@angular/material/core';
+
+/** @title Datepicker touch UI */
+@Component({
+  selector: 'datepicker-touch-example',
+  templateUrl: 'datepicker-touch-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerTouchExample {}
+```
+
+```html
+<mat-form-field class="example-full-width">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker touchUi #picker></mat-datepicker>
+</mat-form-field>
+```
+
+### Manually opening and closing the calendar
+
+The calendar popup can be programmatically controlled using the `open` and `close` methods on the
+`<mat-datepicker>`. It also has an `opened` property that reflects the status of the popup.
+
+#### Exemplo: `datepicker-api`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker open method */
+@Component({
+  selector: 'datepicker-api-example',
+  templateUrl: 'datepicker-api-example.html',
+  styleUrl: 'datepicker-api-example.css',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, MatButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerApiExample {}
+```
+
+```html
+<mat-form-field class="example-full-width">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+<button matButton="elevated" (click)="picker.open()">Open</button>
+```
+
+```css
+mat-form-field {
+  margin-right: 12px;
+}
+```
+
+### Using `mat-calendar` inline
+
+If you want to allow the user to select a date from a calendar that is inlined on the page rather
+than contained in a popup, you can use `<mat-calendar>` directly. The calendar's height is
+determined automatically based on the width and the number of dates that need to be shown for a
+month. If you want to make the calendar larger or smaller, adjust the width rather than the height.
+
+#### Exemplo: `datepicker-inline-calendar`
+
+```ts
+import {ChangeDetectionStrategy, Component, model} from '@angular/core';
+import {MatCardModule} from '@angular/material/card';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+
+/** @title Datepicker inline calendar example */
+@Component({
+  selector: 'datepicker-inline-calendar-example',
+  templateUrl: 'datepicker-inline-calendar-example.html',
+  styleUrl: 'datepicker-inline-calendar-example.css',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatCardModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerInlineCalendarExample {
+  selected = model<Date | null>(null);
+}
+```
+
+```html
+<mat-card class="demo-inline-calendar-card">
+  <mat-calendar [(selected)]="selected"></mat-calendar>
+</mat-card>
+<p>Selected date: {{selected()}}</p>
+```
+
+```css
+.demo-inline-calendar-card {
+  width: 300px;
+}
+```
+
+### Internationalization
+
+Internationalization of the datepicker is configured via four aspects:
+
+1.  The date locale.
+2.  The date implementation that the datepicker accepts.
+3.  The display and parse formats used by the datepicker.
+4.  The message strings used in the datepicker's UI.
+
+#### Setting the locale code
+
+By default, the `MAT_DATE_LOCALE` injection token will use the existing `LOCALE_ID` locale code
+from `@angular/core`. If you want to override it, you can provide a new value for the
+`MAT_DATE_LOCALE` token:
+
+```ts
+bootstapApplication(MyApp, {
+  providers: [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
+});
+```
+
+It's also possible to set the locale at runtime using the `setLocale` method of the `DateAdapter`.
+
+**Note:** if you're using the `provideDateFnsAdapter`, you have to provide the data object for your
+locale to `MAT_DATE_LOCALE` instead of the locale code, in addition to providing a configuration
+compatible with `date-fns` to `MAT_DATE_FORMATS`. Locale data for `date-fns` can be imported
+from `date-fns/locale`.
+
+#### Exemplo: `datepicker-locale`
+
+```ts
+import {ChangeDetectionStrategy, Component, OnInit, computed, inject, signal} from '@angular/core';
+import {provideLuxonDateAdapter} from '@angular/material-luxon-adapter';
+import {MatButtonModule} from '@angular/material/button';
+import {DateAdapter, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatDatepickerIntl, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker with different locale */
+@Component({
+  selector: 'datepicker-locale-example',
+  templateUrl: 'datepicker-locale-example.html',
+  styleUrl: 'datepicker-locale-example.css',
+  providers: [
+    // The locale would typically be provided on the root module of your application. We do it at
+    // the component level here, due to limitations of our example generation script.
+    {provide: MAT_DATE_LOCALE, useValue: 'ja-JP'},
+
+    // Luxon can be provided globally to your app by adding `provideLuxonDateAdapter`
+    // to your app config. We provide it at the component level here, due to limitations
+    // of our example generation script.
+    provideLuxonDateAdapter(),
+  ],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, MatButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerLocaleExample implements OnInit {
+  private readonly _adapter = inject<DateAdapter<unknown, unknown>>(DateAdapter);
+  private readonly _intl = inject(MatDatepickerIntl);
+  private readonly _locale = signal(inject<unknown>(MAT_DATE_LOCALE));
+  readonly dateFormatString = computed(() => {
+    if (this._locale() === 'ja-JP') {
+      return 'YYYY/MM/DD';
+    } else if (this._locale() === 'fr') {
+      return 'DD/MM/YYYY';
+    }
+    return '';
+  });
+
+  ngOnInit() {
+    this.updateCloseButtonLabel('カレンダーを閉じる');
+  }
+
+  french() {
+    this._locale.set('fr');
+    this._adapter.setLocale(this._locale());
+    this.updateCloseButtonLabel('Fermer le calendrier');
+  }
+
+  updateCloseButtonLabel(label: string) {
+    this._intl.closeCalendarLabel = label;
+    this._intl.changes.next();
+  }
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Different locale</mat-label>
+  <input matInput [matDatepicker]="dp" />
+  <mat-hint>{{dateFormatString()}}</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp></mat-datepicker>
+</mat-form-field>
+<button matButton (click)="french()">Dynamically switch to French</button>
+```
+
+```css
+mat-form-field {
+  margin-right: 12px;
+}
+```
+
+#### Choosing a date implementation and date format settings
+
+The datepicker was built to be date implementation agnostic. This means that it can be made to work
+with a variety of different date implementations. However it also means that developers need to make
+sure to provide the appropriate pieces for the datepicker to work with their chosen implementation.
+
+The easiest way to ensure this is to import one of the provided date adapters:
+
+`provideNativeDateAdapter` or `MatNativeDateModule`
+
+<table>
+  <tbody>
+    <tr>
+      <th align="left" scope="row">Date type</th>
+      <td><code>Date</code></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Supported locales</th>
+      <td>en-US</td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Dependencies</th>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Import from</th>
+      <td><code>@angular/material/core</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`provideDateFnsAdapter` or `MatDateFnsModule` (installed via `ng add @angular/material-date-fns-adapter`)
+
+<table>
+  <tbody>
+    <tr>
+      <th align="left" scope="row">Date type</th>
+      <td><code>Date</code></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Supported locales</th>
+      <td><a href="https://github.com/date-fns/date-fns/tree/master/src/locale/">See project for details</a></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Dependencies</th>
+      <td><a href="https://date-fns.org/">date-fns</a></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Import from</th>
+      <td><code>@angular/material-date-fns-adapter</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`provideLuxonDateAdapter` or `MatLuxonDateModule` (installed via `ng add @angular/material-luxon-adapter`)
+
+<table>
+  <tbody>
+    <tr>
+      <th align="left" scope="row">Date type</th>
+      <td><code>DateTime</code></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Supported locales</th>
+      <td><a href="https://moment.github.io/luxon/">See project for details</a></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Dependencies</th>
+      <td><a href="https://moment.github.io/luxon/">Luxon</a></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Import from</th>
+      <td><code>@angular/material-luxon-adapter</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`provideMomentDateAdapter` or `MatMomentDateModule` (installed via `ng add @angular/material-moment-adapter`)
+
+<table>
+  <tbody>
+    <tr>
+      <th align="left" scope="row">Date type</th>
+      <td><code>Moment</code></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Supported locales</th>
+      <td><a href="https://github.com/moment/moment/tree/develop/src/locale">See project for details</a></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Dependencies</th>
+      <td><a href="https://momentjs.com/">Moment.js</a></td>
+    </tr>
+    <tr>
+      <th align="left" scope="row">Import from</th>
+      <td><code>@angular/material-moment-adapter</code></td>
+    </tr>
+  </tbody>
+</table>
+
+_Please note: `provideNativeDateAdapter` is based off the functionality available in JavaScript's
+native [`Date` object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date).
+Thus it is not suitable for many locales. One of the biggest shortcomings of the native `Date`
+object is the inability to set the parse format. We strongly recommend using an adapter based on
+a more robust formatting and parsing library. You can use one of the adapters mentioned above
+or a custom `DateAdapter` that works with the library of your choice._
+
+These APIs include providers for `DateAdapter` and `MAT_DATE_FORMATS`.
+
+```ts
+bootstrapApplication(MyApp, {
+  providers: [provideNativeDateAdapter()]
+});
+```
+
+Because `DateAdapter` is a generic class, `MatDatepicker` and `MatDatepickerInput` also need to be
+made generic. When working with these classes (for example as a `ViewChild`) you should include the
+appropriate generic type that corresponds to the `DateAdapter` implementation you are using. For
+example:
+
+```ts
+@Component({...})
+export class MyComponent {
+  @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
+}
+```
+
+#### Exemplo: `datepicker-luxon`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {provideLuxonDateAdapter} from '@angular/material-luxon-adapter';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {DateTime} from 'luxon';
+
+/** @title Datepicker that uses Luxon dates */
+@Component({
+  selector: 'datepicker-luxon-example',
+  templateUrl: 'datepicker-luxon-example.html',
+  providers: [
+    // Luxon can be provided globally to your app by adding `provideLuxonDateAdapter`
+    // to your app config. We provide it at the component level here, due to limitations
+    // of our example generation script.
+    provideLuxonDateAdapter(),
+  ],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerLuxonExample {
+  // Datepicker takes Luxon `DateTime` objects instead of `Date` objects.
+  readonly date = new FormControl(DateTime.now());
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Luxon datepicker</mat-label>
+  <input matInput [matDatepicker]="dp" [formControl]="date">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp></mat-datepicker>
+</mat-form-field>
+```
+
+By default the `LuxonDateAdapter` creates dates in your time zone specific locale. You can change
+the default behaviour to parse dates as UTC by passing `useUtc: true` into `provideLuxonDateAdapter`:
+
+```ts
+bootstrapApplication(MyApp, {
+  providers: [provideLuxonDateAdapter(undefined, {useUtc: true})]
+});
+```
+
+It is also possible to create your own `DateAdapter` that works with any date format your app
+requires. This is accomplished by subclassing `DateAdapter` and providing your subclass as the
+`DateAdapter` implementation. You will also want to make sure that the `MAT_DATE_FORMATS` provided
+in your app are formats that can be understood by your date implementation. See
+[_Customizing the parse and display formats_](#customizing-the-parse-and-display-formats) for more
+information about `MAT_DATE_FORMATS`.
+
+```ts
+bootstrapApplication(MyApp, {
+  providers: [
+    {provide: DateAdapter, useClass: MyDateAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS},
+  ]
+});
+```
+
+If you need to work with native `Date` objects, but need custom behavior (for example custom date
+parsing), you can consider subclassing `NativeDateAdapter`.
+
+#### Customizing the parse and display formats
+
+The `MAT_DATE_FORMATS` object is a collection of formats that the datepicker uses when parsing
+and displaying dates. These formats are passed through to the `DateAdapter` so you will want to make
+sure that the format objects you're using are compatible with the `DateAdapter` used in your app.
+
+If you want use one of the `DateAdapters` that ships with Angular Material, but use your own
+`MAT_DATE_FORMATS`, you can either pass the formats into the providers function, or provide the
+`MAT_DATE_FORMATS` token yourself. For example:
+
+```ts
+bootstrapApplication(MyApp, {
+  providers: [provideNativeDateAdapter(MY_NATIVE_DATE_FORMATS)],
+});
+```
+
+#### Exemplo: `datepicker-formats`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {provideLuxonDateAdapter} from '@angular/material-luxon-adapter';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {DateTime} from 'luxon';
+
+// See the Luxon docs for the meaning of these formats:
+// https://moment.github.io/luxon/#/formatting
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'DDD',
+  },
+  display: {
+    dateInput: 'DDD',
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'DDD',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
+};
+
+/** @title Datepicker with custom formats */
+@Component({
+  selector: 'datepicker-formats-example',
+  templateUrl: 'datepicker-formats-example.html',
+  providers: [
+    // Luxon can be provided globally to your app by adding `provideLuxonDateAdapter`
+    // to your app config. We provide it at the component level here, due to limitations
+    // of our example generation script.
+    provideLuxonDateAdapter(MY_FORMATS),
+  ],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerFormatsExample {
+  readonly date = new FormControl(DateTime.now());
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Verbose datepicker</mat-label>
+  <input matInput [matDatepicker]="dp" [formControl]="date">
+  <mat-hint>MMMM DD, YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp></mat-datepicker>
+</mat-form-field>
+```
+
+#### Customizing the calendar header
+
+The header section of the calendar (the part containing the view switcher and previous and next
+buttons) can be replaced with a custom component if desired. This is accomplished using the
+`calendarHeaderComponent` property of `<mat-datepicker>`. It takes a component class and constructs
+an instance of the component to use as the header.
+
+In order to interact with the calendar in your custom header component, you can inject the parent
+`MatCalendar` in the constructor. To make sure your header stays in sync with the calendar,
+subscribe to the `stateChanges` observable of the calendar and mark your header component for change
+detection.
+
+#### Exemplo: `datepicker-custom-header`
+
+```ts
+import {ChangeDetectionStrategy, Component, OnDestroy, signal, inject} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {DateAdapter, MAT_DATE_FORMATS, provideNativeDateAdapter} from '@angular/material/core';
+import {MatCalendar, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {Subject} from 'rxjs';
+import {startWith, takeUntil} from 'rxjs/operators';
+
+/** @title Datepicker with custom calendar header */
+@Component({
+  selector: 'datepicker-custom-header-example',
+  templateUrl: 'datepicker-custom-header-example.html',
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerCustomHeaderExample {
+  readonly exampleHeader = ExampleHeader;
+}
+
+/** Custom header component for datepicker. */
+@Component({
+  selector: 'example-header',
+  styles: `
+    .example-header {
+      display: flex;
+      align-items: center;
+      padding: 0.5em;
+    }
+
+    .example-header-label {
+      flex: 1;
+      height: 1em;
+      font-weight: 500;
+      text-align: center;
+    }
+  `,
+  template: `
+    <div class="example-header">
+      <button matIconButton (click)="previousClicked('year')">
+        <mat-icon>keyboard_double_arrow_left</mat-icon>
+      </button>
+      <button matIconButton (click)="previousClicked('month')">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <span class="example-header-label">{{periodLabel()}}</span>
+      <button matIconButton (click)="nextClicked('month')">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+      <button matIconButton (click)="nextClicked('year')">
+        <mat-icon>keyboard_double_arrow_right</mat-icon>
+      </button>
+    </div>
+  `,
+  imports: [MatButtonModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ExampleHeader<D> implements OnDestroy {
+  private _calendar = inject<MatCalendar<D>>(MatCalendar);
+  private _dateAdapter = inject<DateAdapter<D>>(DateAdapter);
+  private _dateFormats = inject(MAT_DATE_FORMATS);
+
+  private _destroyed = new Subject<void>();
+
+  readonly periodLabel = signal('');
+
+  constructor() {
+    this._calendar.stateChanges.pipe(startWith(null), takeUntil(this._destroyed)).subscribe(() => {
+      this.periodLabel.set(
+        this._dateAdapter
+          .format(this._calendar.activeDate, this._dateFormats.display.monthYearLabel)
+          .toLocaleUpperCase(),
+      );
+    });
+  }
+
+  ngOnDestroy() {
+    this._destroyed.next();
+    this._destroyed.complete();
+  }
+
+  previousClicked(mode: 'month' | 'year') {
+    this._calendar.activeDate =
+      mode === 'month'
+        ? this._dateAdapter.addCalendarMonths(this._calendar.activeDate, -1)
+        : this._dateAdapter.addCalendarYears(this._calendar.activeDate, -1);
+  }
+
+  nextClicked(mode: 'month' | 'year') {
+    this._calendar.activeDate =
+      mode === 'month'
+        ? this._dateAdapter.addCalendarMonths(this._calendar.activeDate, 1)
+        : this._dateAdapter.addCalendarYears(this._calendar.activeDate, 1);
+  }
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Custom calendar header</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker [calendarHeaderComponent]="exampleHeader"></mat-datepicker>
+</mat-form-field>
+```
+
+#### Localizing labels and messages
+
+The various text strings used by the datepicker are provided through `MatDatepickerIntl`.
+Localization of these messages can be done by providing a subclass with translated values in your
+app config.
+
+```ts
+bootstrapApplication(MyApp, {
+  providers: [
+    {provide: MatDatepickerIntl, useClass: MyIntl},
+    provideNativeDateAdapter(),
+  ],
+});
+```
+
+#### Highlighting specific dates
+
+If you want to apply one or more CSS classes to some dates in the calendar (e.g. to highlight a
+holiday), you can do so with the `dateClass` input. It accepts a function which will be called
+with each of the dates in the calendar and will apply any classes that are returned. The return
+value can be anything that is accepted by `ngClass`.
+
+#### Exemplo: `datepicker-date-class`
+
+```ts
+import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatCalendarCellClassFunction, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+
+/** @title Datepicker with custom date classes */
+@Component({
+  selector: 'datepicker-date-class-example',
+  templateUrl: 'datepicker-date-class-example.html',
+  styleUrl: 'datepicker-date-class-example.css',
+  encapsulation: ViewEncapsulation.None,
+  providers: [provideNativeDateAdapter()],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DatepickerDateClassExample {
+  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+    // Only highligh dates inside the month view.
+    if (view === 'month') {
+      const date = cellDate.getDate();
+
+      // Highlight the 1st and 20th day of each month.
+      return date === 1 || date === 20 ? 'example-custom-date-class' : '';
+    }
+
+    return '';
+  };
+}
+```
+
+```html
+<mat-form-field class="example-full-width">
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
+</mat-form-field>
+```
+
+```css
+button.example-custom-date-class {
+  background: orange;
+  border-radius: 100%;
+}
+```
+
+### Accessibility
+
+The `MatDatepicker` pop-up uses the `role="dialog"` interaction pattern. This dialog then contains
+multiple controls, the most prominent being the calendar itself. This calendar implements the
+`role="grid"` interaction pattern.
+
+Always enable [_confirmation action buttons_](#confirmation-action-buttons). This allows assistive
+technology users to explicitly confirm their selection before committing a value.
+
+The `MatDatepickerInput` and `MatDatepickerToggle` directives both apply the `aria-haspopup`
+attribute to the native input and button elements, respectively.
+
+`MatDatepickerIntl` includes strings that are used for `aria-label` attributes. Always provide
+the datepicker text input a meaningful label via `<mat-label>`, `aria-label`, `aria-labelledby` or
+`MatDatepickerIntl`.
+
+Always communicate the date format (e.g. 'MM/DD/YYYY'). This can be accomplished using `<mat-hint>`
+or by providing an additional label adjacent to the form field.
+
+`MatDatepickerInput` adds <kbd>>Alt</kbd> + <kbd>Down Arrow</kbd> as a keyboard short to open the
+datepicker pop-up. However, ChromeOS intercepts this key combination at the OS level such that the
+browser only receives a `PageDown` key event. Because of this behavior, you should always include an
+additional means of opening the pop-up, such as `MatDatepickerToggle`.
+
+`MatDatepickerToggle` must be included along with `MatDatepicker` for optimal mobile a11y
+compatibility. Mobile screen reader users currently do not have a way to trigger the datepicker
+dialog without the icon button present.
+
+#### Keyboard interaction
+
+The datepicker supports the following keyboard shortcuts:
+
+| Keyboard Shortcut                      | Action                    |
+| -------------------------------------- | ------------------------- |
+| <kbd>Alt</kbd> + <kbd>Down Arrow</kbd> | Open the calendar pop-up  |
+| <kbd>Escape</kbd>                      | Close the calendar pop-up |
+
+In month view:
+
+| Shortcut                              | Action                                   |
+| ------------------------------------- | ---------------------------------------- |
+| <kbd>Left Arrow</kbd>                 | Go to previous day                       |
+| <kbd>Right Arrow</kbd>                | Go to next day                           |
+| <kbd>Up Arrow</kbd>                   | Go to same day in the previous week      |
+| <kbd>Down Arrow</kbd>                 | Go to same day in the next week          |
+| <kbd>Home</kbd>                       | Go to the first day of the month         |
+| <kbd>End</kbd>                        | Go to the last day of the month          |
+| <kbd>Page up</kbd>                    | Go to the same day in the previous month |
+| <kbd>Alt</kbd> + <kbd>Page up</kbd>   | Go to the same day in the previous year  |
+| <kbd>Page Down</kbd>                  | Go to the same day in the next month     |
+| <kbd>Alt</kbd> + <kbd>Page Down</kbd> | Go to the same day in the next year      |
+| <kbd>Enter</kbd>                      | Select current date                      |
+
+In year view:
+
+| Shortcut                              | Action                                    |
+| ------------------------------------- | ----------------------------------------- |
+| <kbd>Left Arrow</kbd>                 | Go to previous month                      |
+| <kbd>Right Arrow</kbd>                | Go to next month                          |
+| <kbd>Up Arrow</kbd>                   | Go up a row (back 4 months)               |
+| <kbd>Down Arrow</kbd>                 | Go down a row (forward 4 months)          |
+| <kbd>Home</kbd>                       | Go to the first month of the year         |
+| <kbd>End</kbd>                        | Go to the last month of the year          |
+| <kbd>Page Up</kbd>                    | Go to the same month in the previous year |
+| <kbd>Alt</kbd> + <kbd>Page up</kbd>   | Go to the same month 10 years back        |
+| <kbd>Page Down</kbd>                  | Go to the same month in the next year     |
+| <kbd>Alt</kbd> + <kbd>Page Down</kbd> | Go to the same month 10 years forward     |
+| <kbd>Enter</kbd>                      | Select current month                      |
+
+In multi-year view:
+
+| Shortcut                              | Action                                    |
+| ------------------------------------- | ----------------------------------------- |
+| <kbd>Left Arrow</kbd>                 | Go to previous year                       |
+| <kbd>Right Arrow</kbd>                | Go to next year                           |
+| <kbd>Up Arrow</kbd>                   | Go up a row (back 4 years)                |
+| <kbd>Down Arrow</kbd>                 | Go down a row (forward 4 years)           |
+| <kbd>Home</kbd>                       | Go to the first year in the current range |
+| <kbd>End</kbd>                        | Go to the last year in the current range  |
+| <kbd>Page up</kbd>                    | Go back 24 years                          |
+| <kbd>Alt</kbd> + <kbd>Page up</kbd>   | Go back 240 years                         |
+| <kbd>Page Down</kbd>                  | Go forward 24 years                       |
+| <kbd>Alt</kbd> + <kbd>Page Down</kbd> | Go forward 240 years                      |
+| <kbd>Enter</kbd>                      | Select current year                       |
+
+### Troubleshooting
+
+#### Error: MatDatepicker: No provider found for DateAdapter/MAT_DATE_FORMATS
+
+This error is thrown if you have not provided all of the injectables the datepicker needs to work.
+The easiest way to resolve this is to add a date adapter to your app config. See
+[_Choosing a date implementation_](#choosing-a-date-implementation-and-date-format-settings)) for
+more information.
+
+#### Error: A MatDatepicker can only be associated with a single input
+
+This error is thrown if more than one `<input>` tries to claim ownership over the same
+`<mat-datepicker>` (via the `matDatepicker` attribute on the input). A datepicker can only be
+associated with a single input.
+
+#### Error: Attempted to open an MatDatepicker with no associated input.
+
+This error occurs if your `<mat-datepicker>` is not associated with any `<input>`. To associate an
+input with your datepicker, create a template reference for the datepicker and assign it to the
+`matDatepicker` attribute on the input:
+
+```html
+<input [matDatepicker]="picker">
+<mat-datepicker #picker></mat-datepicker>
+```

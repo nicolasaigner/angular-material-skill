@@ -1,0 +1,108 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Toolbar
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/toolbar/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-toolbar>` is a container for headers, titles, or actions.
+
+#### Exemplo: `toolbar-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatToolbarModule} from '@angular/material/toolbar';
+
+/**
+ * @title Toolbar overview
+ */
+@Component({
+  selector: 'toolbar-overview-example',
+  templateUrl: 'toolbar-overview-example.html',
+  styleUrl: 'toolbar-overview-example.css',
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule],
+})
+export class ToolbarOverviewExample {}
+```
+
+```html
+<mat-toolbar>
+  <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>My App</span>
+  <span class="example-spacer"></span>
+  <button matIconButton class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button matIconButton class="example-icon" aria-label="Example icon-button with share icon">
+    <mat-icon>share</mat-icon>
+  </button>
+</mat-toolbar>
+```
+
+```css
+.example-spacer {
+  flex: 1 1 auto;
+}
+```
+
+### Single row
+
+In the simplest case, a toolbar may be placed at the top of your application and 
+have a single row that includes the title of your application.
+
+#### Exemplo: `toolbar-simple`
+
+```ts
+import {Component} from '@angular/core';
+import {MatToolbarModule} from '@angular/material/toolbar';
+
+/**
+ * @title Toolbar with just text
+ */
+@Component({
+  selector: 'toolbar-simple-example',
+  templateUrl: 'toolbar-simple-example.html',
+  imports: [MatToolbarModule],
+})
+export class ToolbarSimpleExample {}
+```
+
+```html
+<mat-toolbar>
+  <span>My Application</span>
+</mat-toolbar>
+```
+
+### Multiple rows
+
+The Material Design spec used to describe toolbars with multiple rows. This can 
+be done by placing `<mat-toolbar-row>` elements inside a `<mat-toolbar>`.
+
+> _(exemplo `{"example":"toolbar-multirow", "file":"toolbar-multirow-example.html", "region":"toolbar-row"}` não encontrado no upstream)_
+
+**Note**: Placing content outside a `<mat-toolbar-row>` when multiple rows are specified is not
+supported.
+
+### Positioning toolbar content
+The toolbar does not perform any positioning of its content. This gives the user full power to 
+position the content as it suits their application.
+
+A common pattern is to position a title on the left with some actions on the right. This can be
+easily accomplished with `display: flex`:
+
+> _(exemplo `{"example":"toolbar-multirow", "file":"toolbar-multirow-example.html", "region":"toolbar-position-content"}` não encontrado no upstream)_
+              
+> _(exemplo `{"example":"toolbar-multirow", "file":"toolbar-multirow-example.css", "region":"toolbar-position-content-style"}` não encontrado no upstream)_
+
+### Accessibility
+By default, the toolbar assumes that it will be used in a purely decorative fashion and thus sets
+no roles, ARIA attributes, or keyboard shortcuts. This is equivalent to having a sequence of `<div>`
+elements on the page.
+
+Generally, the toolbar is used as a header where `role="heading"` would be appropriate.
+
+Only if the use-case of the toolbar match that of role="toolbar", the user should add the role and
+an appropriate label via `aria-label` or `aria-labelledby`.

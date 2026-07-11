@@ -1,0 +1,115 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# CDK Clipboard
+
+> Fonte: [documentação oficial](https://material.angular.dev/cdk/clipboard/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The clipboard package provides helpers for working with the system clipboard.
+
+### Click an element to copy
+
+The `cdkCopyToClipboard` directive can be used to easily add copy-on-click functionality to an
+existing element. The directive selector doubles as an `@Input()` for the text to be copied.
+
+```html
+<img src="avatar.jpg" alt="Hero avatar" [cdkCopyToClipboard]="getShortBio()">
+```
+
+#### Exemplo: `cdk-clipboard-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {FormsModule} from '@angular/forms';
+
+/**
+ * @title Clipboard overview
+ */
+@Component({
+  selector: 'cdk-clipboard-overview-example',
+  templateUrl: 'cdk-clipboard-overview-example.html',
+  styleUrl: 'cdk-clipboard-overview-example.css',
+  imports: [FormsModule, ClipboardModule],
+})
+export class CdkClipboardOverviewExample {
+  value =
+    `Did you ever hear the tragedy of Darth Plagueis The Wise? I thought not. It's not ` +
+    `a story the Jedi would tell you. It's a Sith legend. Darth Plagueis was a Dark Lord ` +
+    `of the Sith, so powerful and so wise he could use the Force to influence the ` +
+    `midichlorians to create life… He had such a knowledge of the dark side that he could ` +
+    `even keep the ones he cared about from dying. The dark side of the Force is a pathway ` +
+    `to many abilities some consider to be unnatural. He became so powerful… the only ` +
+    `thing he was afraid of was losing his power, which eventually, of course, he did. ` +
+    `Unfortunately, he taught his apprentice everything he knew, then his apprentice ` +
+    `killed him in his sleep. Ironic. He could save others from death, but not himself.`;
+}
+```
+
+```html
+<label for="clipboard-example-textarea">Text to be copied</label>
+<textarea id="clipboard-example-textarea" cols="30" rows="10" [(ngModel)]="value"></textarea>
+<button [cdkCopyToClipboard]="value">Copy to clipboard</button>
+```
+
+```css
+textarea {
+  display: block;
+  margin: 4px 0 8px;
+}
+```
+
+### Programmatically copy a string
+
+The `Clipboard` service copies text to the user's clipboard. It has two methods: `copy` and
+`beginCopy`. For cases where you are copying a relatively small amount of text, you can call `copy`
+directly to place it on the clipboard.
+
+```typescript
+import {Clipboard} from '@angular/cdk/clipboard';
+
+class HeroProfile {
+  constructor(private clipboard: Clipboard) {}
+
+  copyHeroName() {
+    this.clipboard.copy('Alphonso');
+  }
+}
+```
+
+However, for longer text the browser needs time to fill an intermediate textarea element and copy
+the content. Directly calling `copy` may fail in this case, so you can pre-load the text by calling
+`beginCopy`. This method returns a `PendingCopy` object that has a `copy` method to finish copying
+the text that was buffered. Please note, if you call `beginCopy`, you must clean up the
+`PendingCopy` object by calling `destroy` on it after you are finished.
+
+```typescript
+import {Clipboard} from '@angular/cdk/clipboard';
+
+class HeroProfile {
+  lifetimeAchievements: string;
+
+  constructor(private clipboard: Clipboard) {}
+
+  copyAchievements() {
+    const pending = this.clipboard.beginCopy(this.lifetimeAchievements);
+    let remainingAttempts = 3;
+    const attempt = () => {
+      const result = pending.copy();
+      if (!result && --remainingAttempts) {
+        setTimeout(attempt);
+      } else {
+        // Remember to destroy when you're done!
+        pending.destroy();
+      }
+    };
+    attempt();
+  }
+}
+```
+
+If you're using the `cdkCopyToClipboard` you can pass in the `cdkCopyToClipboardAttempts` input
+to automatically attempt to copy some text a certain number of times.
+
+```html
+<button [cdkCopyToClipboard]="longText" [cdkCopyToClipboardAttempts]="5">Copy text</button>
+```

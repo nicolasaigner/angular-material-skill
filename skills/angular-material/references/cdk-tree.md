@@ -1,0 +1,485 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# CDK Tree
+
+> Fonte: [documentação oficial](https://material.angular.dev/cdk/tree/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The `<cdk-tree>` enables developers to build a customized tree experience for structured data. The
+`<cdk-tree>` provides a foundation to build other features such as filtering on top of tree.
+For a Material Design styled tree, see `<mat-tree>` which builds on top of the `<cdk-tree>`.
+
+There are two types of trees: flat and nested. The DOM structures are different for these
+these two types of trees.
+
+#### Flat tree
+
+In a flat tree, the hierarchy is flattened; nodes are not rendered inside of each other, but instead
+are rendered as siblings in sequence.
+
+```html
+<cdk-tree>
+  <cdk-tree-node> parent node </cdk-tree-node>
+  <cdk-tree-node> -- child node1 </cdk-tree-node>
+  <cdk-tree-node> -- child node2 </cdk-tree-node>
+</cdk-tree>
+
+```
+
+#### Exemplo: `cdk-tree-flat-children-accessor`
+
+```ts
+import {ArrayDataSource} from '@angular/cdk/collections';
+import {CdkTree, CdkTreeModule} from '@angular/cdk/tree';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {timer} from 'rxjs';
+import {mapTo} from 'rxjs/operators';
+
+/**
+ * Food data with nested structure.
+ * Each node has a name and an optional list of children.
+ */
+interface NestedFoodNode {
+  name: string;
+  children?: NestedFoodNode[];
+}
+
+function flattenNodes(nodes: NestedFoodNode[]): NestedFoodNode[] {
+  const flattenedNodes = [];
+  for (const node of nodes) {
+    flattenedNodes.push(node);
+    if (node.children) {
+      flattenedNodes.push(...flattenNodes(node.children));
+    }
+  }
+  return flattenedNodes;
+}
+
+/**
+ * @title Tree with flat nodes
+ */
+@Component({
+  selector: 'cdk-tree-flat-children-accessor-example',
+  templateUrl: 'cdk-tree-flat-children-accessor-example.html',
+  styleUrls: ['cdk-tree-flat-children-accessor-example.css'],
+  imports: [CdkTreeModule, MatButtonModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CdkTreeFlatChildrenAccessorExample {
+  @ViewChild(CdkTree)
+  tree!: CdkTree<NestedFoodNode>;
+
+  childrenAccessor = (dataNode: NestedFoodNode) => timer(100).pipe(mapTo(dataNode.children ?? []));
+
+  dataSource = new ArrayDataSource(EXAMPLE_DATA);
+
+  hasChild = (_: number, node: NestedFoodNode) => !!node.children?.length;
+
+  getParentNode(node: NestedFoodNode) {
+    for (const parent of flattenNodes(EXAMPLE_DATA)) {
+      if (parent.children?.includes(node)) {
+        return parent;
+      }
+    }
+
+    return null;
+  }
+
+  shouldRender(node: NestedFoodNode) {
+    let parent = this.getParentNode(node);
+    while (parent) {
+      if (!this.tree.isExpanded(parent)) {
+        return false;
+      }
+      parent = this.getParentNode(parent);
+    }
+    return true;
+  }
+}
+
+const EXAMPLE_DATA: NestedFoodNode[] = [
+  {
+    name: 'Fruit',
+    children: [{name: 'Apple'}, {name: 'Banana'}, {name: 'Fruit loops'}],
+  },
+  {
+    name: 'Vegetables',
+    children: [
+      {
+        name: 'Green',
+        children: [{name: 'Broccoli'}, {name: 'Brussels sprouts'}],
+      },
+      {
+        name: 'Orange',
+        children: [{name: 'Pumpkins'}, {name: 'Carrots'}],
+      },
+    ],
+  },
+];
+```
+
+```html
+<cdk-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
+  <!-- This is the tree node template for leaf nodes -->
+  <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding
+                 [style.display]="shouldRender(node) ? 'flex' : 'none'"
+                 [isDisabled]="!shouldRender(node)"
+                 class="example-tree-node">
+    <!-- use a disabled button to provide padding for tree leaf -->
+    <button matIconButton disabled></button>
+    {{node.name}}
+  </cdk-tree-node>
+  <!-- This is the tree node template for expandable nodes -->
+  <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding
+                 cdkTreeNodeToggle
+                 [cdkTreeNodeTypeaheadLabel]="node.name"
+                 [style.display]="shouldRender(node) ? 'flex' : 'none'"
+                 [isDisabled]="!shouldRender(node)"
+                 [isExpandable]="true"
+                 class="example-tree-node">
+    <button matIconButton cdkTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{node.name}}
+  </cdk-tree-node>
+</cdk-tree>
+```
+
+```css
+.example-tree-node {
+  display: flex;
+  align-items: center;
+}
+```
+
+Flat trees are generally easier to style and inspect. They are also more friendly to scrolling
+variations, such as infinite or virtual scrolling.
+
+
+#### Nested tree
+
+In a nested tree, children nodes are placed inside their parent node in DOM. The parent node
+contains a node outlet into which children are projected.
+
+```html
+<cdk-tree>
+  <cdk-nested-tree-node>
+    parent node
+    <cdk-nested-tree-node> -- child node1 </cdk-nested-tree-node>
+    <cdk-nested-tree-node> -- child node2 </cdk-nested-tree-node>
+  </cdk-nested-tree-node>
+</cdk-tree>
+```
+
+#### Exemplo: `cdk-tree-nested-children-accessor`
+
+```ts
+import {ArrayDataSource} from '@angular/cdk/collections';
+import {CdkTree, CdkTreeModule} from '@angular/cdk/tree';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+
+/**
+ * Food data with nested structure.
+ * Each node has a name and an optional list of children.
+ */
+interface NestedFoodNode {
+  name: string;
+  children?: NestedFoodNode[];
+}
+
+function flattenNodes(nodes: NestedFoodNode[]): NestedFoodNode[] {
+  const flattenedNodes = [];
+  for (const node of nodes) {
+    flattenedNodes.push(node);
+    if (node.children) {
+      flattenedNodes.push(...flattenNodes(node.children));
+    }
+  }
+  return flattenedNodes;
+}
+
+/**
+ * @title Tree with nested nodes using childAccessor
+ */
+@Component({
+  selector: 'cdk-tree-nested-children-accessor-example',
+  templateUrl: 'cdk-tree-nested-children-accessor-example.html',
+  styleUrls: ['cdk-tree-nested-children-accessor-example.css'],
+  imports: [CdkTreeModule, MatButtonModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CdkTreeNestedChildrenAccessorExample {
+  @ViewChild(CdkTree) tree: CdkTree<NestedFoodNode>;
+
+  childrenAccessor = (dataNode: NestedFoodNode) => dataNode.children ?? [];
+
+  dataSource = new ArrayDataSource(EXAMPLE_DATA);
+
+  hasChild = (_: number, node: NestedFoodNode) => !!node.children && node.children.length > 0;
+
+  getParentNode(node: NestedFoodNode) {
+    for (const parent of flattenNodes(EXAMPLE_DATA)) {
+      if (parent.children?.includes(node)) {
+        return parent;
+      }
+    }
+
+    return null;
+  }
+
+  shouldRender(node: NestedFoodNode): boolean {
+    // This node should render if it is a root node or if all of its ancestors are expanded.
+    const parent = this.getParentNode(node);
+    return !parent || (!!this.tree?.isExpanded(parent) && this.shouldRender(parent));
+  }
+}
+
+const EXAMPLE_DATA: NestedFoodNode[] = [
+  {
+    name: 'Fruit',
+    children: [{name: 'Apple'}, {name: 'Banana'}, {name: 'Fruit loops'}],
+  },
+  {
+    name: 'Vegetables',
+    children: [
+      {
+        name: 'Green',
+        children: [{name: 'Broccoli'}, {name: 'Brussels sprouts'}],
+      },
+      {
+        name: 'Orange',
+        children: [{name: 'Pumpkins'}, {name: 'Carrots'}],
+      },
+    ],
+  },
+];
+```
+
+```html
+<cdk-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
+  <!-- This is the tree node template for leaf nodes -->
+  <cdk-nested-tree-node #treeNode="cdkNestedTreeNode" *cdkTreeNodeDef="let node"
+      class="example-tree-node">
+    <!-- use a disabled button to provide padding for tree leaf -->
+    <button matIconButton disabled></button>
+    {{node.name}}
+  </cdk-nested-tree-node>
+  <!-- This is the tree node template for expandable nodes -->
+  <cdk-nested-tree-node #treeNode="cdkNestedTreeNode"
+    *cdkTreeNodeDef="let node; when: hasChild"
+    [cdkTreeNodeTypeaheadLabel]="node.name"
+    isExpandable
+    class="example-tree-node">
+    <button
+      matIconButton
+      class="example-toggle"
+      [attr.aria-label]="'Toggle ' + node.name"
+      cdkTreeNodeToggle>
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{node.name}}
+    <div [class.example-tree-invisible]="!tree.isExpanded(node)">
+      <ng-container cdkTreeNodeOutlet></ng-container>
+    </div>
+  </cdk-nested-tree-node>
+</cdk-tree>
+```
+
+```css
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+.example-tree-node {
+  display: block;
+  line-height: 40px;
+}
+
+.example-tree-node .example-tree-node {
+  padding-left: 40px;
+}
+
+.example-toggle {
+  vertical-align: middle;
+}
+```
+
+Nested trees are easier to work with when hierarchical relationships are visually represented in
+ways that would be difficult to accomplish with flat nodes.
+
+
+### Usage
+
+#### Writing your tree template
+
+In order to use the tree, you must define a tree node template. There are two types of tree nodes,
+`<cdk-tree-node>` for flat tree and `<cdk-nested-tree-node>` for nested tree. The tree node
+template defines the look of the tree node, expansion/collapsing control and the structure for
+nested children nodes.
+
+A node definition is specified via any element with `cdkTreeNodeDef`. This directive exports the node
+data to be used in any bindings in the node template.
+
+```html
+<cdk-tree-node *cdkTreeNodeDef="let node">
+  {{node.key}}: {{node.value}}
+</cdk-tree-node>
+```
+
+##### Flat tree node template
+
+Flat trees use the `level` of a node to both render and determine hierarchy of the nodes for screen
+readers. This may be provided either via `levelAccessor`, or will be calculated by `CdkTree` if
+`childrenAccessor` is provided.
+
+Spacing can be added either by applying the `cdkNodePadding` directive or by applying custom styles
+based on the `aria-level` attribute.
+
+
+##### Nested tree node template
+
+When using nested tree nodes, the node template must contain a `cdkTreeNodeOutlet`, which marks
+where the children of the node will be rendered.
+
+```html
+<cdk-nested-tree-node *cdkTreeNodeDef="let node">
+  {{node.value}}
+  <ng-container cdkTreeNodeOutlet></ng-container>
+</cdk-nested-tree-node>
+```
+
+#### Adding expand/collapse
+
+The `cdkTreeNodeToggle` directive can be used to add expand/collapse functionality for tree nodes.
+The toggle calls the expand/collapse functions in the `CdkTree` and is able to expand/collapse
+a tree node recursively by setting `[cdkTreeNodeToggleRecursive]` to true.
+
+`cdkTreeNodeToggle` should be attached to button elements, and will trigger upon click or keyboard
+activation. For icon buttons, ensure that `aria-label` is provided.
+
+```html
+<cdk-tree-node *cdkTreeNodeDef="let node">
+  <button cdkTreeNodeToggle aria-label="toggle tree node" [cdkTreeNodeToggleRecursive]="true">
+    <mat-icon>expand</mat-icon>
+  </button>
+  {{node.value}}
+</cdk-tree-node>
+```
+
+#### Padding (Flat tree only)
+
+The `cdkTreeNodePadding` directive can be placed in a flat tree's node template to display the level
+information of a flat tree node.
+
+```html
+<cdk-tree-node *cdkTreeNodeDef="let node" cdkNodePadding>
+  {{node.value}}
+</cdk-tree-node>
+```
+
+This is unnecessary for a nested tree, since the hierarchical structure of the DOM allows for
+padding to be added via CSS.
+
+
+#### Conditional template
+
+The tree may include multiple node templates, where a template is chosen
+for a particular data node via the `when` predicate of the template.
+
+```html
+<cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding>
+  {{node.value}}
+</cdk-tree-node>
+<cdk-tree-node *cdkTreeNodeDef="let node; when: isSpecial" cdkTreeNodePadding>
+  [ A special node {{node.value}} ]
+</cdk-tree-node>
+```
+
+### Data Source
+
+#### Connecting the tree to a data source
+
+Similar to `cdk-table`, data is provided to the tree through a `DataSource`. When the tree receives
+a `DataSource` it will call its `connect()` method which returns an observable that emits an array
+of data. Whenever the data source emits data to this stream, the tree will render an update.
+
+Because the data source provides this stream, it bears the responsibility of toggling tree
+updates. This can be based on anything: tree node expansion change, websocket connections, user
+interaction, model updates, time-based intervals, etc.
+
+There are two main methods of providing data to the tree:
+
+* flattened data, combined with `levelAccessor`. This should be used if the data source already
+  flattens the nested data structure into a single array.
+* only root data, combined with `childrenAccessor`. This should be used if the data source is
+  already provided as a nested data structure.
+
+#### `levelAccessor`
+
+`levelAccessor` is a function that when provided a datum, returns the level the data sits at in the
+tree structure. If `levelAccessor` is provided, the data provided by `dataSource` should contain all
+renderable nodes in a single array.
+
+The data source is responsible for handling node expand/collapse events and providing an updated
+array of renderable nodes, if applicable. This can be listened to via the `(expansionChange)` event
+on `cdk-tree-node` and `cdk-nested-tree-node`.
+
+#### `childrenAccessor`
+
+`childrenAccessor` is a function that when provided a datum, returns the children of that particular
+datum. If `childrenAccessor` is provided, the data provided by `dataSource` should _only_ contain
+the root nodes of the tree.
+
+#### `trackBy`
+
+To improve performance, a `trackBy` function can be provided to the tree similar to Angular’s
+[`ngFor` `trackBy`](https://angular.dev/api/common/NgForOf?tab=usage-notes). This informs the
+tree how to uniquely identify nodes to track how the data changes with each update.
+
+```html
+<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" [trackBy]="trackByFn">
+```
+
+### Accessibility
+
+The `<cdk-tree>` implements the [`tree` widget](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/),
+including keyboard navigation and appropriate roles and ARIA attributes.
+
+In order to use the new accessibility features, migrating to `levelAccessor` and `childrenAccessor`
+is required. Trees using `treeControl` do not implement the correct accessibility features for
+backwards compatibility.
+
+#### isExpandable
+
+In order for the tree to correctly determine whether or not a node is expandable, the `isExpandable`
+property must be set on all `cdk-tree-node` or `cdk-tree-nested-node` that are expandable.
+
+#### Activation actions
+
+For trees with nodes that have actions upon activation or click, `<cdk-tree-node>` will emit
+`(activation)` events that can be listened to when the user activates a node via keyboard
+interaction.
+
+```html
+<cdk-tree-node
+    *cdkTreeNodeDef="let node"
+    (click)="performAction(node)"
+    (activation)="performAction($event)">
+</cdk-tree-node>
+```
+
+In this example, `$event` contains the node's data and is equivalent to the implicit data passed in
+the `cdkTreeNodeDef` context.

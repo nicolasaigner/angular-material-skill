@@ -1,0 +1,211 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Menu
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/menu/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-menu>` is a floating panel containing list of options.
+
+#### Exemplo: `menu-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+
+/**
+ * @title Basic menu
+ */
+@Component({
+  selector: 'menu-overview-example',
+  templateUrl: 'menu-overview-example.html',
+  imports: [MatButtonModule, MatMenuModule],
+})
+export class MenuOverviewExample {}
+```
+
+```html
+<!-- #docregion mat-menu-trigger-for -->
+<button matButton [matMenuTriggerFor]="menu">Menu</button>
+<!-- #enddocregion mat-menu-trigger-for -->
+<mat-menu #menu="matMenu">
+  <button mat-menu-item>Item 1</button>
+  <button mat-menu-item>Item 2</button>
+</mat-menu>
+```
+
+By itself, the `<mat-menu>` element does not render anything. The menu is attached to and opened
+via application of the `matMenuTriggerFor` directive:
+> _(exemplo `{"example": "menu-overview", "file": "menu-overview-example.html", "region": "mat-menu-trigger-for"}` não encontrado no upstream)_
+
+### Toggling the menu programmatically
+The menu exposes an API to open/close programmatically. Please note that in this case, an
+`matMenuTriggerFor` directive is still necessary to attach the menu to a trigger element in the DOM.
+
+```ts
+class MyComponent {
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
+  someMethod() {
+    this.trigger.openMenu();
+  }
+}
+```
+
+### Icons
+Menus support displaying `mat-icon` elements before the menu item text.
+
+> _(exemplo `{"example": "menu-icons", "file": "menu-icons-example.html"}` não encontrado no upstream)_
+
+### Customizing menu position
+
+By default, the menu will display below (y-axis), after (x-axis), without overlapping
+its trigger. The position can be changed using the `xPosition` (`before | after`) and `yPosition`
+(`above | below`) attributes. The menu can be forced to overlap the trigger using the
+`overlapTrigger` attribute.
+
+> _(exemplo `{"example": "menu-position", "file": "menu-position-example.html", "region": "menu-position"}` não encontrado no upstream)_
+
+### Nested menu
+
+Material supports the ability for an `mat-menu-item` to open a sub-menu. To do so, you have to define
+your root menu and sub-menus, in addition to setting the `[matMenuTriggerFor]` on the `mat-menu-item`
+that should trigger the sub-menu:
+
+> _(exemplo `{"example": "menu-nested", "file": "menu-nested-example.html", "region": "sub-menu"}` não encontrado no upstream)_
+
+### Context menu
+A context menu is a menu that is triggered by right-clicking in a specific area, rather than
+clicking on a trigger element. It is re-positioned if the user right-clicks somewhere else in the
+area and will be closed if the user clicks away.
+
+You can set up a `mat-menu` as a context menu by adding the `matContextMenuTriggerFor` directive
+to your container and binding it to a menu instance.
+
+#### Exemplo: `context-menu`
+
+```ts
+import {Component} from '@angular/core';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
+
+/**
+ * @title Context menu
+ */
+@Component({
+  selector: 'context-menu-example',
+  templateUrl: 'context-menu-example.html',
+  styleUrl: './context-menu-example.css',
+  imports: [MatMenuModule, MatIconModule],
+})
+export class ContextMenuExample {}
+```
+
+```html
+<div class="example-context-menu-area" [matContextMenuTriggerFor]="contextMenu">
+  Right click here to trigger a context menu
+</div>
+
+<mat-menu #contextMenu>
+  <button mat-menu-item>
+    <mat-icon>content_cut</mat-icon>
+    Cut
+  </button>
+  <button mat-menu-item>
+    <mat-icon>content_copy</mat-icon>
+    Copy
+  </button>
+  <button mat-menu-item>
+    <mat-icon>content_paste</mat-icon>
+    Paste
+  </button>
+  <button mat-menu-item>
+    <mat-icon>print</mat-icon>
+    Print
+  </button>
+</mat-menu>
+```
+
+```css
+.example-context-menu-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 300px;
+  max-width: 300px;
+  border: dashed 1px;
+  text-align: center;
+  padding: 30px;
+  box-sizing: border-box;
+}
+```
+
+### Lazy rendering
+By default, the menu content will be initialized even when the panel is closed. To defer
+initialization until the menu is open, the content can be provided as an `ng-template`
+with the `matMenuContent` attribute:
+
+```html
+<mat-menu #appMenu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item>Settings</button>
+    <button mat-menu-item>Help</button>
+  </ng-template>
+</mat-menu>
+
+<button matIconButton [matMenuTriggerFor]="appMenu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+```
+
+### Passing in data to a menu
+When using lazy rendering, additional context data can be passed to the menu panel via
+the `matMenuTriggerData` input. This allows for a single menu instance to be rendered
+with a different set of data, depending on the trigger that opened it:
+
+```html
+<mat-menu #appMenu="matMenu">
+  <ng-template matMenuContent let-name="name">
+    <button mat-menu-item>Settings</button>
+    <button mat-menu-item>Log off {{name}}</button>
+  </ng-template>
+</mat-menu>
+
+<button matIconButton [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="{name: 'Sally'}">
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+<button matIconButton [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="{name: 'Bob'}">
+  <mat-icon>more_vert</mat-icon>
+</button>
+```
+
+### Keyboard interaction
+| Keyboard shortcut      | Action                                      |
+|------------------------|---------------------------------------------|
+| <kbd>Down Arrow</kbd>  | Focus the next menu item.                   |
+| <kbd>Up Arrow</kbd>    | Focus the previous menu item.               |
+| <kbd>Left Arrow</kbd>  | Close the current menu if it is a sub-menu. |
+| <kbd>Right Arrow</kbd> | Opens the current menu item's sub-menu.     |
+| <kbd>Enter</kbd>       | Activate the focused menu item.             |
+| <kbd>Escape</kbd>      | Close all open menus.                       |
+
+### Accessibility
+
+Angular Material's menu component consists of two connected parts: the trigger and the pop-up menu.
+
+The menu trigger is a standard button element augmented with `aria-haspopup`, `aria-expanded`, and
+`aria-controls` to create the relationship to the pop-up panel.
+
+The pop-up menu implements the `role="menu"` pattern, handling keyboard interaction and focus
+management. Upon opening, the trigger will focus the first focusable menu item. Upon close, the menu
+will return focus to its trigger. Avoid creating a menu in which all items are disabled, instead
+hiding or disabling the menu trigger.
+
+Angular Material does not support the `menuitemcheckbox` or `menuitemradio` roles.
+
+Always provide an accessible label via `aria-label` or `aria-labelledby` for any menu
+triggers or menu items without descriptive text content.
+
+MatMenu should not contain any interactive controls aside from MatMenuItem.

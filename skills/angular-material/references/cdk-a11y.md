@@ -1,0 +1,522 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# CDK A11y
+
+> Fonte: [documentação oficial](https://material.angular.dev/cdk/a11y/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+The `a11y` package provides a number of tools to improve accessibility, described below.
+
+### ListKeyManager
+
+`ListKeyManager` manages the active option in a list of items based on keyboard interaction.
+Intended to be used with components that correspond to a `role="menu"` or `role="listbox"` pattern.
+
+#### Basic usage
+
+Any component that uses a `ListKeyManager` will generally do three things:
+* Create a `@ViewChildren` query for the options being managed.
+* Initialize the `ListKeyManager`, passing in the options.
+* Forward keyboard events from the managed component to the `ListKeyManager`.
+
+Each option should implement the `ListKeyManagerOption` interface:
+```ts
+interface ListKeyManagerOption {
+  disabled?: boolean;
+  getLabel?(): string;
+}
+```
+
+#### Wrapping
+
+Navigation through options can be made to wrap via the `withWrap` method
+```ts
+this.keyManager = new FocusKeyManager(...).withWrap();
+```
+
+#### Types of list key managers
+
+There are two varieties of `ListKeyManager`, `FocusKeyManager` and `ActiveDescendantKeyManager`.
+
+##### FocusKeyManager
+
+Used when options will directly receive browser focus. Each item managed must implement the
+`FocusableOption` interface:
+```ts
+interface FocusableOption extends ListKeyManagerOption {
+  focus(): void;
+}
+```
+
+##### ActiveDescendantKeyManager
+
+Used when options will be marked as active via `aria-activedescendant`.
+Each item managed must implement the
+`Highlightable` interface:
+```ts
+interface Highlightable extends ListKeyManagerOption {
+  setActiveStyles(): void;
+  setInactiveStyles(): void;
+}
+```
+
+Each item must also have an ID bound to the listbox's or menu's `aria-activedescendant`.
+
+### TreeKeyManager
+
+`TreeKeyManager` manages the active option in a tree view. Use this key manager for
+components that implement a `role="tree"` pattern.
+
+#### Basic usage
+
+Any component that uses a `TreeKeyManager` should do three things:
+* Create a `@ViewChildren` query for the tree items being managed.
+* Initialize the `TreeKeyManager`, passing in the options.
+* Forward keyboard events from the managed component to the `TreeKeyManager` via `onKeydown`.
+
+Each tree item should implement the [`TreeKeyManagerItem`](/cdk/a11y/api#TreeKeyManagerItem) interface.
+
+#### Focus management
+
+The `TreeKeyManager` will handle focusing the appropriate item on keyboard interactions.
+
+`tabindex` should also be set by the component when the active item changes. This can be listened to
+via the `change` property on the `TreeKeyManager`. In particular, the tree should only have a
+`tabindex` set if there is no active item, and should not have a `tabindex` set if there is an
+active item. Only the HTML node corresponding to the active item should have a `tabindex` set to
+`0`, with all other items set to `-1`.
+
+
+### FocusTrap
+
+The `cdkTrapFocus` directive traps <kbd>Tab</kbd> key focus within an element. This is intended to
+be used to create accessible experience for components like
+[modal dialogs](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/), where focus must be
+constrained.
+
+This directive is declared in `A11yModule`.
+
+#### Example
+
+```html
+<div class="my-inner-dialog-content" cdkTrapFocus>
+  <!-- Tab and Shift + Tab will not leave this element. -->
+</div>
+```
+
+This directive will not prevent focus from moving out of the trapped region due to mouse
+interaction.
+
+#### Regions
+
+Regions can be declared explicitly with an initial focus element by using
+the `cdkFocusRegionStart`, `cdkFocusRegionEnd` and `cdkFocusInitial` DOM attributes.
+`cdkFocusInitial` specifies the element that will receive focus upon initialization of the region.
+`cdkFocusRegionStart` and `cdkFocusRegionEnd` define the region within which focus will be
+trapped. When using the tab key, focus will move through this region and wrap around on either end.
+
+For example:
+
+```html
+<a mat-list-item routerLink cdkFocusRegionStart>Focus region start</a>
+<a mat-list-item routerLink>Link</a>
+<a mat-list-item routerLink cdkFocusInitial>Initially focused</a>
+<a mat-list-item routerLink cdkFocusRegionEnd>Focus region end</a>
+```
+
+**Note:** If you're using `cdkFocusInitial` together with the `CdkTrapFocus` directive, nothing
+will happen unless you've enabled the `cdkTrapFocusAutoCapture` option as well. This is due to
+`CdkTrapFocus` not capturing focus on initialization by default.
+
+### InteractivityChecker
+
+`InteractivityChecker` is used to check the interactivity of an element, capturing disabled,
+visible, tabbable, and focusable states for accessibility purposes. See the API docs for more
+details.
+
+
+### LiveAnnouncer
+
+`LiveAnnouncer` is used to announce messages for screen-reader users using an `aria-live` region.
+See [the W3C's WAI-ARIA](https://www.w3.org/WAI/PF/aria-1.1/states_and_properties#aria-live)
+for more information on aria-live regions.
+
+#### Example
+
+```ts
+@Component({...})
+export class MyComponent {
+
+ constructor(liveAnnouncer: LiveAnnouncer) {
+   liveAnnouncer.announce("Hey Google");
+ }
+}
+```
+
+### FocusMonitor
+
+The `FocusMonitor` is an injectable service that can be used to listen for changes in the focus
+state of an element. It's more powerful than just listening for `focus` or `blur` events because it
+tells you how the element was focused (via the mouse, keyboard, touch, or programmatically). It also
+allows listening for focus on descendant elements if desired.
+
+To listen for focus changes on an element, use the `monitor` method which takes an element to
+monitor and an optional boolean flag `checkChildren`. Passing true for `checkChildren` will tell the
+`FocusMonitor` to consider the element focused if any of its descendants are focused. This option
+defaults to `false` if not specified. The `monitor` method will return an Observable that emits the
+`FocusOrigin` whenever the focus state changes. The `FocusOrigin` will be one of the following:
+
+* `'mouse'` indicates the element was focused with the mouse
+* `'keyboard'` indicates the element was focused with the keyboard
+* `'touch'` indicates the element was focused by touching on a touchscreen
+* `'program'` indicates the element was focused programmatically
+* `null` indicates the element was blurred
+
+In addition to emitting on the observable, the `FocusMonitor` will automatically apply CSS classes
+to the element when focused. It will add `.cdk-focused` if the element is focused and will further
+add `.cdk-${origin}-focused` (with `${origin}` being `mouse`, `keyboard`, `touch`, or `program`) to
+indicate how the element was focused.
+
+Any element that is monitored by calling `monitor` should eventually be unmonitored by calling
+`stopMonitoring` with the same element.
+
+#### Exemplo: `focus-monitor-overview`
+
+```ts
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
+  OnDestroy,
+  ViewChild,
+  inject,
+} from '@angular/core';
+import {FocusMonitor, FocusOrigin} from '@angular/cdk/a11y';
+
+/** @title Monitoring focus with FocusMonitor */
+@Component({
+  selector: 'focus-monitor-overview-example',
+  templateUrl: 'focus-monitor-overview-example.html',
+  styleUrl: 'focus-monitor-overview-example.css',
+})
+export class FocusMonitorOverviewExample implements OnDestroy, AfterViewInit {
+  private _focusMonitor = inject(FocusMonitor);
+  private _cdr = inject(ChangeDetectorRef);
+  private _ngZone = inject(NgZone);
+
+  @ViewChild('element') element: ElementRef<HTMLElement>;
+  @ViewChild('subtree') subtree: ElementRef<HTMLElement>;
+
+  elementOrigin = this.formatOrigin(null);
+  subtreeOrigin = this.formatOrigin(null);
+
+  ngAfterViewInit() {
+    this._focusMonitor.monitor(this.element).subscribe(origin =>
+      this._ngZone.run(() => {
+        this.elementOrigin = this.formatOrigin(origin);
+        this._cdr.markForCheck();
+      }),
+    );
+    this._focusMonitor.monitor(this.subtree, true).subscribe(origin =>
+      this._ngZone.run(() => {
+        this.subtreeOrigin = this.formatOrigin(origin);
+        this._cdr.markForCheck();
+      }),
+    );
+  }
+
+  ngOnDestroy() {
+    this._focusMonitor.stopMonitoring(this.element);
+    this._focusMonitor.stopMonitoring(this.subtree);
+  }
+
+  formatOrigin(origin: FocusOrigin): string {
+    return origin ? origin + ' focused' : 'blurred';
+  }
+}
+```
+
+```html
+<div class="example-focus-monitor">
+  <button #element>Focus Monitored Element ({{elementOrigin}})</button>
+</div>
+
+<div class="example-focus-monitor">
+  <div #subtree>
+    <p>Focus Monitored Subtree ({{subtreeOrigin}})</p>
+    <button>Child Button 1</button>
+    <button>Child Button 2</button>
+  </div>
+</div>
+```
+
+```css
+.example-focus-monitor {
+  padding: 20px;
+}
+
+.example-focus-monitor .cdk-mouse-focused {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.example-focus-monitor .cdk-keyboard-focused {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.example-focus-monitor .cdk-touch-focused {
+  background: rgba(0, 0, 255, 0.5);
+}
+
+.example-focus-monitor .cdk-program-focused {
+  background: rgba(255, 0, 255, 0.5);
+}
+
+button {
+  margin-right: 12px;
+}
+```
+
+It is possible to falsify the `FocusOrigin` when setting the focus programmatically by using the
+`focusVia` method of `FocusMonitor`. This method accepts an element to focus and the `FocusOrigin`
+to use. If the element being focused is currently being monitored by the `FocusMonitor` it will
+report the `FocusOrigin` that was passed in. If the element is not currently being monitored, it
+will just be focused like normal.
+
+#### Exemplo: `focus-monitor-focus-via`
+
+```ts
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
+  OnDestroy,
+  ViewChild,
+  inject,
+} from '@angular/core';
+import {FocusMonitor, FocusOrigin} from '@angular/cdk/a11y';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Focusing with a specific FocusOrigin */
+@Component({
+  selector: 'focus-monitor-focus-via-example',
+  templateUrl: 'focus-monitor-focus-via-example.html',
+  styleUrl: 'focus-monitor-focus-via-example.css',
+  imports: [MatFormFieldModule, MatSelectModule],
+})
+export class FocusMonitorFocusViaExample implements OnDestroy, AfterViewInit {
+  focusMonitor = inject(FocusMonitor);
+  private _cdr = inject(ChangeDetectorRef);
+  private _ngZone = inject(NgZone);
+
+  @ViewChild('monitored') monitoredEl: ElementRef<HTMLElement>;
+
+  origin = this.formatOrigin(null);
+
+  ngAfterViewInit() {
+    this.focusMonitor.monitor(this.monitoredEl).subscribe(origin =>
+      this._ngZone.run(() => {
+        this.origin = this.formatOrigin(origin);
+        this._cdr.markForCheck();
+      }),
+    );
+  }
+
+  ngOnDestroy() {
+    this.focusMonitor.stopMonitoring(this.monitoredEl);
+  }
+
+  formatOrigin(origin: FocusOrigin): string {
+    return origin ? origin + ' focused' : 'blurred';
+  }
+}
+```
+
+```html
+<div class="example-focus-monitor">
+  <button #monitored>1. Focus Monitored Element ({{origin}})</button>
+  <button #unmonitored>2. Not Monitored</button>
+</div>
+
+<mat-form-field>
+  <mat-label>Simulated focus origin</mat-label>
+  <mat-select #simulatedOrigin value="mouse">
+    <mat-option value="mouse">Mouse</mat-option>
+    <mat-option value="keyboard">Keyboard</mat-option>
+    <mat-option value="touch">Touch</mat-option>
+    <mat-option value="program">Programmatic</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button (click)="focusMonitor.focusVia(monitored, simulatedOrigin.value)">
+  Focus button #1
+</button>
+<button (click)="focusMonitor.focusVia(unmonitored, simulatedOrigin.value)">
+  Focus button #2
+</button>
+```
+
+```css
+.example-focus-monitor {
+  padding: 20px;
+}
+
+.example-focus-monitor .cdk-mouse-focused {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.example-focus-monitor .cdk-keyboard-focused {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.example-focus-monitor .cdk-touch-focused {
+  background: rgba(0, 0, 255, 0.5);
+}
+
+.example-focus-monitor .cdk-program-focused {
+  background: rgba(255, 0, 255, 0.5);
+}
+
+.example-focus-monitor button:focus {
+  box-shadow: 0 0 30px cyan;
+}
+
+mat-form-field,
+button {
+  margin-right: 12px;
+}
+```
+
+#### cdkMonitorElementFocus and cdkMonitorSubtreeFocus
+
+For convenience, the CDK also provides two directives that allow for easily monitoring an element.
+`cdkMonitorElementFocus` is the equivalent of calling `monitor` on the host element with
+`checkChildren` set to `false`. `cdkMonitorSubtreeFocus` is the equivalent of calling `monitor` on
+the host element with `checkChildren` set to `true`. Each of these directives has an `@Output()`
+`cdkFocusChange` that will emit the new `FocusOrigin` whenever it changes.
+
+#### Exemplo: `focus-monitor-directives`
+
+```ts
+import {ChangeDetectorRef, Component, NgZone, inject} from '@angular/core';
+import {A11yModule, FocusOrigin} from '@angular/cdk/a11y';
+
+/** @title Monitoring focus with FocusMonitor */
+@Component({
+  selector: 'focus-monitor-directives-example',
+  templateUrl: 'focus-monitor-directives-example.html',
+  styleUrl: 'focus-monitor-directives-example.css',
+  imports: [A11yModule],
+})
+export class FocusMonitorDirectivesExample {
+  private _ngZone = inject(NgZone);
+  private _cdr = inject(ChangeDetectorRef);
+
+  elementOrigin = this.formatOrigin(null);
+  subtreeOrigin = this.formatOrigin(null);
+
+  formatOrigin(origin: FocusOrigin): string {
+    return origin ? origin + ' focused' : 'blurred';
+  }
+
+  // Workaround for the fact that (cdkFocusChange) emits outside NgZone.
+  markForCheck() {
+    this._ngZone.run(() => this._cdr.markForCheck());
+  }
+}
+```
+
+```html
+<div class="example-focus-monitor">
+  <button cdkMonitorSubtreeFocus
+          (cdkFocusChange)="elementOrigin = formatOrigin($event); markForCheck()">
+    Focus Monitored Element ({{elementOrigin}})
+  </button>
+</div>
+
+<div class="example-focus-monitor">
+  <div cdkMonitorSubtreeFocus
+       (cdkFocusChange)="subtreeOrigin = formatOrigin($event); markForCheck()">
+    <p>Focus Monitored Subtree ({{subtreeOrigin}})</p>
+    <button>Child Button 1</button>
+    <button>Child Button 2</button>
+  </div>
+</div>
+```
+
+```css
+.example-focus-monitor {
+  padding: 20px;
+}
+
+.example-focus-monitor .cdk-mouse-focused {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.example-focus-monitor .cdk-keyboard-focused {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.example-focus-monitor .cdk-touch-focused {
+  background: rgba(0, 0, 255, 0.5);
+}
+
+.example-focus-monitor .cdk-program-focused {
+  background: rgba(255, 0, 255, 0.5);
+}
+
+button {
+  margin-right: 12px;
+}
+```
+
+### Styling utilities
+
+The `cdk/a11y` package comes with Sass mixins that produce styles useful for building
+accessible experiences.
+
+#### Hiding elements in an accessible way
+
+Screen readers and other assistive technology skip elements that have `display: none`,
+`visibility: hidden`, `opacity: 0`, `height: 0`, or `width: 0`. In some cases you may need to
+visually hide an element while keeping it available to assistive technology. You can do so using
+the `a11y-visually-hidden` Sass mixin, which emits the `.cdk-visually-hidden` CSS class.
+
+If you're using Angular Material, this class is included automatically by Angular Material's theming
+system. Otherwise, you can include this mixin in a global stylesheet.
+
+```scss
+@use '@angular/cdk';
+
+@include cdk.a11y-visually-hidden();
+```
+
+```html
+<div class="custom-checkbox">
+  <input type="checkbox" class="cdk-visually-hidden">
+</div>
+```
+
+#### Targeting high contrast users
+
+Some operating systems include an accessibility feature called High Contrast Mode. The
+`cdk/a11y` package provides a Sass mixin that lets you define styles that only apply in high
+contrast mode. To create a high contrast style, define your style inside the `high-contrast` mixin.
+
+The mixin works by targeting the `forced-colors` media query.
+
+```scss
+@use '@angular/cdk';
+
+button {
+  @include cdk.high-contrast {
+    outline: solid 1px;
+  }
+}
+```
+
+The `high-contrast` mixin accepts the optional `$target` parameter which allows you to specify
+the value of the `forced-color` media query. Its value can be either `active` or `none`.

@@ -1,0 +1,1104 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Stepper
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/stepper/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+Angular Material's stepper provides a wizard-like workflow by dividing content into logical steps.
+
+Material stepper builds on the foundation of the CDK stepper that is responsible for the logic
+that drives a stepped workflow. Material stepper extends the CDK stepper and has Material Design
+styling.
+
+### Stepper variants
+There are two stepper variants: `horizontal` and `vertical`. You can switch between the two using
+the `orientation` attribute.
+
+#### Exemplo: `stepper-overview`
+
+```ts
+import {Component, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
+
+/**
+ * @title Stepper overview
+ */
+@Component({
+  selector: 'stepper-overview-example',
+  templateUrl: 'stepper-overview-example.html',
+  styleUrl: 'stepper-overview-example.css',
+  imports: [
+    MatButtonModule,
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+})
+export class StepperOverviewExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+  isLinear = false;
+}
+```
+
+```html
+<button matButton="elevated" (click)="isLinear = !isLinear" id="toggle-linear">
+  {{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
+</button>
+<mat-stepper [linear]="isLinear" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <!-- #docregion label -->
+  <mat-step [stepControl]="secondFormGroup" label="Fill out your address">
+  <!-- #enddocregion label -->
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+               required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+```
+
+```css
+.mat-stepper-horizontal {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+```
+
+#### Exemplo: `stepper-vertical`
+
+```ts
+import {Component, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
+
+/**
+ * @title Stepper vertical
+ */
+@Component({
+  selector: 'stepper-vertical-example',
+  templateUrl: 'stepper-vertical-example.html',
+  styleUrl: 'stepper-vertical-example.css',
+  imports: [
+    MatButtonModule,
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+})
+export class StepperVerticalExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+  isLinear = false;
+}
+```
+
+```html
+<button matButton="elevated" (click)="isLinear = !isLinear" id="toggle-linear">
+  {{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
+</button>
+<mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+               required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+```
+
+```css
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+```
+
+### Labels
+If a step's label is only text, then the `label` attribute can be used.
+> _(exemplo `{"example": "stepper-overview", "file": "stepper-overview-example.html", "region": "label"}` não encontrado no upstream)_
+
+For more complex labels, add a template with the `matStepLabel` directive inside the
+`mat-step`.
+> _(exemplo `{"example": "stepper-editable", "file": "stepper-editable-example.html", "region": "step-label"}` não encontrado no upstream)_
+
+#### Label position
+For a horizontal `mat-stepper` it's possible to define the position of the label. `end` is the
+default value, while `bottom` will place it under the step icon instead of at its side.
+This behaviour is controlled by `labelPosition` property.
+
+> _(exemplo `{"example": "stepper-label-position-bottom", "file": "stepper-label-position-bottom-example.html", "region": "label-position"}` não encontrado no upstream)_
+
+#### Header position
+If you're using a horizontal stepper, you can control where the stepper's content is positioned
+using the `headerPosition` input. By default it's on top of the content, but it can also be placed
+under it.
+
+#### Exemplo: `stepper-header-position`
+
+```ts
+import {Component, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+
+/**
+ * @title Stepper header position
+ */
+@Component({
+  selector: 'stepper-header-position-example',
+  templateUrl: 'stepper-header-position-example.html',
+  imports: [
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
+})
+export class StepperHeaderPositionExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+}
+```
+
+```html
+<mat-stepper headerPosition="bottom" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup" optional>
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Address" formControlName="secondCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    You are now done.
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+```
+
+### Stepper buttons
+There are two button directives to support navigation between different steps:
+`matStepperPrevious` and `matStepperNext`.
+> _(exemplo `{"example": "stepper-label-position-bottom", "file": "stepper-label-position-bottom-example.html", "region": "buttons"}` não encontrado no upstream)_
+
+### Linear stepper
+The `linear` attribute can be set on `mat-stepper` to create a linear stepper that requires the
+user to complete previous steps before proceeding to following steps. For each `mat-step`, the
+`stepControl` attribute can be set to the top level `AbstractControl` that is used to check the
+validity of the step.
+
+There are two possible approaches. One is using a single form for stepper, and the other is
+using a different form for each step.
+
+Alternatively, if you don't want to use the Angular forms, you can pass in the `completed` property
+to each of the steps which won't allow the user to continue until it becomes `true`. Note that if
+both `completed` and `stepControl` are set, the `stepControl` will take precedence.
+
+#### Using a single form
+When using a single form for the stepper, `matStepperPrevious` and `matStepperNext` have to be
+set to `type="button"` in order to prevent submission of the form before all steps
+are completed.
+
+```html
+<form [formGroup]="formGroup">
+  <mat-stepper formArrayName="formArray" linear>
+    <mat-step formGroupName="0" [stepControl]="formArray.get([0])">
+      ...
+      <div>
+        <button matButton matStepperNext type="button">Next</button>
+      </div>
+    </mat-step>
+    <mat-step formGroupName="1" [stepControl]="formArray.get([1])">
+      ...
+      <div>
+        <button matButton matStepperPrevious type="button">Back</button>
+        <button matButton matStepperNext type="button">Next</button>
+      </div>
+    </mat-step>
+    ...
+  </mat-stepper>
+</form>
+```
+
+#### Using a different form for each step
+```html
+<mat-stepper orientation="vertical" linear>
+  <mat-step [stepControl]="formGroup1">
+    <form [formGroup]="formGroup1">
+      ...
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="formGroup2">
+    <form [formGroup]="formGroup2">
+      ...
+    </form>
+  </mat-step>
+</mat-stepper>
+```
+### Types of steps
+
+#### Optional step
+If completion of a step in linear stepper is not required, then the `optional` attribute can be set
+on `mat-step`.
+
+> _(exemplo `{"example": "stepper-optional", "file": "stepper-optional-example.html", "region": "optional"}` não encontrado no upstream)_
+
+
+#### Editable step
+By default, steps are editable, which means users can return to previously completed steps and
+edit their responses. `editable="false"` can be set on `mat-step` to change the default.
+
+> _(exemplo `{"example": "stepper-editable", "file": "stepper-editable-example.html", "region": "editable"}` não encontrado no upstream)_
+
+#### Completed step
+By default, the `completed` attribute of a step returns `true` if the step is valid (in case of
+linear stepper) and the user has interacted with the step. The user, however, can also override
+this default `completed` behavior by setting the `completed` attribute as needed.
+
+#### Overriding icons
+By default, the step headers will use the `create` and `done` icons from the Material design icon
+set via `<mat-icon>` elements. If you want to provide a different set of icons, you can do so
+by placing a `matStepperIcon` for each of the icons that you want to override. The `index`,
+`active`, and `optional` values of the individual steps are available through template variables:
+
+> _(exemplo `{"example": "stepper-states", "file": "stepper-states-example.html", "region": "override-icons"}` não encontrado no upstream)_
+
+Note that you aren't limited to using the `mat-icon` component when providing custom icons.
+
+### Controlling the stepper animation
+You can control the duration of the stepper's animation using the `animationDuration` input. If you
+want to disable the animation completely, you can do so by setting the properties to `0ms`.
+
+#### Exemplo: `stepper-animations`
+
+```ts
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.dev/license
+ */
+
+import {Component, inject} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+
+/**
+ * @title Stepper animations
+ */
+@Component({
+  selector: 'stepper-animations-example',
+  templateUrl: 'stepper-animations-example.html',
+  styleUrl: 'stepper-animations-example.css',
+  imports: [
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
+})
+export class StepperAnimationsExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup: FormGroup = this._formBuilder.group({firstCtrl: ['']});
+  secondFormGroup: FormGroup = this._formBuilder.group({secondCtrl: ['']});
+}
+```
+
+```html
+<div class="example-input-wrapper">
+  <label for="duration">Animation duration:</label>
+  <input id="duration" value="2000" type="number" min="0" step="100" #duration>
+</div>
+
+<mat-vertical-stepper [linear]="false" #stepper [animationDuration]="duration.value">
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Address" formControlName="secondCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    You are now done.
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>
+```
+
+```css
+.example-input-wrapper {
+  margin-bottom: 16px;
+}
+
+label {
+  margin-right: 4px;
+}
+```
+
+#### Step States
+You can set the state of a step to whatever you want. The given state by default maps to an icon.
+However, it can be overridden the same way as mentioned above.
+
+> _(exemplo `{"example": "stepper-states", "file": "stepper-states-example.html", "region": "states"}` não encontrado no upstream)_
+
+In order to use the custom step states, you must add the `displayDefaultIndicatorType` option to
+the global default stepper options which can be specified by providing a value for
+`STEPPER_GLOBAL_OPTIONS` in your application's root module.
+
+```ts
+@NgModule({
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { displayDefaultIndicatorType: false }
+    }
+  ]
+})
+```
+
+#### Exemplo: `stepper-states`
+
+```ts
+import {Component, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+
+/**
+ * @title Stepper with customized states
+ */
+@Component({
+  selector: 'stepper-states-example',
+  templateUrl: 'stepper-states-example.html',
+  styleUrl: 'stepper-states-example.css',
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: {displayDefaultIndicatorType: false},
+    },
+  ],
+  imports: [
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
+})
+export class StepperStatesExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+}
+```
+
+```html
+<mat-stepper #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+               required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+
+<!-- #docregion states -->
+<mat-stepper>
+<!-- #docregion label -->
+  <mat-step label="Step 1" state="phone">
+    <p>Put down your phones.</p>
+    <div>
+      <button matButton matStepperNext>Next</button>
+    </div>
+  </mat-step>
+<!-- #enddocregion label -->
+  <mat-step label="Step 2" state="chat">
+    <p>Socialize with each other.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton matStepperNext>Next</button>
+    </div>
+  </mat-step>
+  <mat-step label="Step 3">
+    <p>You're welcome.</p>
+  </mat-step>
+
+  <!-- Icon overrides. -->
+<!-- #docregion override-icons -->
+  <ng-template matStepperIcon="phone">
+    <mat-icon>call_end</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="chat">
+    <mat-icon>forum</mat-icon>
+  </ng-template>
+</mat-stepper>
+<!-- #enddocregion override-icons -->
+<!-- #enddocregion states -->
+```
+
+```css
+.mat-stepper-horizontal {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+```
+
+### Error State
+
+If you want to show an error when the user moved past a step that hasn't been filled out correctly,
+you can set the error message through the `errorMessage` input and configure the stepper to show
+errors via the `showError` option in the `STEPPER_GLOBAL_OPTIONS` injection token. Note that since
+`linear` steppers prevent a user from advancing past an invalid step to begin with, this setting
+will not affect steppers marked as `linear`.
+
+```ts
+@NgModule({
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { showError: true }
+    }
+  ]
+})
+```
+
+#### Exemplo: `stepper-errors`
+
+```ts
+import {Component, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatStepperModule} from '@angular/material/stepper';
+
+/**
+ * @title Stepper that displays errors in the steps
+ */
+@Component({
+  selector: 'stepper-errors-example',
+  templateUrl: 'stepper-errors-example.html',
+  styleUrl: 'stepper-errors-example.css',
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: {showError: true},
+    },
+  ],
+  imports: [
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
+})
+export class StepperErrorsExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+}
+```
+
+```html
+<mat-stepper #stepper>
+  <mat-step [stepControl]="firstFormGroup" errorMessage="Name is required.">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <p>Go to a different step to see the error state</p>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
+               required>
+      </mat-form-field>
+      <div>
+        <p>Go to a different step to see the error state</p>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+```
+
+```css
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+```
+
+### Lazy rendering
+By default, the stepper will render all of it's content when it's initialized. If you have some
+content that you want to defer until the particular step is opened, you can put it inside
+an `ng-template` with the `matStepContent` attribute.
+
+#### Exemplo: `stepper-lazy-content`
+
+```ts
+import {Component} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatStepperModule} from '@angular/material/stepper';
+
+/**
+ * @title Stepper lazy content rendering
+ */
+@Component({
+  selector: 'stepper-lazy-content-example',
+  templateUrl: 'stepper-lazy-content-example.html',
+  imports: [MatStepperModule, MatButtonModule],
+})
+export class StepperLazyContentExample {}
+```
+
+```html
+<mat-stepper orientation="vertical">
+  <mat-step>
+    <ng-template matStepLabel>Step 1</ng-template>
+    <ng-template matStepContent>
+      <p>This content was rendered lazily</p>
+      <button matButton matStepperNext>Next</button>
+    </ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Step 2</ng-template>
+    <ng-template matStepContent>
+      <p>This content was also rendered lazily</p>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton matStepperNext>Next</button>
+    </ng-template>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Step 3</ng-template>
+    <p>This content was rendered eagerly</p>
+    <button matButton matStepperPrevious>Back</button>
+  </mat-step>
+</mat-stepper>
+```
+
+### Responsive stepper
+If your app supports a wide variety of screens and a stepper's layout doesn't fit a particular
+screen size, you can control its `orientation` dynamically to change the layout based on the
+viewport.
+
+#### Exemplo: `stepper-responsive`
+
+```ts
+import {Component, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {StepperOrientation, MatStepperModule} from '@angular/material/stepper';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {AsyncPipe} from '@angular/common';
+
+/**
+ * @title Stepper responsive
+ */
+@Component({
+  selector: 'stepper-responsive-example',
+  templateUrl: 'stepper-responsive-example.html',
+  styleUrl: 'stepper-responsive-example.css',
+  imports: [
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    AsyncPipe,
+  ],
+})
+export class StepperResponsiveExample {
+  private _formBuilder = inject(FormBuilder);
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+  thirdFormGroup = this._formBuilder.group({
+    thirdCtrl: ['', Validators.required],
+  });
+  stepperOrientation: Observable<StepperOrientation>;
+
+  constructor() {
+    const breakpointObserver = inject(BreakpointObserver);
+
+    this.stepperOrientation = breakpointObserver
+      .observe('(min-width: 800px)')
+      .pipe(map(({matches}) => (matches ? 'horizontal' : 'vertical')));
+  }
+}
+```
+
+```html
+@switch (stepperOrientation | async) {
+  @case ('horizontal') {
+    <div>Make your screen smaller to see a vertical stepper</div>
+  }
+  @case ('vertical') {
+    <div>Make your screen larger to see a horizontal stepper</div>
+  }
+}
+
+<mat-stepper
+  class="example-stepper"
+  [orientation]="(stepperOrientation | async)!">
+  <mat-step [stepControl]="firstFormGroup" label="Fill out your name">
+    <form [formGroup]="firstFormGroup">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup" label="Fill out your address">
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+               required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="thirdFormGroup" label="Fill out your phone number">
+    <form [formGroup]="thirdFormGroup">
+      <mat-form-field>
+        <mat-label>Phone number</mat-label>
+        <input matInput formControlName="thirdCtrl" placeholder="Ex. 12345678" required>
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+```
+
+```css
+.example-stepper {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+```
+
+### Keyboard interaction
+| Keyboard shortcut      | Action                          |
+|------------------------|---------------------------------|
+| <kbd>Left Arrow</kbd>  | Focus the previous step header. |
+| <kbd>Right Arrow</kbd> | Focus the next step header.     |
+| <kbd>Enter</kbd>       | Select the focused step.        |
+| <kbd>Space</kbd>       | Select the focused step.        |
+
+### Localizing labels
+Labels used by the stepper are provided through `MatStepperIntl`. Localization of these messages
+can be done by providing a subclass with translated values in your application root module.
+
+```ts
+@NgModule({
+  imports: [MatStepperModule],
+  providers: [
+    {provide: MatStepperIntl, useClass: MyIntl},
+  ],
+})
+export class MyApp {}
+```
+
+#### Exemplo: `stepper-intl`
+
+```ts
+import {Component, Injectable, inject} from '@angular/core';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatStepperIntl, MatStepperModule} from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatRadioModule} from '@angular/material/radio';
+
+@Injectable()
+export class StepperIntl extends MatStepperIntl {
+  // the default optional label text, if unspecified is "Optional"
+  override optionalLabel = 'Optional Label';
+}
+
+/**
+ * @title Stepper that uses the MatStepperIntl service
+ */
+@Component({
+  selector: 'stepper-intl-example',
+  templateUrl: 'stepper-intl-example.html',
+  styleUrl: 'stepper-intl-example.css',
+  providers: [{provide: MatStepperIntl, useClass: StepperIntl}],
+  imports: [
+    MatRadioModule,
+    FormsModule,
+    MatStepperModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
+})
+export class StepperIntlExample {
+  private _formBuilder = inject(FormBuilder);
+  private _matStepperIntl = inject(MatStepperIntl);
+
+  optionalLabelText: string;
+  optionalLabelTextChoices: string[] = ['Option 1', 'Option 2', 'Option 3'];
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+
+  updateOptionalLabel() {
+    this._matStepperIntl.optionalLabel = this.optionalLabelText;
+    // Required for the optional label text to be updated
+    // Notifies the MatStepperIntl service that a change has been made
+    this._matStepperIntl.changes.next();
+  }
+}
+```
+
+```html
+<label for="demo-optional-label-group">Pick the text for the optional label</label>
+<mat-radio-group
+  id="demo-optional-label-group"
+  class="demo-radio-group"
+  [(ngModel)]="optionalLabelText"
+  (ngModelChange)="updateOptionalLabel()">
+  @for (optionalLabelTextChoice of optionalLabelTextChoices; track optionalLabelTextChoice) {
+    <mat-radio-button
+      class="demo-radio-button"
+      [value]="optionalLabelTextChoice">{{optionalLabelTextChoice}}</mat-radio-button>
+  }
+</mat-radio-group>
+<mat-stepper class="demo-stepper" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Fill out your name</ng-template>
+      <mat-form-field class="demo-form-field">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          placeholder="Last name, First name"
+          formControlName="firstCtrl"
+          required
+        />
+      </mat-form-field>
+      <div>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step
+    [stepControl]="secondFormGroup"
+    label="Fill out your address"
+    optional>
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input
+          matInput
+          formControlName="secondCtrl"
+          placeholder="Ex. 1 Main St, New York, NY"
+        />
+      </mat-form-field>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+```
+
+```css
+.demo-stepper {
+  margin-top: 8px;
+}
+
+.demo-form-field {
+  margin-top: 16px;
+}
+
+.demo-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+.demo-radio-button {
+  margin: 5px;
+}
+```
+
+### Accessibility
+The stepper is treated as a tabbed view for accessibility purposes, so it is given
+`role="tablist"` by default. The header of step that can be clicked to select the step
+is given `role="tab"`, and the content that can be expanded upon selection is given
+`role="tabpanel"`. `aria-selected` attribute of step header is automatically set based on
+step selection change.
+
+The stepper and each step should be given a meaningful label via `aria-label` or `aria-labelledby`.
+
+Prefer vertical steppers when building for small screen sizes, as horizontal
+steppers typically take up significantly more horizontal space thus introduce
+horizontal scrolling. Applications with multiple scrolling dimensions make
+content harder to consume for some users. See the [Responsive Stepper section](#responsive-stepper)
+above for an example on building a stepper that adjusts its layout based on
+viewport size.
+
+#### Forms
+Steppers often contain forms and form controls. If validation errors inside of a
+stepper's form prevents moving to another step, make sure that your form
+controls communicate error messages to assistive technology. This helps the user
+know why they can't advance to another step. You can accomplish this by using
+`<mat-error>` with `<mat-form-field>`, or by using an ARIA live region.
+
+When a step contains a forms validation error, `MatStepper` will display the
+error in the step's header if specified. See the [Error State section](#error-state)
+for an example of a stepper with an error message. For non-linear steppers, you
+should use an ARIA live region to announce error messages when users navigate
+away from a step with an error message.

@@ -1,0 +1,707 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Chips
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/chips/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+Chips allow users to view information, make selections, filter content, and enter data.
+
+### Static Chips
+
+Chips are always used inside a container. To create chips, start with a `<mat-chip-set>` element. Then, nest `<mat-chip>` elements inside the `<mat-chip-set>`.
+
+#### Exemplo: `chips-overview`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatChipsModule} from '@angular/material/chips';
+
+/**
+ * @title Basic chips
+ */
+@Component({
+  selector: 'chips-overview-example',
+  templateUrl: 'chips-overview-example.html',
+  imports: [MatChipsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipsOverviewExample {}
+```
+
+```html
+<mat-chip-set aria-label="Fish selection">
+  <mat-chip>One fish</mat-chip>
+  <mat-chip>Two fish</mat-chip>
+  <mat-chip>Three fish</mat-chip>
+  <mat-chip disabled>Four fish</mat-chip>
+</mat-chip-set>
+```
+
+By default, `<mat-chip>` renders a chip with Material Design styles applied. For a chip with no styles applied, use `<mat-basic-chip>`.
+
+#### Disabled appearance
+
+Although `<mat-chip>` is not interactive, you can set the `disabled` Input to give it disabled appearance.
+
+```html
+<mat-chip disabled>Orange</mat-chip>
+```
+
+### Selection Chips
+
+Use `<mat-chip-listbox>` and `<mat-chip-option>` for selecting one or many items from a list. Start with creating a `<mat-chip-listbox>` element. If the user may select more than one option, add the `multiple` attribute. Nest a `<mat-chip-option>` element inside the `<mat-chip-listbox>` for each available option.
+
+#### Disabled `<mat-chip-option>`
+
+Use the `disabled` Input to disable a `<mat-chip-option>`. This gives the `<mat-chip-option>` a disabled appearance and prevents the user from interacting with it.
+
+```html
+<mat-chip-option disabled>Orange</mat-chip-option>
+```
+
+#### Keyboard Interactions
+
+Users can move through the chips using the arrow keys and select/deselect them with space. Chips also gain focus when clicked, ensuring keyboard navigation starts at the currently focused chip.
+
+### Chips connected to an input field
+
+Use `<mat-chip-grid>` and `<mat-chip-row>` for assisting users with text entry.
+
+Chips are always used inside a container. To create chips connected to an input field, start by creating a `<mat-chip-grid>` as the container. Add an `<input/>` element, and register it to the `<mat-chip-grid>` by passing the `matChipInputFor` Input. Nest a `<mat-chip-row>` element inside the `<mat-chip-grid>` for each piece of data entered by the user. An example of using chips for text input.
+
+#### Exemplo: `chips-input`
+
+```ts
+import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {MatChipEditedEvent, MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+
+export interface Fruit {
+  name: string;
+}
+
+/**
+ * @title Chips with input
+ */
+@Component({
+  selector: 'chips-input-example',
+  templateUrl: 'chips-input-example.html',
+  styleUrl: 'chips-input-example.css',
+  imports: [MatFormFieldModule, MatChipsModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipsInputExample {
+  readonly addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  readonly fruits = signal<Fruit[]>([{name: 'Lemon'}, {name: 'Lime'}, {name: 'Apple'}]);
+  readonly announcer = inject(LiveAnnouncer);
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.fruits.update(fruits => [...fruits, {name: value}]);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  remove(fruit: Fruit): void {
+    this.fruits.update(fruits => {
+      const index = fruits.indexOf(fruit);
+      if (index < 0) {
+        return fruits;
+      }
+
+      fruits.splice(index, 1);
+      this.announcer.announce(`Removed ${fruit.name}`);
+      return [...fruits];
+    });
+  }
+
+  edit(fruit: Fruit, event: MatChipEditedEvent) {
+    const value = event.value.trim();
+
+    // Remove fruit if it no longer has a name
+    if (!value) {
+      this.remove(fruit);
+      return;
+    }
+
+    // Edit existing fruit
+    this.fruits.update(fruits => {
+      const index = fruits.indexOf(fruit);
+      if (index >= 0) {
+        fruits[index].name = value;
+        return [...fruits];
+      }
+      return fruits;
+    });
+  }
+}
+```
+
+```html
+<mat-form-field class="example-chip-list">
+  <mat-label>Favorite Fruits</mat-label>
+  <mat-chip-grid #chipGrid aria-label="Enter fruits">
+    @for (fruit of fruits(); track fruit) {
+      <mat-chip-row
+        (removed)="remove(fruit)"
+        [editable]="true"
+        (edited)="edit(fruit, $event)"
+        [aria-description]="'press enter to edit ' + fruit.name"
+      >
+        <button matChipEdit [attr.aria-label]="'edit ' + fruit.name">
+          <mat-icon>edit</mat-icon>
+        </button>      
+        {{fruit.name}}
+        <button matChipRemove [attr.aria-label]="'remove ' + fruit.name">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+    <input
+      placeholder="New fruit..."
+      [matChipInputFor]="chipGrid"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="addOnBlur"
+      (matChipInputTokenEnd)="add($event)"
+    />
+  </mat-chip-grid>
+</mat-form-field>
+```
+
+```css
+.example-chip-list {
+  width: 100%;
+}
+```
+
+### Use with `@angular/forms`
+Chips are compatible with `@angular/forms` and supports both `FormsModule`
+and `ReactiveFormsModule`.
+
+#### Exemplo: `chips-template-form`
+
+```ts
+import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+
+/**
+ * @title Chips in template-driven forms
+ */
+@Component({
+  selector: 'chips-template-form-example',
+  templateUrl: 'chips-template-form-example.html',
+  styleUrl: 'chips-template-form-example.css',
+  imports: [MatButtonModule, MatFormFieldModule, MatChipsModule, FormsModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipsTemplateFormExample {
+  readonly templateKeywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
+
+  announcer = inject(LiveAnnouncer);
+
+  removeTemplateKeyword(keyword: string) {
+    this.templateKeywords.update(keywords => {
+      const index = keywords.indexOf(keyword);
+      if (index < 0) {
+        return keywords;
+      }
+
+      keywords.splice(index, 1);
+      this.announcer.announce(`removed ${keyword} from template form`);
+      return [...keywords];
+    });
+  }
+
+  addTemplateKeyword(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our keyword
+    if (value) {
+      this.templateKeywords.update(keywords => [...keywords, value]);
+      this.announcer.announce(`added ${value} to template form`);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+}
+```
+
+```html
+<section>
+  <h4>Chips inside of a Template-driven form</h4>
+  <mat-form-field class="example-form-field">
+    <mat-label>Video keywords</mat-label>
+    <mat-chip-grid #templateChipGrid aria-label="Enter template form keywords" [(ngModel)]="templateKeywords">
+    @for (keyword of templateKeywords(); track keyword) {
+      <mat-chip-row (removed)="removeTemplateKeyword(keyword)">
+        {{keyword}}
+      <button matChipRemove [attr.aria-label]="'remove template form' + keyword">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      </mat-chip-row>
+    }
+    </mat-chip-grid>
+    <input
+      placeholder="New keyword..."
+      [matChipInputFor]="templateChipGrid"
+      (matChipInputTokenEnd)="addTemplateKeyword($event)"
+    />
+  </mat-form-field>
+</section>
+```
+
+```css
+.example-form-field {
+    width: 100%;
+}
+```
+#### Exemplo: `chips-reactive-form`
+
+```ts
+import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+
+/**
+ * @title Chips in reactive forms
+ */
+@Component({
+  selector: 'chips-reactive-form-example',
+  templateUrl: 'chips-reactive-form-example.html',
+  styleUrl: 'chips-reactive-form-example.css',
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipsReactiveFormExample {
+  readonly reactiveKeywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
+  readonly formControl = new FormControl(['angular']);
+
+  announcer = inject(LiveAnnouncer);
+
+  removeReactiveKeyword(keyword: string) {
+    this.reactiveKeywords.update(keywords => {
+      const index = keywords.indexOf(keyword);
+      if (index < 0) {
+        return keywords;
+      }
+
+      keywords.splice(index, 1);
+      this.announcer.announce(`removed ${keyword} from reactive form`);
+      return [...keywords];
+    });
+  }
+
+  addReactiveKeyword(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our keyword
+    if (value) {
+      this.reactiveKeywords.update(keywords => [...keywords, value]);
+      this.announcer.announce(`added ${value} to reactive form`);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+}
+```
+
+```html
+<section>
+  <h4>Chips inside of a Reactive form</h4>
+  <mat-form-field class="example-form-field">
+    <mat-label>Video keywords</mat-label>
+    <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="formControl">
+    @for (keyword of reactiveKeywords(); track keyword) {
+      <mat-chip-row (removed)="removeReactiveKeyword(keyword)">
+        {{keyword}}
+      <button matChipRemove [attr.aria-label]="'remove reactive form' + keyword">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      </mat-chip-row>
+    }
+    </mat-chip-grid>
+    <input
+      placeholder="New keyword..."
+      [matChipInputFor]="reactiveChipGrid"
+      (matChipInputTokenEnd)="addReactiveKeyword($event)"
+    />
+  </mat-form-field>
+</section>
+```
+
+```css
+.example-form-field {
+    width: 100%;
+}
+```
+
+#### Disabled `<mat-chip-row>`
+
+Use the `disabled` Input to disable a `<mat-chip-row>`. This gives the `<mat-chip-row>` a disabled appearance and prevents the user from interacting with it.
+
+```html
+<mat-chip-row disabled>Orange</mat-chip-row>
+```
+
+#### Keyboard Interactions
+
+Users can move through the chips using the arrow keys and select/deselect them with the space. Chips also gain focus when clicked, ensuring keyboard navigation starts at the appropriate chip.
+
+Users can press delete to remove a chip. Pressing delete triggers the `removed` Output on the chip, so be sure to implement `removed` if you require that functionality.
+
+#### Autocomplete
+
+A `<mat-chip-grid>` can be combined with `<mat-autocomplete>` to enable free-form chip input with suggestions.
+
+> _Please note: when using `MatChipsModule` together with `MatAutocompleteModule`, the order in which modules are imported matters._
+> _To ensure correct behavior (e.g., preventing adding typed text when autocomplete option is selected via keyboard), make sure to import `MatAutocompleteModule` before `MatChipsModule`._
+
+#### Exemplo: `chips-autocomplete`
+
+```ts
+import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {ChangeDetectionStrategy, Component, computed, inject, model, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {
+  MatAutocompleteModule,
+  type MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import {type MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+
+/**
+ * @title Chips Autocomplete
+ */
+@Component({
+  selector: 'chips-autocomplete-example',
+  templateUrl: 'chips-autocomplete-example.html',
+  styleUrl: 'chips-autocomplete-example.css',
+  // Make sure to import `MatAutocompleteModule` before `MatChipsModule` to prevent adding typed
+  // text when autocomplete option is selected via keyboard).
+  imports: [MatFormFieldModule, MatAutocompleteModule, MatChipsModule, MatIconModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipsAutocompleteExample {
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  readonly currentFruit = model('');
+  readonly fruits = signal(['Lemon']);
+  readonly allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  readonly filteredFruits = computed(() => {
+    const currentFruit = this.currentFruit().toLowerCase();
+    return currentFruit
+      ? this.allFruits.filter(fruit => fruit.toLowerCase().includes(currentFruit))
+      : this.allFruits.slice();
+  });
+
+  readonly announcer = inject(LiveAnnouncer);
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.fruits.update(fruits => [...fruits, value]);
+    }
+
+    // Clear the input value
+    this.currentFruit.set('');
+  }
+
+  remove(fruit: string): void {
+    this.fruits.update(fruits => {
+      const index = fruits.indexOf(fruit);
+      if (index < 0) {
+        return fruits;
+      }
+
+      fruits.splice(index, 1);
+      this.announcer.announce(`Removed ${fruit}`);
+      return [...fruits];
+    });
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.fruits.update(fruits => [...fruits, event.option.viewValue]);
+    this.currentFruit.set('');
+    event.option.deselect();
+  }
+}
+```
+
+```html
+<form>
+  <mat-form-field class="example-chip-list">
+    <mat-label>Favorite Fruits</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Fruit selection">
+      @for (fruit of fruits(); track $index) {
+        <mat-chip-row (removed)="remove(fruit)">
+          {{fruit}}
+          <button matChipRemove [attr.aria-label]="'remove ' + fruit">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      }
+    </mat-chip-grid>
+    <input
+      name="currentFruit"
+      placeholder="New Fruit..."
+      #fruitInput
+      [(ngModel)]="currentFruit"
+      [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)"
+    />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event); fruitInput.value = ''">
+      @for (fruit of filteredFruits(); track fruit) {
+        <mat-option [value]="fruit">{{fruit}}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+```
+
+```css
+.example-chip-list {
+  width: 100%;
+}
+```
+
+### Icons
+
+You can add icons to chips to identify entities (like individuals) and provide additional functionality.
+
+#### Adding up to two icons with content projection
+
+You can add two additional icons to an individual chip. A chip has two slots to display icons using content projection. All variants of chips support adding icons including `<mat-chip>`, `<mat-chip-option>`, and `<mat-chip-row>`.
+
+A chip has a front slot for adding an avatar image. To add an avatar, nest an element with `matChipAvatar` attribute inside of `<mat-chip>`.
+
+#### Exemplo: `chips-avatar`
+
+```ts
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatChipsModule} from '@angular/material/chips';
+
+/**
+ * @title Chips avatar
+ * @description An avatar inside a chip
+ */
+@Component({
+  selector: 'chips-avatar-example',
+  templateUrl: 'chips-avatar-example.html',
+  styleUrl: 'chips-avatar-example.css',
+  imports: [MatChipsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChipsAvatarExample {}
+```
+
+```html
+<mat-chip-set aria-label="Dog selection">
+  <mat-chip>
+    <img
+      matChipAvatar
+      src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+      alt="Photo of a Shiba Inu"
+    />
+    Dog one
+  </mat-chip>
+  <mat-chip>
+    <img
+      matChipAvatar
+      src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+      alt="Photo of a Shiba Inu"
+    />
+    Dog two
+  </mat-chip>
+  <mat-chip>
+    <img
+      matChipAvatar
+      src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+      alt="Photo of a Shiba Inu"
+    />
+    Dog three
+  </mat-chip>
+</mat-chip-set>
+```
+
+You can add an additional icon to the back slot by nesting an element with either the `matChipTrailingIcon` or `matChipRemove` attribute.
+
+#### Remove Button
+
+Sometimes the end user would like the ability to remove a chip. You can provide that functionality using `matChipRemove`. `matChipRemove` renders to the back slot of a chip and triggers the `removed` Output when clicked.
+
+To create a remove button, nest a `<button>` element with `matChipRemove` attribute inside the `<mat-chip-option>`. Be sure to implement the `removed` Output.
+
+```html
+ <mat-chip-option>
+  Orange
+  <button matChipRemove aria-label="Remove orange">
+    <mat-icon>cancel</mat-icon>
+  </button>
+</mat-chip-option>
+```
+
+See the [accessibility](#accessibility) section for best practices on implementing the `removed` Output and creating accessible icons.
+
+### Orientation
+
+By default, chips are displayed horizontally. To stack chips vertically, apply the `mat-mdc-chip-set-stacked` class to `<mat-chip-set>`, `<mat-chip-listbox>` or `<mat-chip-grid>`.
+
+#### Exemplo: `chips-stacked`
+
+```ts
+import {Component} from '@angular/core';
+import {MatChipsModule} from '@angular/material/chips';
+
+/**
+ * @title Stacked chips
+ */
+@Component({
+  selector: 'chips-stacked-example',
+  templateUrl: 'chips-stacked-example.html',
+  styleUrl: 'chips-stacked-example.css',
+  imports: [MatChipsModule],
+})
+export class ChipsStackedExample {
+  readonly bestBoys: string[] = ['Samoyed', 'Akita Inu', 'Alaskan Malamute', 'Siberian Husky'];
+}
+```
+
+```html
+<mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Cutest dog breeds">
+  @for (dog of bestBoys; track dog) {
+    <mat-chip-option selected>{{dog}}</mat-chip-option>
+  }
+</mat-chip-listbox>
+```
+
+```css
+.mat-mdc-chip-set {
+  max-width: 200px;
+}
+```
+
+### Specifying global configuration defaults
+
+Use the `MAT_CHIPS_DEFAULT_OPTIONS` token to specify default options for the chips module.
+
+```html
+@NgModule({
+  providers: [
+    {
+      provide: MAT_CHIPS_DEFAULT_OPTIONS,
+      useValue: {
+        separatorKeyCodes: [COMMA, SPACE]
+      }
+    }
+  ]
+})
+```
+
+### Interaction Patterns
+
+The chips components support 3 user interaction patterns, each with its own container and chip elements:
+
+#### Listbox
+
+`<mat-chip-listbox>` and `<mat-chip-option>` : These elements implement a listbox accessibility pattern. Use them to present set of user selectable options.
+
+```html
+<mat-chip-listbox aria-label="select a shirt size">
+  <mat-chip-option> Small </mat-chip-option>
+  <mat-chip-option> Medium </mat-chip-option>
+  <mat-chip-option> Large </mat-chip-option>
+</mat-chip-listbox>
+```
+
+#### Text Entry
+
+`<mat-chip-grid>` and `<mat-chip-row>` : These elements implement a grid accessibility pattern. Use them as part of a free form input that allows users to enter text to add chips.
+
+> _Please note: be sure to have the input element be a sibling of `mat-chip-grid` to ensure accessibility of the input element by accessibility devices such as Voice Control. It is also recommended to apply an appropriate `aria-label` to the input to optimize accessibility of the input._
+
+```html
+<mat-form-field>
+  <mat-chip-grid #myChipGrid [(ngModel)]="mySelection"
+    aria-label="enter sandwich fillings">
+    @for (filling of fillings; track filling) {
+      <mat-chip-row (removed)="remove(filling)">
+        {{filling.name}}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+  </mat-chip-grid>
+  <input [matChipInputFor]="myChipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)"
+          aria-label="Add sandwich fillings..." />
+</mat-form-field>
+```
+
+#### Static Content
+
+`<mat-chip-set>` and `<mat-chip>` as an unordered list : Present a list of items that are not interactive. This interaction pattern mimics using `ul` and `li` elements. Apply role="list" to the `<mat-list>`. Apply role="listitem" to each `<mat-list-item>`.
+
+```html
+<mat-chip-set role="list">
+  <mat-chip role="listitem"> Sugar </mat-chip>
+  <mat-chip role="listitem"> Spice </mat-chip>
+  <mat-chip role="listitem"> Everything Nice </mat-chip>
+</mat-chip-set>
+```
+
+`<mat-chip-set>` and `<mat-chip>` : These elements do not implement any specific accessibility pattern. Add the appropriate accessibility depending on the context. Note that Angular Material does not intend `<mat-chip>`, `<mat-basic-chip>`, and `<mat-chip-set>` to be interactive.
+
+```html
+<mat-chip-set>
+  <mat-chip> John </mat-chip>
+  <mat-chip> Paul </mat-chip>
+  <mat-chip> James </mat-chip>
+</mat-chip-set>
+```
+
+### Accessibility
+
+The [Interaction Patterns](#interaction-patterns) section describes the three variants of chips available. Choose the chip variant that best matches your use case.
+
+For both MatChipGrid and MatChipListbox, always apply an accessible label to the control via `aria-label` or `aria-labelledby`.
+
+Always apply MatChipRemove to a `<button>` element, never a `<mat-icon>` element.
+
+When using MatChipListbox, never nest other interactive controls inside of the `<mat-chip-option>` element. Nesting controls degrades the experience for assistive technology users.
+
+By default, `MatChipListbox` displays a checkmark to identify selected items. While you can hide the checkmark indicator for single-selection via `hideSingleSelectionIndicator`, this makes the component less accessible by making it harder or impossible for users to visually identify selected items.
+
+When a chip is editable, provide instructions to assistive technology how to edit the chip using a keyboard. One way to accomplish this is adding an `aria-description` attribute with instructions to press enter to edit the chip.

@@ -1,0 +1,949 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Select
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/select/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-select>` is a form control for selecting a value from a set of options, similar to the native
+`<select>` element. You can read more about selects in the
+[Material Design spec](https://material.io/design/components/menus.html). It is designed to work
+inside of a [`<mat-form-field>`](https://material.angular.dev/components/form-field/overview)
+element.
+
+To add options to the select, add `<mat-option>` elements to the `<mat-select>`. Each `<mat-option>`
+has a `value` property that can be used to set the value that will be selected if the user chooses
+this option. The content of the `<mat-option>` is what will be shown to the user.
+
+Angular Material also supports use of the native `<select>` element inside of
+`<mat-form-field>`. The native control has several performance, accessibility,
+and usability advantages. See [the documentation for
+form-field](https://material.angular.dev/components/form-field) for more information.
+
+To use a native select inside `<mat-form-field>`, import `MatInputModule` and add the
+`matNativeControl` attribute to the `<select>` element.
+
+#### Exemplo: `select-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+interface Food {
+  value: string;
+  viewValue: string;
+}
+
+/**
+ * @title Basic select
+ */
+@Component({
+  selector: 'select-overview-example',
+  templateUrl: 'select-overview-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule],
+})
+export class SelectOverviewExample {
+  foods: Food[] = [
+    {value: 'steak-0', viewValue: 'Steak'},
+    {value: 'pizza-1', viewValue: 'Pizza'},
+    {value: 'tacos-2', viewValue: 'Tacos'},
+  ];
+}
+```
+
+```html
+<h4>Basic mat-select</h4>
+<mat-form-field>
+  <mat-label>Favorite food</mat-label>
+  <mat-select>
+    @for (food of foods; track food) {
+      <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<h4>Basic native select</h4>
+<mat-form-field>
+  <mat-label>Cars</mat-label>
+  <select matNativeControl required>
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </select>
+</mat-form-field>
+```
+
+### Getting and setting the select value
+
+The `<mat-select>` supports 2-way binding to the `value` property without the need for Angular
+forms.
+
+#### Exemplo: `select-value-binding`
+
+```ts
+import {Component} from '@angular/core';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Select with 2-way value binding */
+@Component({
+  selector: 'select-value-binding-example',
+  templateUrl: 'select-value-binding-example.html',
+  imports: [MatFormFieldModule, MatSelectModule],
+})
+export class SelectValueBindingExample {
+  selected = 'option2';
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Select an option</mat-label>
+  <mat-select [(value)]="selected">
+    <mat-option>None</mat-option>
+    <mat-option value="option1">Option 1</mat-option>
+    <mat-option value="option2">Option 2</mat-option>
+    <mat-option value="option3">Option 3</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<p>You selected: {{selected}}</p>
+```
+
+Both`<mat-select>` and `<select>` support all of the form directives from the core `FormsModule` (`NgModel`) and
+`ReactiveFormsModule` (`FormControl`, `FormGroup`, etc.) As with native `<select>`, `<mat-select>`
+also supports a `compareWith` function. (Additional information about using a custom `compareWith`
+function can be found in the
+[Angular forms documentation](https://angular.dev/api/forms/SelectControlValueAccessor#compareWith)).
+
+#### Exemplo: `select-form`
+
+```ts
+import {Component} from '@angular/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+
+interface Food {
+  value: string;
+  viewValue: string;
+}
+
+interface Car {
+  value: string;
+  viewValue: string;
+}
+
+/**
+ * @title Select in a form
+ */
+@Component({
+  selector: 'select-form-example',
+  templateUrl: 'select-form-example.html',
+  imports: [FormsModule, MatFormFieldModule, MatSelectModule, MatInputModule],
+})
+export class SelectFormExample {
+  selectedValue: string;
+  selectedCar: string;
+
+  foods: Food[] = [
+    {value: 'steak-0', viewValue: 'Steak'},
+    {value: 'pizza-1', viewValue: 'Pizza'},
+    {value: 'tacos-2', viewValue: 'Tacos'},
+  ];
+
+  cars: Car[] = [
+    {value: 'volvo', viewValue: 'Volvo'},
+    {value: 'saab', viewValue: 'Saab'},
+    {value: 'mercedes', viewValue: 'Mercedes'},
+  ];
+}
+```
+
+```html
+<form>
+  <h4>mat-select</h4>
+  <mat-form-field>
+    <mat-label>Favorite food</mat-label>
+    <mat-select [(ngModel)]="selectedValue" name="food">
+      @for (food of foods; track food) {
+        <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <p> Selected food: {{selectedValue}} </p>
+  <h4>native html select</h4>
+  <mat-form-field>
+    <mat-label>Favorite car</mat-label>
+    <select matNativeControl [(ngModel)]="selectedCar" name="car">
+      <option value="" selected></option>
+      @for (car of cars; track car) {
+        <option [value]="car.value">{{car.viewValue}}</option>
+      }
+    </select>
+  </mat-form-field>
+  <p> Selected car: {{selectedCar}} </p>
+</form>
+```
+
+### Form field features
+
+There are a number of `<mat-form-field>` features that can be used with both `<select>` and `<mat-select>`. These
+include error messages, hint text, prefix & suffix, and theming. For additional information about
+these features, see the
+[form field documentation](https://material.angular.dev/components/form-field/overview).
+
+#### Exemplo: `select-hint-error`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+interface Animal {
+  name: string;
+  sound: string;
+}
+
+/** @title Select with form field features */
+@Component({
+  selector: 'select-hint-error-example',
+  templateUrl: 'select-hint-error-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule],
+})
+export class SelectHintErrorExample {
+  animalControl = new FormControl<Animal | null>(null, Validators.required);
+  selectFormControl = new FormControl('', Validators.required);
+  animals: Animal[] = [
+    {name: 'Dog', sound: 'Woof!'},
+    {name: 'Cat', sound: 'Meow!'},
+    {name: 'Cow', sound: 'Moo!'},
+    {name: 'Fox', sound: 'Wa-pa-pa-pa-pa-pa-pow!'},
+  ];
+}
+```
+
+```html
+<h4>mat select</h4>
+<mat-form-field>
+  <mat-label>Favorite animal</mat-label>
+  <mat-select [formControl]="animalControl" required>
+    <mat-option>--</mat-option>
+    @for (animal of animals; track animal) {
+      <mat-option [value]="animal">{{animal.name}}</mat-option>
+    }
+  </mat-select>
+  @if (animalControl.hasError('required')) {
+    <mat-error>Please choose an animal</mat-error>
+  }
+  <mat-hint>{{animalControl.value?.sound}}</mat-hint>
+</mat-form-field>
+
+<h4>native html select</h4>
+<mat-form-field>
+  <mat-label>Select your car (required)</mat-label>
+  <select matNativeControl required [formControl]="selectFormControl">
+    <option label="--select something --"></option>
+    <option value="saab">Saab</option>
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </select>
+  @if (selectFormControl.hasError('required')) {
+    <mat-error>This field is required</mat-error>
+  }
+  <mat-hint>You can pick up your favorite car here</mat-hint>
+</mat-form-field>
+```
+
+### Setting a static placeholder
+
+The placeholder is text shown when the `<mat-form-field>` label is floating but the `<mat-select>`
+is empty. It is used to give the user an additional hint about the value they should select. The
+placeholder can be specified by setting the `placeholder` attribute on the `<mat-select>` element.
+In some cases that `<mat-form-field>` may use the placeholder as the label (see the
+[form field label documentation](https://material.angular.dev/components/form-field/overview#floating-label)).
+
+### Disabling the select or individual options
+
+It is possible to disable the entire select or individual options in the select by using the
+disabled property on the `<select>` or `<mat-select>` and the `<option>` or `<mat-option>` elements respectively.
+When working with Reactive Forms, the select component can be disabled/enabled via form controls.
+This can be accomplished by creating a `FormControl` with the disabled property
+`FormControl({value: '', disabled: true})` or using `FormControl.enable()`, `FormControl.disable()`.
+
+#### Exemplo: `select-disabled`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
+/** @title Disabled select */
+@Component({
+  selector: 'select-disabled-example',
+  templateUrl: 'select-disabled-example.html',
+  imports: [
+    MatCheckboxModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+  ],
+})
+export class SelectDisabledExample {
+  disableSelect = new FormControl(false);
+}
+```
+
+```html
+<p>
+  <mat-checkbox [formControl]="disableSelect">Disable select</mat-checkbox>
+</p>
+
+<h4>mat-select</h4>
+<mat-form-field>
+  <mat-label>Choose an option</mat-label>
+  <mat-select [disabled]="disableSelect.value">
+    <mat-option value="option1">Option 1</mat-option>
+    <mat-option value="option2" disabled>Option 2 (disabled)</mat-option>
+    <mat-option value="option3">Option 3</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<h4>native html select</h4>
+<mat-form-field>
+  <mat-label>Choose an option</mat-label>
+  <select matNativeControl [disabled]="disableSelect.value">
+    <option value="" selected></option>
+    <option value="volvo">Volvo</option>
+    <option value="saab" disabled>Saab</option>
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </select>
+</mat-form-field>
+```
+
+### Resetting the select value
+
+If you want one of your options to reset the select's value, you can omit specifying its value.
+
+#### Exemplo: `select-reset`
+
+```ts
+import {Component} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Select with reset option */
+@Component({
+  selector: 'select-reset-example',
+  templateUrl: 'select-reset-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule],
+})
+export class SelectResetExample {
+  states: string[] = [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'Illinois',
+    'Indiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'Montana',
+    'Nebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Carolina',
+    'North Dakota',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'Pennsylvania',
+    'Rhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming',
+  ];
+}
+```
+
+```html
+<h4>mat-select</h4>
+<mat-form-field>
+  <mat-label>State</mat-label>
+  <mat-select>
+    <mat-option>None</mat-option>
+    @for (state of states; track state) {
+      <mat-option [value]="state">{{state}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<h4>native html select</h4>
+<mat-form-field>
+  <mat-label>Select your car</mat-label>
+  <select matNativeControl id="mySelectId">
+    <option value="" disabled selected></option>
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </select>
+</mat-form-field>
+```
+
+### Allowing nullable options to be selected
+
+By default any options with a `null` or `undefined` value will reset the select's value. If instead
+you want the nullable options to be selectable, you can enable the `canSelectNullableOptions` input.
+The default value for the input can be controlled application-wide through the `MAT_SELECT_CONFIG`
+injection token.
+
+#### Exemplo: `select-selectable-null`
+
+```ts
+import {Component} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Select with selectable null options */
+@Component({
+  selector: 'select-selectable-null-example',
+  templateUrl: 'select-selectable-null-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule],
+})
+export class SelectSelectableNullExample {
+  value: number | null = null;
+  options = [
+    {label: 'None', value: null},
+    {label: 'One', value: 1},
+    {label: 'Two', value: 2},
+    {label: 'Three', value: 3},
+  ];
+}
+```
+
+```html
+<h4>mat-select allowing selection of nullable options</h4>
+<mat-form-field>
+  <mat-label>State</mat-label>
+  <mat-select [(ngModel)]="value" canSelectNullableOptions>
+    @for (option of options; track option) {
+      <mat-option [value]="option.value">{{option.label}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<h4>mat-select with default configuration</h4>
+<mat-form-field>
+  <mat-label>State</mat-label>
+  <mat-select [(ngModel)]="value">
+    @for (option of options; track option) {
+      <mat-option [value]="option.value">{{option.label}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+```
+
+### Creating groups of options
+
+The `<mat-optgroup>` element can be used to group common options under a subheading. The name of the
+group can be set using the `label` property of `<mat-optgroup>`. Like individual `<mat-option>`
+elements, an entire `<mat-optgroup>` can be disabled or enabled by setting the `disabled` property
+on the group.
+
+#### Exemplo: `select-optgroup`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+interface Pokemon {
+  value: string;
+  viewValue: string;
+}
+
+interface PokemonGroup {
+  disabled?: boolean;
+  name: string;
+  pokemon: Pokemon[];
+}
+
+/** @title Select with option groups */
+@Component({
+  selector: 'select-optgroup-example',
+  templateUrl: 'select-optgroup-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule],
+})
+export class SelectOptgroupExample {
+  pokemonControl = new FormControl('');
+  pokemonGroups: PokemonGroup[] = [
+    {
+      name: 'Grass',
+      pokemon: [
+        {value: 'bulbasaur-0', viewValue: 'Bulbasaur'},
+        {value: 'oddish-1', viewValue: 'Oddish'},
+        {value: 'bellsprout-2', viewValue: 'Bellsprout'},
+      ],
+    },
+    {
+      name: 'Water',
+      pokemon: [
+        {value: 'squirtle-3', viewValue: 'Squirtle'},
+        {value: 'psyduck-4', viewValue: 'Psyduck'},
+        {value: 'horsea-5', viewValue: 'Horsea'},
+      ],
+    },
+    {
+      name: 'Fire',
+      disabled: true,
+      pokemon: [
+        {value: 'charmander-6', viewValue: 'Charmander'},
+        {value: 'vulpix-7', viewValue: 'Vulpix'},
+        {value: 'flareon-8', viewValue: 'Flareon'},
+      ],
+    },
+    {
+      name: 'Psychic',
+      pokemon: [
+        {value: 'mew-9', viewValue: 'Mew'},
+        {value: 'mewtwo-10', viewValue: 'Mewtwo'},
+      ],
+    },
+  ];
+}
+```
+
+```html
+<h4>mat-select</h4>
+<mat-form-field>
+  <mat-label>Pokemon</mat-label>
+  <mat-select [formControl]="pokemonControl">
+    <mat-option>-- None --</mat-option>
+    @for (group of pokemonGroups; track group) {
+      <mat-optgroup [label]="group.name"
+                    [disabled]="group.disabled">
+        @for (pokemon of group.pokemon; track pokemon) {
+          <mat-option [value]="pokemon.value">{{pokemon.viewValue}}</mat-option>
+        }
+      </mat-optgroup>
+    }
+  </mat-select>
+</mat-form-field>
+
+<h4>native html select</h4>
+<mat-form-field>
+  <mat-label>Cars</mat-label>
+  <select matNativeControl>
+    <optgroup label="Swedish Cars">
+      <option value="volvo">volvo</option>
+      <option value="saab">Saab</option>
+    </optgroup>
+    <optgroup label="German Cars">
+      <option value="mercedes">Mercedes</option>
+      <option value="audi">Audi</option>
+    </optgroup>
+  </select>
+</mat-form-field>
+```
+
+### Multiple selection
+
+`<mat-select>` defaults to single-selection mode, but can be configured to allow multiple selection
+by setting the `multiple` property. This will allow the user to select multiple values at once. When
+using the `<mat-select>` in multiple selection mode, its value will be a sorted list of all selected
+values rather than a single value.
+
+Using multiple selection with a native select element (`<select multiple>`) is discouraged
+inside `<mat-form-field>`, as the inline listbox appearance is inconsistent with other
+Material Design components.
+
+#### Exemplo: `select-multiple`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Select with multiple selection */
+@Component({
+  selector: 'select-multiple-example',
+  templateUrl: 'select-multiple-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule],
+})
+export class SelectMultipleExample {
+  toppings = new FormControl('');
+  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Toppings</mat-label>
+  <mat-select [formControl]="toppings" multiple>
+    @for (topping of toppingList; track topping) {
+      <mat-option [value]="topping">{{topping}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+```
+
+### Customizing the trigger label
+
+If you want to display a custom trigger label inside a `<mat-select>`, you can use the
+`<mat-select-trigger>` element.
+
+#### Exemplo: `select-custom-trigger`
+
+```ts
+import {Component} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Select with custom trigger text */
+@Component({
+  selector: 'select-custom-trigger-example',
+  templateUrl: 'select-custom-trigger-example.html',
+  styleUrl: 'select-custom-trigger-example.css',
+  imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule],
+})
+export class SelectCustomTriggerExample {
+  toppings = new FormControl('');
+
+  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Toppings</mat-label>
+  <mat-select [formControl]="toppings" multiple>
+    <mat-select-trigger>
+      {{toppings.value?.[0] || ''}}
+      @if ((toppings.value?.length || 0) > 1) {
+        <span class="example-additional-selection">
+          (+{{(toppings.value?.length || 0) - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
+        </span>
+      }
+    </mat-select-trigger>
+    @for (topping of toppingList; track topping) {
+  <mat-option [value]="topping">{{topping}}</mat-option>
+}
+  </mat-select>
+</mat-form-field>
+```
+
+```css
+.example-additional-selection {
+  opacity: 0.75;
+  font-size: 0.75em;
+  line-height: 1;
+}
+```
+
+### Disabling the ripple effect
+
+By default, when a user clicks on a `<mat-option>`, a ripple animation is shown. This can be disabled
+by setting the `disableRipple` property on `<mat-select>`.
+
+#### Exemplo: `select-no-ripple`
+
+```ts
+import {Component} from '@angular/core';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** @title Select with no option ripple */
+@Component({
+  selector: 'select-no-ripple-example',
+  templateUrl: 'select-no-ripple-example.html',
+  imports: [MatFormFieldModule, MatSelectModule],
+})
+export class SelectNoRippleExample {}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Select an option</mat-label>
+  <mat-select disableRipple>
+    <mat-option value="1">Option 1</mat-option>
+    <mat-option value="2">Option 2</mat-option>
+    <mat-option value="3">Option 3</mat-option>
+  </mat-select>
+</mat-form-field>
+```
+
+### Adding custom styles to the dropdown panel
+
+In order to facilitate easily styling the dropdown panel, `<mat-select>` has a `panelClass` property
+which can be used to apply additional CSS classes to the dropdown panel.
+
+#### Exemplo: `select-panel-class`
+
+```ts
+import {Component, ViewEncapsulation} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/**
+ * @title Select with custom panel styling
+ */
+@Component({
+  selector: 'select-panel-class-example',
+  templateUrl: 'select-panel-class-example.html',
+  styleUrl: 'select-panel-class-example.css',
+  // Encapsulation has to be disabled in order for the
+  // component style to apply to the select panel.
+  encapsulation: ViewEncapsulation.None,
+  imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule],
+})
+export class SelectPanelClassExample {
+  panelColor = new FormControl('red');
+}
+```
+
+```html
+<mat-form-field>
+  <mat-label>Panel color</mat-label>
+  <mat-select [formControl]="panelColor"
+              panelClass="example-panel-{{panelColor.value}}">
+    <mat-option value="red">Red</mat-option>
+    <mat-option value="green">Green</mat-option>
+    <mat-option value="blue">Blue</mat-option>
+  </mat-select>
+</mat-form-field>
+```
+
+```css
+.example-panel-red.mat-mdc-select-panel {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.example-panel-green.mat-mdc-select-panel {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.example-panel-blue.mat-mdc-select-panel {
+  background: rgba(0, 0, 255, 0.5);
+}
+```
+
+### Changing when error messages are shown
+
+The `<mat-form-field>` allows you to
+[associate error messages](https://material.angular.dev/components/form-field/overview#error-messages)
+with your `<select>` or `<mat-select>`. By default, these error messages are shown when the control is invalid and
+either the user has interacted with (touched) the element or the parent form has been submitted. If
+you wish to override this behavior (e.g. to show the error as soon as the invalid control is dirty
+or when a parent form group is invalid), you can use the `errorStateMatcher` property of the
+`<mat-select>`. The property takes an instance of an `ErrorStateMatcher` object. An
+`ErrorStateMatcher` must implement a single method `isErrorState` which takes the `FormControl` for
+this `<mat-select>` as well as the parent form and returns a boolean indicating whether errors
+should be shown. (`true` indicating that they should be shown, and `false` indicating that they
+should not.)
+
+#### Exemplo: `select-error-state-matcher`
+
+```ts
+import {Component} from '@angular/core';
+import {
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {ErrorStateMatcher} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
+/** @title Select with a custom ErrorStateMatcher */
+@Component({
+  selector: 'select-error-state-matcher-example',
+  templateUrl: 'select-error-state-matcher-example.html',
+  imports: [MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatInputModule],
+})
+export class SelectErrorStateMatcherExample {
+  selected = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
+
+  selectFormControl = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
+
+  nativeSelectFormControl = new FormControl('valid', [
+    Validators.required,
+    Validators.pattern('valid'),
+  ]);
+
+  matcher = new MyErrorStateMatcher();
+}
+```
+
+```html
+<h4>mat-select</h4>
+<mat-form-field>
+  <mat-label>Choose one</mat-label>
+  <mat-select [formControl]="selected" [errorStateMatcher]="matcher">
+    <mat-option>Clear</mat-option>
+    <mat-option value="valid">Valid option</mat-option>
+    <mat-option value="invalid">Invalid option</mat-option>
+  </mat-select>
+  <mat-hint>Errors appear instantly!</mat-hint>
+  @if (selected.hasError('required')) {
+    <mat-error>You must make a selection</mat-error>
+  }
+  @if (selected.hasError('pattern') && !selected.hasError('required')) {
+    <mat-error>Your selection is invalid</mat-error>
+  }
+</mat-form-field>
+
+<h4>native html select</h4>
+<mat-form-field class="demo-full-width">
+  <mat-label>Choose one</mat-label>
+  <select matNativeControl [formControl]="nativeSelectFormControl" [errorStateMatcher]="matcher">
+    <option value=""></option>
+    <option value="valid" selected>Valid option</option>
+    <option value="invalid">Invalid option</option>
+  </select>
+  @if (nativeSelectFormControl.hasError('required')) {
+    <mat-error>You must make a selection</mat-error>
+  }
+  @if (nativeSelectFormControl.hasError('pattern') && !nativeSelectFormControl.hasError('required')) {
+    <mat-error>Your selection is invalid</mat-error>
+  }
+</mat-form-field>
+```
+
+A global error state matcher can be specified by setting the `ErrorStateMatcher` provider. This
+applies to all inputs. For convenience, `ShowOnDirtyErrorStateMatcher` is available in order to
+globally cause input errors to show when the input is dirty and invalid.
+
+```ts
+@NgModule({
+  providers: [
+    {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}
+  ]
+})
+```
+
+### Keyboard interaction
+| Keyboard shortcut                      | Action                                                                |
+|----------------------------------------|-----------------------------------------------------------------------|
+| <kbd>Down Arrow</kbd>                  | Navigate to the next option.                                          |
+| <kbd>Up Arrow</kbd>                    | Navigate to the previous option.                                      |
+| <kbd>Enter</kbd>                       | If closed, open the select panel. If open, selects the active option. |
+| <kbd>Escape</kbd>                      | Close the select panel.                                               |
+| <kbd>Alt</kbd> + <kbd>Up Arrow</kbd>   | Close the select panel.                                               |
+| <kbd>Alt</kbd> + <kbd>Down Arrow</kbd> | Open the select panel if there are any matching options.              |
+
+### Accessibility
+When possible, prefer a native `<select>` element over `MatSelect`. The native control
+provides the most accessible experience across the widest range of platforms.
+
+`MatSelect` implements the combobox pattern detailed in the [1.2 version of the ARIA
+specification](https://www.w3.org/TR/wai-aria-1.2). The combobox trigger controls a `role="listbox"`
+element opened in a pop-up. Previous versions of the ARIA specification
+required that `role="combobox"` apply to a text input control, but the 1.2 version of the
+specification supports a wider variety of interaction patterns. This newer usage of ARIA works
+in all browser and screen-reader combinations supported by Angular Material.
+
+Because the pop-up uses the `role="listbox"` pattern, you should _not_ put other interactive
+controls, such as buttons or checkboxes, inside a select option. Nesting interactive controls like
+this interferes with most assistive technology.
+
+Always provide an accessible label for the select. This can be done by adding a `<mat-label>`
+inside of `<mat-form-field>`, the `aria-label` attribute, or the `aria-labelledby` attribute.
+
+By default, `MatSelect` displays a checkmark to identify selected items. While you can hide the
+checkmark indicator for single-selection via `hideSingleSelectionIndicator`, this makes the
+component less accessible by making it harder or impossible for users to visually identify selected
+items.
+
+### Troubleshooting
+
+#### Error: Cannot change `multiple` mode of select after initialization
+
+This error is thrown if you attempt to bind the `multiple` property on `<mat-select>` to a dynamic
+value. (e.g. `[multiple]="isMultiple"` where the value of `isMultiple` changes over the course of
+the component's lifetime). If you need to change this dynamically, use `@if` or `@switch` instead:
+
+```html
+@if (isMultiple) {
+  <mat-select multiple>
+    ...
+  </mat-select>
+} @else {
+  <mat-select>
+    ...
+  </mat-select>
+}
+```
+
+#### Error: Value must be an array in multiple-selection mode
+
+This error is thrown if you attempt to assign a value other than `null`, `undefined`, or an array to
+a `<mat-select multiple>`. For example, something like `mySelect.value = 'option1'`. What you likely
+meant to do was `mySelect.value = ['option1']`.
+
+#### Error: `compareWith` must be a function
+
+This error occurs if you attempt to assign something other than a function to the `compareWith`
+property. For more information on proper usage of `compareWith` see the
+[Angular forms documentation](https://angular.dev/api/forms/SelectControlValueAccessor#compareWith)).

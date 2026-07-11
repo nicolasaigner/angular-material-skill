@@ -1,0 +1,61 @@
+<!-- GENERATED por angular-material-skill a partir de angular/components@21.0.2. NÃO editar à mão. -->
+
+# Slide Toggle
+
+> Fonte: [documentação oficial](https://material.angular.dev/components/slide-toggle/overview) — derivado de [`angular/components`](https://github.com/angular/components) (21.0.2), licença MIT. Ver NOTICE.
+
+`<mat-slide-toggle>` is an on/off control that can be toggled via clicking.
+
+#### Exemplo: `slide-toggle-overview`
+
+```ts
+import {Component} from '@angular/core';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
+/**
+ * @title Basic slide-toggles
+ */
+@Component({
+  selector: 'slide-toggle-overview-example',
+  templateUrl: 'slide-toggle-overview-example.html',
+  imports: [MatSlideToggleModule],
+})
+export class SlideToggleOverviewExample {}
+```
+
+```html
+<p><mat-slide-toggle>Slide me!</mat-slide-toggle></p>
+<p><mat-slide-toggle labelPosition="before">...and slide me too!</mat-slide-toggle></p>
+```
+
+The slide-toggle behaves similarly to a checkbox, though it does not support an `indeterminate`
+state like `<mat-checkbox>`.
+
+### Slide-toggle label
+The slide-toggle label is provided as the content to the `<mat-slide-toggle>` element.
+
+If you don't want the label to appear next to the slide-toggle, you can use
+[`aria-label`](https://www.w3.org/TR/wai-aria/states_and_properties#aria-label) or
+[`aria-labelledby`](https://www.w3.org/TR/wai-aria/states_and_properties#aria-labelledby) to
+specify an appropriate label.
+
+### Use with `@angular/forms`
+`<mat-slide-toggle>` is compatible with `@angular/forms` and supports both `FormsModule`
+and `ReactiveFormsModule`.
+
+### Accessibility
+
+`MatSlideToggle` uses an internal `<button role="switch">` to provide an accessible experience. This
+internal button receives focus and is automatically labelled by the text content of the
+`<mat-slide-toggle>` element. Avoid adding other interactive controls into the content of
+`<mat-slide-toggle>`, as this degrades the experience for users of assistive technology.
+
+Always provide an accessible label via `aria-label` or `aria-labelledby` for toggles without
+descriptive text content. For dynamic labels, `MatSlideToggle` provides input properties for binding
+`aria-label` and `aria-labelledby`. This means that you should not use the `attr.` prefix when
+binding these properties, as demonstrated below.
+
+```html
+<mat-slide-toggle [aria-label]="isSubscribedToEmailsMessage">
+</mat-slide-toggle>
+```
