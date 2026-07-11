@@ -4,12 +4,21 @@ import { fileURLToPath } from 'node:url';
 import { SOURCES } from './lib/sources.mjs';
 
 export function renderIndex(sources) {
-  const rows = sources
-    .slice()
-    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-    .map((s) => `| [${s.name}](./${s.name}.md) | ${s.category} |`)
-    .join('\n');
-  return ['<!-- GENERATED. NÃO editar à mão. -->', '', '# Índice', '', '| Referência | Categoria |', '| --- | --- |', rows, ''].join('\n');
+  const byName = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+  const material = sources.filter((s) => s.category === 'component' && !s.name.startsWith('cdk-'));
+  const cdk = sources.filter((s) => s.name.startsWith('cdk-'));
+  const guides = sources.filter((s) => s.category === 'guide');
+  const section = (title, list) => {
+    if (!list.length) return [];
+    const rows = list.slice().sort(byName).map((s) => `| [${s.name}](./${s.name}.md) |`).join('\n');
+    return [`## ${title} (${list.length})`, '', '| Referência |', '| --- |', rows, ''];
+  };
+  return [
+    '<!-- GENERATED. NÃO editar à mão. -->', '', '# Índice', '',
+    ...section('Material', material),
+    ...section('CDK', cdk),
+    ...section('Guias', guides),
+  ].join('\n');
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
