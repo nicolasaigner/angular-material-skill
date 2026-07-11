@@ -33,6 +33,9 @@ jobs:
           TAG: ${{ steps.check.outputs.latest }}
         run: |
           case "$TAG" in
+            *[!0-9.v-]*) echo "tag inválida (caractere não permitido): $TAG"; exit 1 ;;
+          esac
+          case "$TAG" in
             [0-9]*.[0-9]*.[0-9]* | v[0-9]*.[0-9]*.[0-9]*) ;;
             *) echo "tag inválida (esperado semver, ex. 21.0.2): $TAG"; exit 1 ;;
           esac
@@ -46,6 +49,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.check.outputs.latest }}
         run: |
+          case "$TAG" in
+            *[!0-9.v-]*) echo "tag inválida (caractere não permitido): $TAG"; exit 1 ;;
+          esac
           case "$TAG" in
             [0-9]*.[0-9]*.[0-9]* | v[0-9]*.[0-9]*.[0-9]*) ;;
             *) echo "tag inválida (esperado semver, ex. 21.0.2): $TAG"; exit 1 ;;
