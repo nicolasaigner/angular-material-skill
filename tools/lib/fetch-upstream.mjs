@@ -1,5 +1,5 @@
 import { UPSTREAM_REPO } from './upstream.mjs';
-import { EXAMPLE_TAG_PATTERN } from './example-tag.mjs';
+import { EXAMPLE_TAG_PATTERN, parseExampleTag } from './example-tag.mjs';
 
 const EXAMPLE_TAG = new RegExp(EXAMPLE_TAG_PATTERN, 'g');
 
@@ -7,9 +7,20 @@ export function rawUrl(tag, path) {
   return `https://raw.githubusercontent.com/${UPSTREAM_REPO}/${tag}/${path}`;
 }
 
+// Parses every example tag (plain name or JSON, see parseExampleTag) and
+// returns the distinct `example` names, deduplicated, in order of first
+// appearance. Multiple JSON tags referencing the same example (different
+// files/regions) collapse into a single fetch.
 export function extractExampleNames(prose) {
+  const seen = new Set();
   const names = [];
-  for (const m of prose.matchAll(EXAMPLE_TAG)) names.push(m[1].trim());
+  for (const m of prose.matchAll(EXAMPLE_TAG)) {
+    const { example } = parseExampleTag(m[1]);
+    if (example && !seen.has(example)) {
+      seen.add(example);
+      names.push(example);
+    }
+  }
   return names;
 }
 

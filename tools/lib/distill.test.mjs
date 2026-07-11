@@ -92,3 +92,109 @@ test('exemplo ausente com nome contendo quebra de linha renderiza fallback de um
   // a saída inteira não deve ter duas linhas consecutivas vazias quebrando o nome em partes
   assert.doesNotMatch(out, /nao\nexiste/);
 });
+
+// Task 4b - Bug #1: tag JSON com "file" -> renderiza só aquele arquivo (fixture real cdk-menu.md).
+test('tag JSON com file renderiza só o arquivo pedido (não o exemplo inteiro)', () => {
+  const p = [
+    'Texto antes.',
+    '',
+    '<!-- example({',
+    '  "example": "cdk-menu-standalone-menu",',
+    '  "file": "cdk-menu-standalone-menu-example.html"',
+    '  }) -->',
+    '',
+    'Texto depois.',
+  ].join('\n');
+  const ex = {
+    'cdk-menu-standalone-menu': {
+      ts: 'export class CdkMenuStandaloneMenuExample {}',
+      html: '<button [cdkMenuTriggerFor]="menu" class="example-standalone-trigger">Click me!</button>',
+    },
+  };
+  const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
+  assert.doesNotMatch(out, /<!--[-\s]*example\(/);
+  assert.match(out, /```html/);
+  assert.match(out, /Click me!/);
+  assert.ok(!out.includes('```ts'), 'não deve incluir o .ts quando a tag JSON pede só o .html');
+});
+
+// Task 4b - Bug #1: tag JSON com "file" + "region" -> renderiza só a região extraída (fixture real).
+test('tag JSON com file+region renderiza só a região extraída, sem marcadores docregion', () => {
+  const p = [
+    'Texto antes.',
+    '',
+    '<!-- example({"example":"cdk-menu-standalone-menu",',
+    '              "file":"cdk-menu-standalone-menu-example.html",',
+    '              "region":"trigger"}) -->',
+    '',
+    'Texto depois.',
+  ].join('\n');
+  const html = [
+    '<!-- #docregion trigger -->',
+    '<button [cdkMenuTriggerFor]="menu" class="example-standalone-trigger">Click me!</button>',
+    '<!-- #enddocregion trigger -->',
+    '',
+    '<ng-template #menu>',
+    '  <div class="example-menu" cdkMenu>...</div>',
+    '</ng-template>',
+  ].join('\n');
+  const ex = { 'cdk-menu-standalone-menu': { html } };
+  const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
+  assert.doesNotMatch(out, /<!--[-\s]*example\(/);
+  assert.match(out, /Click me!/);
+  assert.doesNotMatch(out, /ng-template/);
+  assert.doesNotMatch(out, /docregion/);
+});
+
+// Task 4b - Bug #2: nome simples (arquivo inteiro) deve sair sem marcadores #docregion vazados.
+test('exemplo inteiro (nome simples) sai sem marcadores #docregion/#enddocregion vazados', () => {
+  const p = 'Texto.\n\n<!-- example(cdk-menu-standalone-menu) -->\n';
+  const ex = {
+    'cdk-menu-standalone-menu': {
+      html: [
+        '<!-- #docregion trigger -->',
+        '<button>Click me!</button>',
+        '<!-- #enddocregion trigger -->',
+        '<ng-template #menu>menu</ng-template>',
+      ].join('\n'),
+    },
+  };
+  const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
+  assert.doesNotMatch(out, /docregion/);
+  assert.match(out, /Click me!/);
+});
+
+// Task 4b: file pedido pela tag JSON mas ausente no fetch -> fallback de uma linha, não quebra.
+test('tag JSON pede um file que não veio no fetch -> fallback, não quebra', () => {
+  const p = '<!-- example({"example":"cdk-menu-standalone-menu","file":"nao-baixado.css"}) -->';
+  const ex = { 'cdk-menu-standalone-menu': { html: '<button>x</button>' } };
+  const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
+  assert.match(out, /não encontrado/i);
+  assert.doesNotMatch(out, /<!--[-\s]*example\(/);
+});
+
+// Task 4b: tag JSON pede uma region que não existe no arquivo -> fallback, não quebra.
+test('tag JSON pede uma region inexistente no arquivo -> fallback, não quebra', () => {
+  const p = '<!-- example({"example":"cdk-menu-standalone-menu","file":"x.html","region":"nao-existe"}) -->';
+  const ex = { 'cdk-menu-standalone-menu': { html: '<button>x</button>' } };
+  const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
+  assert.match(out, /não encontrado/i);
+  assert.doesNotMatch(out, /<!--[-\s]*example\(/);
+});
+
+// Task 4b - Bug #3: dedup de H1 robusto — H1 precedido por bloco <style> (fixture real:
+// theming-your-components.md) não deve duplicar o título.
+test('H1 robusto: bloco <style> antes do H1 da prosa não duplica o título (theming-your-components)', () => {
+  const p = '<style>.x{}</style>\n\n# Theming your components\nTexto.';
+  const out = distill({ name: 'theming-your-components', category: 'guide', prose: p, examples: {}, tag: 'v1' });
+  const count = (out.match(/^# /mg) || []).length;
+  assert.equal(count, 1);
+  assert.match(out, /^# Theming your components$/m);
+});
+
+// Task 4b - Bug #3: H2 sozinho não deve ser confundido com H1 -> template ainda injeta o título.
+test('H1 robusto: prosa com só H2 continua recebendo o título do template', () => {
+  const p = '## Só subtítulo\nTexto';
+  const out = distill({ name: 'button', category: 'component', prose: p, examples: {}, tag: 'v1' });
+  assert.match(out, /^# Button/m);
+});

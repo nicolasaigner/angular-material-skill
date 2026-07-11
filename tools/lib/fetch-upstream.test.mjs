@@ -20,6 +20,51 @@ test('extractExampleNames tolera a variante de 3 traços <!--- example(x) --->',
   assert.deepEqual(extractExampleNames(p), ['bar']);
 });
 
+// Fixture real: angular/components@21.0.2 src/cdk/menu/menu.md (trecho literal)
+// Duas tags JSON referenciam o mesmo example (arquivo/região diferentes) seguidas de
+// uma terceira tag JSON de outro example -> dedup deve colapsar as duas primeiras.
+test('extractExampleNames dedup tags JSON do mesmo example (fixture real cdk-menu.md)', () => {
+  const p = [
+    'Import the `CdkMenuModule` into the `NgModule`...',
+    '',
+    '<!-- example({',
+    '  "example": "cdk-menu-standalone-menu",',
+    '  "file": "cdk-menu-standalone-menu-example.html"',
+    '  }) -->',
+    '',
+    'Most menu interactions consist of two parts: a trigger and a menu panel.',
+    '',
+    '<!-- example({"example":"cdk-menu-standalone-menu",',
+    '              "file":"cdk-menu-standalone-menu-example.html",',
+    '              "region":"trigger"}) -->',
+    '',
+    'When creating a submenu trigger, add both `cdkMenuItem` and `cdkMenuTriggerFor`.',
+    '',
+    '<!-- example({"example":"cdk-menu-menubar",',
+    '              "file":"cdk-menu-menubar-example.html",',
+    '              "region":"file-trigger"}) -->',
+  ].join('\n');
+  assert.deepEqual(extractExampleNames(p), ['cdk-menu-standalone-menu', 'cdk-menu-menubar']);
+});
+
+test('extractExampleNames devolve uma única busca para 3 tags JSON do mesmo example com regiões diferentes', () => {
+  const p = [
+    '<!-- example({"example":"cdk-menu-standalone-stateful-menu","file":"x.html","region":"a"}) -->',
+    '<!-- example({"example":"cdk-menu-standalone-stateful-menu","file":"x.html","region":"b"}) -->',
+    '<!-- example({"example":"cdk-menu-standalone-stateful-menu","file":"x.ts"}) -->',
+  ].join('\n');
+  assert.deepEqual(extractExampleNames(p), ['cdk-menu-standalone-stateful-menu']);
+});
+
+test('extractExampleNames mistura forma simples e JSON preservando ordem de primeira aparição', () => {
+  const p = [
+    '<!-- example(button-overview) -->',
+    '<!-- example({"example":"button-types","file":"button-types-example.ts"}) -->',
+    '<!-- example(button-overview) -->',
+  ].join('\n');
+  assert.deepEqual(extractExampleNames(p), ['button-overview', 'button-types']);
+});
+
 test('fetchSources busca prosa + trio de exemplo via rawGet fake', async () => {
   const files = {
     'https://raw.githubusercontent.com/angular/components/v1/src/material/button/button.md':
