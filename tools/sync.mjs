@@ -10,6 +10,10 @@ export async function runSync({ tag, sources, rawGet, refsDir, manifestPath }) {
   const fetched = await fetchSources(tag, sources, rawGet);
   const currentHashes = {};
   for (const [name, s] of Object.entries(fetched)) {
+    // NB: o hash cobre o conteúdo BUSCADO (prosa + exemplos), não a saída do distill().
+    // Uma mudança só na lógica do distill (sem bump do upstream) NÃO dispara regeneração;
+    // nesse caso, limpe manifest.perFile para forçar um regen completo. O workflow
+    // sync-upstream dispara em release novo (conteúdo muda → hash muda), então não é afetado.
     currentHashes[name] = hashContent(s.prose + JSON.stringify(s.examples));
   }
   const manifest = await readManifest(manifestPath);

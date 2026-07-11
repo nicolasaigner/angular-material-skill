@@ -36,8 +36,9 @@ ou sob rate-limit — foi o que ocorreu no ambiente de desenvolvimento inicial.
 
 Mitigações (por ordem de robustez):
 
-1. **Token:** exportar `GITHUB_TOKEN` e enviar no header `Authorization: Bearer` eleva
-   o limite para 5000 req/hora. (Melhoria de backlog: fazer o `httpApiGet` ler o env.)
+1. **Token:** exportar `GITHUB_TOKEN` eleva o limite para 5000 req/hora — o
+   `check-release.mjs` já lê o env (via `buildApiHeaders`) e envia o header
+   `Authorization: Bearer` automaticamente quando a variável está definida.
 2. **`git ls-remote --tags`:** descobrir a última tag pelo protocolo git, sem a REST API:
    ```bash
    git ls-remote --tags --refs https://github.com/angular/components.git \
