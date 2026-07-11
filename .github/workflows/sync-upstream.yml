@@ -30,8 +30,12 @@ jobs:
         if: steps.check.outputs.behind == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.check.outputs.latest }}
         run: |
-          TAG="${{ steps.check.outputs.latest }}"
+          case "$TAG" in
+            [0-9]*.[0-9]*.[0-9]* | v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "tag inválida (esperado semver, ex. 21.0.2): $TAG"; exit 1 ;;
+          esac
           node tools/discover-sources.mjs --to "$TAG"
           node tools/sync.mjs "$TAG"
           node tools/gen-index.mjs
@@ -40,8 +44,12 @@ jobs:
         if: steps.check.outputs.behind == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.check.outputs.latest }}
         run: |
-          TAG="${{ steps.check.outputs.latest }}"
+          case "$TAG" in
+            [0-9]*.[0-9]*.[0-9]* | v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "tag inválida (esperado semver, ex. 21.0.2): $TAG"; exit 1 ;;
+          esac
           BRANCH="chore/sync-$TAG"
           if git ls-remote --exit-code --heads origin "$BRANCH"; then
             echo "branch $BRANCH já existe — PR presumido aberto, nada a fazer."
