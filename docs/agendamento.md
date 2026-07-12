@@ -46,8 +46,3 @@ Mitigações (por ordem de robustez):
      | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
    ```
    Depois: `npm run sync -- <tag>`.
-
-## Publicação
-
-O repositório é publicado no GitHub público (`nicolasaigner/angular-material-skill`,
-MIT) e espelhado no [redacted] privado. Ver `README.md` para instalação pelo consumidor.
