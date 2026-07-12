@@ -1,10 +1,10 @@
-<!-- GENERATED. NÃO editar à mão. -->
+<!-- GENERATED. Do not edit by hand. -->
 
-# Índice
+# Index
 
 ## Material (36)
 
-| Referência |
+| Reference |
 | --- |
 | [autocomplete](./autocomplete.md) |
 | [badge](./badge.md) |
@@ -45,7 +45,7 @@
 
 ## CDK (22)
 
-| Referência |
+| Reference |
 | --- |
 | [cdk-a11y](./cdk-a11y.md) |
 | [cdk-accordion](./cdk-accordion.md) |
@@ -70,9 +70,9 @@
 | [cdk-text-field](./cdk-text-field.md) |
 | [cdk-tree](./cdk-tree.md) |
 
-## Guias (10)
+## Guides (10)
 
-| Referência |
+| Reference |
 | --- |
 | [bidirectionality](./bidirectionality.md) |
 | [creating-a-custom-form-field-control](./creating-a-custom-form-field-control.md) |
