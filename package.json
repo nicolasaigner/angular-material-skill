@@ -1,7 +1,7 @@
 {
   "name": "angular-material-skill",
   "version": "0.1.0",
-  "description": "Skill de IA para Angular Material, gerada e sincronizada a partir de angular/components.",
+  "description": "AI skill for Angular Material, generated and synced from angular/components.",
   "type": "module",
   "private": false,
   "license": "MIT",

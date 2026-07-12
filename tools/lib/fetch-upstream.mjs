@@ -44,7 +44,7 @@ export async function fetchSources(tag, sources, rawGet) {
     try {
       const prose = await rawGet(rawUrl(tag, s.prosePath));
       if (prose == null) {
-        console.warn(`[fetch] pulando '${s.name}': prosa 404 em ${s.prosePath}`);
+        console.warn(`[fetch] skipping '${s.name}': prose 404 at ${s.prosePath}`);
         continue;
       }
       const examples = {};
@@ -54,15 +54,15 @@ export async function fetchSources(tag, sources, rawGet) {
           try {
             ex = await fetchExample(tag, s.examplesDir, exName, rawGet);
           } catch (err) {
-            console.warn(`[fetch] exemplo '${exName}' de '${s.name}' falhou: ${err.message}`);
+            console.warn(`[fetch] example '${exName}' of '${s.name}' failed: ${err.message}`);
           }
           if (ex) examples[exName] = ex;
-          else console.warn(`[fetch] exemplo '${exName}' de '${s.name}' não encontrado`);
+          else console.warn(`[fetch] example '${exName}' of '${s.name}' not found`);
         }
       }
       out[s.name] = { category: s.category, prose, examples };
     } catch (err) {
-      console.warn(`[fetch] falha em '${s.name}', pulando: ${err.message}`);
+      console.warn(`[fetch] failed on '${s.name}', skipping: ${err.message}`);
     }
   }
   return out;

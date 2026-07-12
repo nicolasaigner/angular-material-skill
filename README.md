@@ -19,7 +19,7 @@ standard.
 skills/angular-material/     ← the skill (this is what you install)
   SKILL.md                   ← frontmatter (name + description) + how-to-use
   references/
-    _index.md                ← the map: grouped into Material / CDK / Guias
+    _index.md                ← the map: grouped into Material / CDK / Guides
     <component>.md            ← one distilled reference per component/guide
 tools/                       ← the deterministic generation/sync pipeline (for maintainers)
 ```
@@ -56,7 +56,7 @@ work (the `description` frontmatter drives the trigger), or you can invoke it ex
 
 ## How the agent uses it
 
-1. Opens `references/_index.md` — the map, grouped into **Material**, **CDK**, and **Guias**.
+1. Opens `references/_index.md` — the map, grouped into **Material**, **CDK**, and **Guides**.
 2. Opens the `references/<name>.md` for the relevant component or guide (CDK entries use the
    `cdk-` prefix, e.g. `cdk-overlay.md`).
 3. Follows the prose + inlined examples and respects the accessibility sections.
@@ -89,7 +89,7 @@ git commit -am "sync: angular/components <tag>"
 - No runtime dependencies — the pipeline uses only Node's standard library.
 - `npm test` runs the suite (`node --test`); the pipeline is deterministic and its network
   access is injected, so tests run offline.
-- Scheduling the release notifier locally: see [`docs/agendamento.md`](docs/agendamento.md).
+- Scheduling the release notifier locally: see [`docs/scheduling.md`](docs/scheduling.md).
 
 ## License & attribution
 

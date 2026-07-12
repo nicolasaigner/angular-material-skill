@@ -17,7 +17,7 @@ const sources = [
   { name: 'button', category: 'component', prosePath: 'src/material/button/button.md', examplesDir: 'src/components-examples/material/button' },
 ];
 
-test('runSync gera reference, popula manifest e é idempotente', async () => {
+test('runSync generates the reference, populates the manifest, and is idempotent', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'ams-sync-'));
   try {
     const refsDir = dir;
@@ -35,7 +35,7 @@ test('runSync gera reference, popula manifest e é idempotente', async () => {
     assert.equal(manifest.generatedTag, 'v1');
     assert.ok(manifest.perFile.button);
 
-    // segunda rodada na mesma tag → nada muda
+    // second run on the same tag → nothing changes
     const second = await runSync({ tag: 'v1', sources, rawGet, refsDir, manifestPath });
     assert.deepEqual(second.changed, []);
   } finally {
@@ -43,8 +43,8 @@ test('runSync gera reference, popula manifest e é idempotente', async () => {
   }
 });
 
-// Fix B: runSync deve criar o refsDir quando ele ainda não existe.
-test('runSync cria refsDir quando ele não existe', async () => {
+// Fix B: runSync must create refsDir when it does not exist yet.
+test('runSync creates refsDir when it does not exist', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'ams-sync-'));
   try {
     const refsDir = join(dir, 'does', 'not', 'exist', 'references');
@@ -60,21 +60,21 @@ test('runSync cria refsDir quando ele não existe', async () => {
   }
 });
 
-// Fix E: parseTag deve ser puro, testável e aceitar forma posicional (npm 11 mangla --to).
-test('parseTag aceita --to <tag>', () => {
+// Fix E: parseTag must be pure, testable, and accept the positional form (npm 11 mangles --to).
+test('parseTag accepts --to <tag>', () => {
   assert.equal(parseTag(['--to', '21.0.2']), '21.0.2');
 });
 
-test('parseTag aceita tag posicional', () => {
+test('parseTag accepts a positional tag', () => {
   assert.equal(parseTag(['21.0.2']), '21.0.2');
 });
 
-test('parseTag retorna null sem argumentos', () => {
+test('parseTag returns null with no arguments', () => {
   assert.equal(parseTag([]), null);
 });
 
-// Fix 2: um run todo-404 (nada buscado) não deve gravar a tag no manifest.
-test('runSync não grava generatedTag quando nada foi buscado (all-404)', async () => {
+// Fix 2: a run that is all-404 (nothing fetched) must not write the tag to the manifest.
+test('runSync does not write generatedTag when nothing was fetched (all-404)', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'ams-sync-'));
   try {
     const refsDir = join(dir, 'references');

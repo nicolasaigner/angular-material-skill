@@ -2,16 +2,16 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseExampleTag } from './example-tag.mjs';
 
-test('parseExampleTag: nome simples', () => {
+test('parseExampleTag: plain name', () => {
   assert.deepEqual(parseExampleTag('badge-overview'), { example: 'badge-overview' });
 });
 
-test('parseExampleTag: nome simples com espaços ao redor é aparado', () => {
+test('parseExampleTag: plain name with surrounding spaces is trimmed', () => {
   assert.deepEqual(parseExampleTag('  badge-overview  '), { example: 'badge-overview' });
 });
 
-// Fixture real: angular/components@21.0.2 src/cdk/menu/menu.md
-test('parseExampleTag: JSON multi-linha com file', () => {
+// Real fixture: angular/components@21.0.2 src/cdk/menu/menu.md
+test('parseExampleTag: multi-line JSON with file', () => {
   const payload = `{
   "example": "cdk-menu-standalone-menu",
   "file": "cdk-menu-standalone-menu-example.html"
@@ -22,8 +22,8 @@ test('parseExampleTag: JSON multi-linha com file', () => {
   assert.equal(out.region, undefined);
 });
 
-// Fixture real: angular/components@21.0.2 src/cdk/menu/menu.md
-test('parseExampleTag: JSON de uma linha com region', () => {
+// Real fixture: angular/components@21.0.2 src/cdk/menu/menu.md
+test('parseExampleTag: single-line JSON with region', () => {
   const payload =
     '{"example":"cdk-menu-standalone-menu",\n' +
     '              "file":"cdk-menu-standalone-menu-example.html",\n' +
@@ -34,18 +34,18 @@ test('parseExampleTag: JSON de uma linha com region', () => {
   assert.equal(out.region, 'trigger');
 });
 
-test('parseExampleTag: nome com quebra de linha e sem chave -> nome simples colapsado (whitespace vira espaço único)', () => {
+test('parseExampleTag: name with a line break and no braces -> collapsed plain name (whitespace becomes a single space)', () => {
   const out = parseExampleTag('nao\nexiste');
   assert.deepEqual(out, { example: 'nao existe' });
 });
 
-test('parseExampleTag: JSON malformado cai para nome colapsado tolerante (não quebra)', () => {
-  const out = parseExampleTag('{ "example": "foo", }'); // vírgula sobrando invalida o JSON
+test('parseExampleTag: malformed JSON falls back to a tolerant collapsed name (does not break)', () => {
+  const out = parseExampleTag('{ "example": "foo", }'); // trailing comma invalidates the JSON
   assert.equal(typeof out.example, 'string');
-  assert.ok(!out.example.includes('\n'), 'fallback tolerante não deve conter quebra de linha');
+  assert.ok(!out.example.includes('\n'), 'the tolerant fallback must not contain a line break');
 });
 
-test('parseExampleTag: JSON sem file/region deixa os dois undefined', () => {
+test('parseExampleTag: JSON without file/region leaves both undefined', () => {
   const out = parseExampleTag('{"example":"badge-overview"}');
   assert.deepEqual(out, { example: 'badge-overview', file: undefined, region: undefined });
 });

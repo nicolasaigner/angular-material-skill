@@ -5,6 +5,6 @@ export const SOURCES = sourcesData.sources;
 
 export function getSource(name) {
   const found = SOURCES.find((s) => s.name === name);
-  if (!found) throw new Error(`Source desconhecido: ${name}`);
+  if (!found) throw new Error(`Unknown source: ${name}`);
   return found;
 }

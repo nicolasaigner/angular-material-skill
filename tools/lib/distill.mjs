@@ -11,14 +11,14 @@ function extForFile(file) {
 }
 
 function exampleHeading({ example, file, region }) {
-  let heading = `#### Exemplo: \`${example}\``;
+  let heading = `#### Example: \`${example}\``;
   if (file) heading += ` — \`${file}\``;
-  if (region) heading += ` (região \`${region}\`)`;
+  if (region) heading += ` (region \`${region}\`)`;
   return heading;
 }
 
 function notFound(label, extra) {
-  return `> _(exemplo \`${label}\`${extra ? ` ${extra}` : ''} não encontrado no upstream)_`;
+  return `> _(example \`${label}\`${extra ? ` ${extra}` : ''} not found upstream)_`;
 }
 
 // Renders one `<!-- example(...) -->` occurrence. `parsed` is the result of
@@ -32,12 +32,12 @@ function renderExample(parsed, ex) {
   if (parsed.file) {
     const ext = extForFile(parsed.file);
     const raw = ext ? ex[ext] : null;
-    if (!raw) return notFound(label, `(arquivo \`${parsed.file}\`)`);
+    if (!raw) return notFound(label, `(file \`${parsed.file}\`)`);
 
     let code;
     if (parsed.region) {
       code = extractRegion(raw, parsed.region).trim();
-      if (!code) return notFound(label, `(região \`${parsed.region}\` de \`${parsed.file}\`)`);
+      if (!code) return notFound(label, `(region \`${parsed.region}\` of \`${parsed.file}\`)`);
     } else {
       code = stripDocregionMarkers(raw).trim();
     }

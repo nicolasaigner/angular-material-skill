@@ -2,28 +2,28 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { rawUrl, extractExampleNames, fetchSources } from './fetch-upstream.mjs';
 
-test('rawUrl monta a URL correta', () => {
+test('rawUrl builds the correct URL', () => {
   assert.equal(
     rawUrl('v18.2.0', 'src/material/button/button.md'),
     'https://raw.githubusercontent.com/angular/components/v18.2.0/src/material/button/button.md',
   );
 });
 
-test('extractExampleNames pega os nomes dos comentários', () => {
+test('extractExampleNames picks the names out of the comments', () => {
   const p = 'a\n<!-- example(button-overview) -->\nb\n<!-- example(button-types) -->';
   assert.deepEqual(extractExampleNames(p), ['button-overview', 'button-types']);
 });
 
-// Fix A: upstream table.md usa a variante de 3 traços.
-test('extractExampleNames tolera a variante de 3 traços <!--- example(x) --->', () => {
+// Fix A: upstream table.md uses the 3-dash variant.
+test('extractExampleNames tolerates the 3-dash variant <!--- example(x) --->', () => {
   const p = 'a\n<!--- example(bar) --->';
   assert.deepEqual(extractExampleNames(p), ['bar']);
 });
 
-// Fixture real: angular/components@21.0.2 src/cdk/menu/menu.md (trecho literal)
-// Duas tags JSON referenciam o mesmo example (arquivo/região diferentes) seguidas de
-// uma terceira tag JSON de outro example -> dedup deve colapsar as duas primeiras.
-test('extractExampleNames dedup tags JSON do mesmo example (fixture real cdk-menu.md)', () => {
+// Real fixture: angular/components@21.0.2 src/cdk/menu/menu.md (literal excerpt)
+// Two JSON tags reference the same example (different file/region) followed by
+// a third JSON tag for another example -> dedup must collapse the first two.
+test('extractExampleNames dedups JSON tags for the same example (real cdk-menu.md fixture)', () => {
   const p = [
     'Import the `CdkMenuModule` into the `NgModule`...',
     '',
@@ -47,7 +47,7 @@ test('extractExampleNames dedup tags JSON do mesmo example (fixture real cdk-men
   assert.deepEqual(extractExampleNames(p), ['cdk-menu-standalone-menu', 'cdk-menu-menubar']);
 });
 
-test('extractExampleNames devolve uma única busca para 3 tags JSON do mesmo example com regiões diferentes', () => {
+test('extractExampleNames returns a single fetch for 3 JSON tags of the same example with different regions', () => {
   const p = [
     '<!-- example({"example":"cdk-menu-standalone-stateful-menu","file":"x.html","region":"a"}) -->',
     '<!-- example({"example":"cdk-menu-standalone-stateful-menu","file":"x.html","region":"b"}) -->',
@@ -56,7 +56,7 @@ test('extractExampleNames devolve uma única busca para 3 tags JSON do mesmo exa
   assert.deepEqual(extractExampleNames(p), ['cdk-menu-standalone-stateful-menu']);
 });
 
-test('extractExampleNames mistura forma simples e JSON preservando ordem de primeira aparição', () => {
+test('extractExampleNames mixes the plain and JSON forms, preserving first-appearance order', () => {
   const p = [
     '<!-- example(button-overview) -->',
     '<!-- example({"example":"button-types","file":"button-types-example.ts"}) -->',
@@ -65,7 +65,7 @@ test('extractExampleNames mistura forma simples e JSON preservando ordem de prim
   assert.deepEqual(extractExampleNames(p), ['button-overview', 'button-types']);
 });
 
-test('fetchSources busca prosa + trio de exemplo via rawGet fake', async () => {
+test('fetchSources fetches prose + example trio via a fake rawGet', async () => {
   const files = {
     'https://raw.githubusercontent.com/angular/components/v1/src/material/button/button.md':
       'Botões.\n<!-- example(button-overview) -->',
@@ -85,19 +85,19 @@ test('fetchSources busca prosa + trio de exemplo via rawGet fake', async () => {
   assert.equal(out.button.examples['button-overview'].css, undefined);
 });
 
-test('fetchSources pula source sem prosa (404) com aviso', async () => {
+test('fetchSources skips a source with no prose (404) with a warning', async () => {
   const rawGet = async () => null;
   const sources = [{ name: 'fantasma', category: 'component', prosePath: 'x/y.md', examplesDir: 'z' }];
   const out = await fetchSources('v1', sources, rawGet);
   assert.equal(out.fantasma, undefined);
 });
 
-// Fix 4: uma falha (throw, não 404) num source isola nele, não derruba os outros.
-test('fetchSources isola falha (throw) de um source e continua os demais', async () => {
+// Fix 4: a failure (throw, not 404) on one source isolates to it, without bringing down the others.
+test('fetchSources isolates a failure (throw) on one source and continues with the rest', async () => {
   const urlA = 'https://raw.githubusercontent.com/angular/components/v1/src/material/a/a.md';
   const urlB = 'https://raw.githubusercontent.com/angular/components/v1/src/material/b/b.md';
   const rawGet = async (url) => {
-    if (url === urlA) throw new Error('HTTP 500 simulado');
+    if (url === urlA) throw new Error('simulated HTTP 500');
     if (url === urlB) return 'Prosa de B.';
     return null;
   };

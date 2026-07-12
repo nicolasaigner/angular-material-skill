@@ -29,7 +29,7 @@ export async function discoverSources(tag, treeGet) {
   for (const p of paths) {
     const s = deriveSource(p);
     if (!s) continue;
-    if (seen.has(s.name)) throw new Error(`Nome de source duplicado: ${s.name}`);
+    if (seen.has(s.name)) throw new Error(`Duplicate source name: ${s.name}`);
     seen.add(s.name);
     sources.push(s);
   }
@@ -46,7 +46,7 @@ export async function treeGetGitHub(tag, { fetchImpl = fetch, env = process.env,
       const res = await fetchImpl(url, { headers });
       if (!res.ok) throw new Error(`GET ${url} → HTTP ${res.status}`);
       const json = await res.json();
-      if (json.truncated) throw new Error('árvore truncada pela API — descoberta por subárvore não implementada');
+      if (json.truncated) throw new Error('tree truncated by the API — subtree discovery not implemented');
       return json.tree.filter((n) => n.type === 'blob').map((n) => n.path);
     } catch (err) {
       if (attempt >= retries) throw err;
@@ -65,7 +65,7 @@ function parseTag(argv) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const tag = parseTag(process.argv.slice(2));
   if (!tag) {
-    console.error('uso: node tools/discover-sources.mjs --to <tag>');
+    console.error('usage: node tools/discover-sources.mjs --to <tag>');
     process.exit(2);
   }
   const sources = await discoverSources(tag, (t) => treeGetGitHub(t));

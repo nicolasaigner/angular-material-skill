@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { stripDocregionMarkers, extractRegion } from './docregion.mjs';
 
-// Fixture real: angular/components@21.0.2
+// Real fixture: angular/components@21.0.2
 // src/components-examples/cdk/menu/cdk-menu-standalone-menu/cdk-menu-standalone-menu-example.html
 const STANDALONE_MENU_HTML = [
   '<!-- #docregion trigger -->',
@@ -19,8 +19,8 @@ const STANDALONE_MENU_HTML = [
   '</ng-template>',
 ].join('\n');
 
-// Fixture real: angular/components@21.0.2
-// src/components-examples/cdk/menu/cdk-menu-menubar/cdk-menu-menubar-example.html (trecho)
+// Real fixture: angular/components@21.0.2
+// src/components-examples/cdk/menu/cdk-menu-menubar/cdk-menu-menubar-example.html (excerpt)
 const MENUBAR_HTML = [
   '<div cdkMenuBar>',
   '  <!-- #docregion file-trigger -->',
@@ -30,9 +30,9 @@ const MENUBAR_HTML = [
   '</div>',
 ].join('\n');
 
-// Fixture real: angular/components@21.0.2
+// Real fixture: angular/components@21.0.2
 // src/components-examples/cdk/listbox/cdk-listbox-overview/cdk-listbox-overview-example.html
-// (região "option" aninhada dentro de "listbox")
+// (region "option" nested inside "listbox")
 const LISTBOX_HTML = [
   '<div class="example-listbox-container">',
   '  <!-- #docregion listbox -->',
@@ -52,7 +52,7 @@ const LISTBOX_HTML = [
   '</div>',
 ].join('\n');
 
-test('stripDocregionMarkers remove marcadores HTML e // preservando indentação e linhas em branco', () => {
+test('stripDocregionMarkers removes HTML and // markers while preserving indentation and blank lines', () => {
   const code = [
     '// #docregion foo',
     'import {Component} from \'@angular/core\';',
@@ -66,11 +66,11 @@ test('stripDocregionMarkers remove marcadores HTML e // preservando indentação
   assert.doesNotMatch(out, /docregion/);
   assert.match(out, /import \{Component\}/);
   assert.match(out, /<div>x<\/div>/);
-  // linha em branco original entre import e o marcador removido é preservada
+  // the original blank line between the import and the removed marker is preserved
   assert.match(out, /import \{Component\} from '@angular\/core';\n\n<div>x<\/div>/);
 });
 
-test('extractRegion sobre fixture real (trigger) devolve exatamente o trecho esperado, sem marcadores nem <ng-template>', () => {
+test('extractRegion on the real fixture (trigger) returns exactly the expected excerpt, without markers or <ng-template>', () => {
   const out = extractRegion(STANDALONE_MENU_HTML, 'trigger');
   assert.equal(
     out,
@@ -80,22 +80,22 @@ test('extractRegion sobre fixture real (trigger) devolve exatamente o trecho esp
   assert.doesNotMatch(out, /docregion/);
 });
 
-test('extractRegion respeita fronteira de palavra: "trigger" não casa com "file-trigger"', () => {
+test('extractRegion respects the word boundary: "trigger" does not match "file-trigger"', () => {
   const out = extractRegion(MENUBAR_HTML, 'trigger');
   assert.equal(out, '');
 });
 
-test('extractRegion acha "file-trigger" corretamente no mesmo arquivo', () => {
+test('extractRegion correctly finds "file-trigger" in the same file', () => {
   const out = extractRegion(MENUBAR_HTML, 'file-trigger');
   assert.match(out, /File<\/button>/);
   assert.doesNotMatch(out, /Edit/);
 });
 
-test('extractRegion região inexistente devolve string vazia', () => {
+test('extractRegion returns an empty string for a non-existent region', () => {
   assert.equal(extractRegion(STANDALONE_MENU_HTML, 'nao-existe'), '');
 });
 
-test('extractRegion com região aninhada de outro nome: extrai "listbox" sem os marcadores internos de "option", mas mantém o conteúdo de "option"', () => {
+test('extractRegion with a region nested inside another: extracts "listbox" without the inner "option" markers, but keeps the "option" content', () => {
   const out = extractRegion(LISTBOX_HTML, 'listbox');
   assert.doesNotMatch(out, /docregion/);
   assert.match(out, /Red<\/li>/);
@@ -103,16 +103,16 @@ test('extractRegion com região aninhada de outro nome: extrai "listbox" sem os 
   assert.match(out, /Blue<\/li>/);
 });
 
-test('extractRegion isola a região "option" aninhada, sem o restante do listbox', () => {
+test('extractRegion isolates the nested "option" region, without the rest of the listbox', () => {
   const out = extractRegion(LISTBOX_HTML, 'option');
   assert.match(out, /Red<\/li>/);
   assert.doesNotMatch(out, /Green/);
   assert.doesNotMatch(out, /Favorite color/);
 });
 
-// Fixture real: angular/components@21.0.2
+// Real fixture: angular/components@21.0.2
 // src/components-examples/material/toolbar/toolbar-multirow/toolbar-multirow-example.css
-// CSS usa a forma de comentário de bloco `/* #docregion x */`, não `//` nem `<!-- -->`.
+// CSS uses the block-comment marker form `/* #docregion x */`, not `//` or `<!-- -->`.
 const TOOLBAR_MULTIROW_CSS = [
   '.example-icon {',
   '  padding: 0 14px;',
@@ -124,7 +124,7 @@ const TOOLBAR_MULTIROW_CSS = [
   '/* #enddocregion toolbar-position-content-style */',
 ].join('\n');
 
-test('extractRegion reconhece marcador CSS em comentário de bloco /* #docregion x */ (fixture real toolbar-multirow.css)', () => {
+test('extractRegion recognizes the CSS block-comment marker /* #docregion x */ (real toolbar-multirow.css fixture)', () => {
   const out = extractRegion(TOOLBAR_MULTIROW_CSS, 'toolbar-position-content-style');
   assert.match(out, /example-spacer/);
   assert.match(out, /flex: 1 1 auto;/);
@@ -132,14 +132,14 @@ test('extractRegion reconhece marcador CSS em comentário de bloco /* #docregion
   assert.doesNotMatch(out, /example-icon/);
 });
 
-test('stripDocregionMarkers remove marcadores em comentário de bloco /* ... */', () => {
+test('stripDocregionMarkers removes markers in the /* ... */ block-comment form', () => {
   const out = stripDocregionMarkers(TOOLBAR_MULTIROW_CSS);
   assert.doesNotMatch(out, /docregion/);
   assert.match(out, /example-icon/);
   assert.match(out, /example-spacer/);
 });
 
-test('extractRegion concatena blocos repetidos com o mesmo nome de região', () => {
+test('extractRegion concatenates repeated blocks with the same region name', () => {
   const code = [
     '// #docregion foo',
     'const a = 1;',

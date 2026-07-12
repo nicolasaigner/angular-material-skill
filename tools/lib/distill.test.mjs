@@ -19,7 +19,7 @@ const examples = {
   },
 };
 
-test('cabeçalho traz atribuição, tag e link oficial', () => {
+test('header carries attribution, tag, and official link', () => {
   const out = distill({ name: 'button', category: 'component', prose, examples, tag: 'v18.2.0' });
   assert.match(out, /^# Button/m);
   assert.match(out, /angular\/components/);
@@ -27,74 +27,74 @@ test('cabeçalho traz atribuição, tag e link oficial', () => {
   assert.match(out, /material\.angular\.dev\/components\/button/);
 });
 
-test('resolve a tag example inlineando o código real e remove o comentário', () => {
+test('resolves the example tag by inlining the real code and removing the comment', () => {
   const out = distill({ name: 'button', category: 'component', prose, examples, tag: 'v18.2.0' });
   assert.doesNotMatch(out, /<!--\s*example\(/);
   assert.match(out, /export class ButtonOverviewExample/);
   assert.match(out, /```ts/);
   assert.match(out, /```html/);
-  assert.ok(!out.includes('```css'), 'sem bloco css quando o exemplo não tem css');
+  assert.ok(!out.includes('```css'), 'no css block when the example has no css');
 });
 
-test('exemplo ausente vira aviso, não quebra', () => {
+test('missing example becomes a warning, does not break', () => {
   const p = 'Texto.\n\n<!-- example(nao-existe) -->\n';
   const out = distill({ name: 'button', category: 'component', prose: p, examples: {}, tag: 'v1' });
-  assert.match(out, /não encontrado/i);
+  assert.match(out, /not found/i);
   assert.doesNotMatch(out, /<!--\s*example\(/);
 });
 
-test('guia global usa URL de guia', () => {
+test('global guide uses guide URL', () => {
   const out = distill({ name: 'theming', category: 'guide', prose: '# Theming\nTexto.', examples: {}, tag: 'v1' });
   assert.match(out, /material\.angular\.dev\/guide\/theming/);
 });
 
-test('determinístico: mesma entrada, mesma saída', () => {
+test('deterministic: same input, same output', () => {
   const a = distill({ name: 'button', category: 'component', prose, examples, tag: 'v1' });
   const b = distill({ name: 'button', category: 'component', prose, examples, tag: 'v1' });
   assert.equal(a, b);
 });
 
-// Fix A: upstream table.md usa a variante de 3 traços `<!--- example(x) --->`.
-test('tolera a variante de 3 traços <!--- example(x) ---> e inlineia o código', () => {
+// Fix A: upstream table.md uses the 3-dash variant `<!--- example(x) --->`.
+test('tolerates the 3-dash variant <!--- example(x) ---> and inlines the code', () => {
   const p = 'Texto.\n\n<!--- example(foo) --->\n\nMais texto.';
   const out = distill({ name: 'table', category: 'component', prose: p, examples: { foo: { ts: 'CODE' } }, tag: 'v1' });
   assert.match(out, /CODE/);
   assert.doesNotMatch(out, /<!--[-\s]*example\(/);
 });
 
-// Fix C: guias cuja prosa já começa com H1 não devem duplicar o título do template.
-test('guia cuja prosa já tem H1 não duplica o título (Theming)', () => {
+// Fix C: guides whose prose already starts with an H1 must not duplicate the template title.
+test('guide whose prose already has an H1 does not duplicate the title (Theming)', () => {
   const out = distill({ name: 'theming', category: 'guide', prose: '# Theming\nTexto.', examples: {}, tag: 'v1' });
   const count = (out.match(/^# Theming/mg) || []).length;
   assert.equal(count, 1);
 });
 
-// Fix C: componentes sem H1 próprio continuam recebendo o título do template.
-test('componente sem H1 próprio continua mostrando # Button', () => {
+// Fix C: components without their own H1 still receive the template title.
+test('component without its own H1 still shows # Button', () => {
   const out = distill({ name: 'button', category: 'component', prose, examples, tag: 'v18.2.0' });
   assert.match(out, /^# Button/m);
 });
 
-// Fix D: siglas conhecidas (CDK) devem ficar maiúsculas no título.
-test('titleCase mantém CDK maiúsculo em cdk-overlay', () => {
+// Fix D: known acronyms (CDK) must stay uppercase in the title.
+test('titleCase keeps CDK uppercase in cdk-overlay', () => {
   const out = distill({ name: 'cdk-overlay', category: 'component', prose: 'Texto sem H1.', examples: {}, tag: 'v1' });
   assert.match(out, /^# CDK Overlay/m);
 });
 
-// Polish A: exemplo não encontrado cujo nome (upstream malformado) contém quebra
-// de linha não deve produzir um fallback multi-linha (JSON cru, etc).
-test('exemplo ausente com nome contendo quebra de linha renderiza fallback de uma linha só', () => {
+// Polish A: a not-found example whose name (malformed upstream) contains a line
+// break must not produce a multi-line fallback (raw JSON, etc).
+test('missing example with a name containing a line break renders a single-line fallback', () => {
   const p = 'Texto.\n\n<!-- example(nao\nexiste) -->\n';
   const out = distill({ name: 'dialog', category: 'component', prose: p, examples: {}, tag: 'v1' });
-  const fallbackLine = out.split('\n').find((l) => l.includes('não encontrado'));
-  assert.ok(fallbackLine, 'deve haver uma linha de fallback');
-  assert.ok(!fallbackLine.includes('\n'), 'a linha de fallback não deve conter quebra de linha embutida');
-  // a saída inteira não deve ter duas linhas consecutivas vazias quebrando o nome em partes
+  const fallbackLine = out.split('\n').find((l) => l.includes('not found'));
+  assert.ok(fallbackLine, 'there must be a fallback line');
+  assert.ok(!fallbackLine.includes('\n'), 'the fallback line must not contain an embedded line break');
+  // the whole output must not have two consecutive blank lines splitting the name into parts
   assert.doesNotMatch(out, /nao\nexiste/);
 });
 
-// Task 4b - Bug #1: tag JSON com "file" -> renderiza só aquele arquivo (fixture real cdk-menu.md).
-test('tag JSON com file renderiza só o arquivo pedido (não o exemplo inteiro)', () => {
+// Task 4b - Bug #1: JSON tag with "file" -> renders only that file (real cdk-menu.md fixture).
+test('JSON tag with file renders only the requested file (not the whole example)', () => {
   const p = [
     'Texto antes.',
     '',
@@ -115,11 +115,11 @@ test('tag JSON com file renderiza só o arquivo pedido (não o exemplo inteiro)'
   assert.doesNotMatch(out, /<!--[-\s]*example\(/);
   assert.match(out, /```html/);
   assert.match(out, /Click me!/);
-  assert.ok(!out.includes('```ts'), 'não deve incluir o .ts quando a tag JSON pede só o .html');
+  assert.ok(!out.includes('```ts'), 'must not include the .ts when the JSON tag asks for only the .html');
 });
 
-// Task 4b - Bug #1: tag JSON com "file" + "region" -> renderiza só a região extraída (fixture real).
-test('tag JSON com file+region renderiza só a região extraída, sem marcadores docregion', () => {
+// Task 4b - Bug #1: JSON tag with "file" + "region" -> renders only the extracted region (real fixture).
+test('JSON tag with file+region renders only the extracted region, without docregion markers', () => {
   const p = [
     'Texto antes.',
     '',
@@ -146,8 +146,8 @@ test('tag JSON com file+region renderiza só a região extraída, sem marcadores
   assert.doesNotMatch(out, /docregion/);
 });
 
-// Task 4b - Bug #2: nome simples (arquivo inteiro) deve sair sem marcadores #docregion vazados.
-test('exemplo inteiro (nome simples) sai sem marcadores #docregion/#enddocregion vazados', () => {
+// Task 4b - Bug #2: plain name (whole file) must come out without leaked #docregion markers.
+test('whole example (plain name) comes out without leaked #docregion/#enddocregion markers', () => {
   const p = 'Texto.\n\n<!-- example(cdk-menu-standalone-menu) -->\n';
   const ex = {
     'cdk-menu-standalone-menu': {
@@ -164,27 +164,27 @@ test('exemplo inteiro (nome simples) sai sem marcadores #docregion/#enddocregion
   assert.match(out, /Click me!/);
 });
 
-// Task 4b: file pedido pela tag JSON mas ausente no fetch -> fallback de uma linha, não quebra.
-test('tag JSON pede um file que não veio no fetch -> fallback, não quebra', () => {
+// Task 4b: file requested by the JSON tag but missing from the fetch -> single-line fallback, does not break.
+test('JSON tag asks for a file that was not fetched -> fallback, does not break', () => {
   const p = '<!-- example({"example":"cdk-menu-standalone-menu","file":"nao-baixado.css"}) -->';
   const ex = { 'cdk-menu-standalone-menu': { html: '<button>x</button>' } };
   const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
-  assert.match(out, /não encontrado/i);
+  assert.match(out, /not found/i);
   assert.doesNotMatch(out, /<!--[-\s]*example\(/);
 });
 
-// Task 4b: tag JSON pede uma region que não existe no arquivo -> fallback, não quebra.
-test('tag JSON pede uma region inexistente no arquivo -> fallback, não quebra', () => {
+// Task 4b: JSON tag asks for a region that does not exist in the file -> fallback, does not break.
+test('JSON tag asks for a region that does not exist in the file -> fallback, does not break', () => {
   const p = '<!-- example({"example":"cdk-menu-standalone-menu","file":"x.html","region":"nao-existe"}) -->';
   const ex = { 'cdk-menu-standalone-menu': { html: '<button>x</button>' } };
   const out = distill({ name: 'cdk-menu', category: 'component', prose: p, examples: ex, tag: 'v1' });
-  assert.match(out, /não encontrado/i);
+  assert.match(out, /not found/i);
   assert.doesNotMatch(out, /<!--[-\s]*example\(/);
 });
 
-// Task 4b - Bug #3: dedup de H1 robusto — H1 precedido por bloco <style> (fixture real:
-// theming-your-components.md) não deve duplicar o título.
-test('H1 robusto: bloco <style> antes do H1 da prosa não duplica o título (theming-your-components)', () => {
+// Task 4b - Bug #3: robust H1 dedup — H1 preceded by a <style> block (real fixture:
+// theming-your-components.md) must not duplicate the title.
+test('robust H1: <style> block before the prose H1 does not duplicate the title (theming-your-components)', () => {
   const p = '<style>.x{}</style>\n\n# Theming your components\nTexto.';
   const out = distill({ name: 'theming-your-components', category: 'guide', prose: p, examples: {}, tag: 'v1' });
   const count = (out.match(/^# /mg) || []).length;
@@ -192,8 +192,8 @@ test('H1 robusto: bloco <style> antes do H1 da prosa não duplica o título (the
   assert.match(out, /^# Theming your components$/m);
 });
 
-// Task 4b - Bug #3: H2 sozinho não deve ser confundido com H1 -> template ainda injeta o título.
-test('H1 robusto: prosa com só H2 continua recebendo o título do template', () => {
+// Task 4b - Bug #3: a lone H2 must not be confused with H1 -> template still injects the title.
+test('robust H1: prose with only an H2 still receives the template title', () => {
   const p = '## Só subtítulo\nTexto';
   const out = distill({ name: 'button', category: 'component', prose: p, examples: {}, tag: 'v1' });
   assert.match(out, /^# Button/m);

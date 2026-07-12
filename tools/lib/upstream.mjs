@@ -1,4 +1,4 @@
 // tools/lib/upstream.mjs
-// Fonte única do nome do repo upstream. Fica FORA de sources.mjs para que o
-// discover não dependa do JSON gerado (que ele mesmo produz).
+// Single source of truth for the upstream repo name. Lives OUTSIDE sources.mjs
+// so discover doesn't depend on the generated JSON (which it produces itself).
 export const UPSTREAM_REPO = 'angular/components';

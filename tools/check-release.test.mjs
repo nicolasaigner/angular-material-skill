@@ -16,7 +16,7 @@ async function withManifest(tag, fn) {
   }
 }
 
-test('behind=true quando a tag latest difere da gerada', async () => {
+test('behind=true when the latest tag differs from the generated one', async () => {
   await withManifest('18.2.0', async (path) => {
     const apiGet = async () => ({ tag_name: '18.3.0' });
     const r = await checkRelease({ manifestPath: path, apiGet });
@@ -26,7 +26,7 @@ test('behind=true quando a tag latest difere da gerada', async () => {
   });
 });
 
-test('behind=false quando as tags coincidem', async () => {
+test('behind=false when the tags match', async () => {
   await withManifest('18.3.0', async (path) => {
     const apiGet = async () => ({ tag_name: '18.3.0' });
     const r = await checkRelease({ manifestPath: path, apiGet });
@@ -36,7 +36,7 @@ test('behind=false quando as tags coincidem', async () => {
 
 import { buildApiHeaders, formatActionsOutput } from './check-release.mjs';
 
-test('buildApiHeaders inclui Authorization só quando há GITHUB_TOKEN', () => {
+test('buildApiHeaders includes Authorization only when GITHUB_TOKEN is set', () => {
   const semToken = buildApiHeaders({});
   assert.equal(semToken.Authorization, undefined);
   assert.match(semToken.Accept, /vnd\.github/);
@@ -44,7 +44,7 @@ test('buildApiHeaders inclui Authorization só quando há GITHUB_TOKEN', () => {
   assert.equal(comToken.Authorization, 'Bearer abc');
 });
 
-test('formatActionsOutput serializa latest e behind para o GITHUB_OUTPUT', () => {
+test('formatActionsOutput serializes latest and behind for GITHUB_OUTPUT', () => {
   assert.equal(formatActionsOutput({ latest: '21.1.0', behind: true }), 'latest=21.1.0\nbehind=true\n');
   assert.equal(formatActionsOutput({ latest: '21.0.2', behind: false }), 'latest=21.0.2\nbehind=false\n');
 });

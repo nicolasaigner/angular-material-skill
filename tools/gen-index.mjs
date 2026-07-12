@@ -11,13 +11,13 @@ export function renderIndex(sources) {
   const section = (title, list) => {
     if (!list.length) return [];
     const rows = list.slice().sort(byName).map((s) => `| [${s.name}](./${s.name}.md) |`).join('\n');
-    return [`## ${title} (${list.length})`, '', '| Referência |', '| --- |', rows, ''];
+    return [`## ${title} (${list.length})`, '', '| Reference |', '| --- |', rows, ''];
   };
   return [
-    '<!-- GENERATED. NÃO editar à mão. -->', '', '# Índice', '',
+    '<!-- GENERATED. Do not edit by hand. -->', '', '# Index', '',
     ...section('Material', material),
     ...section('CDK', cdk),
-    ...section('Guias', guides),
+    ...section('Guides', guides),
   ].join('\n');
 }
 
@@ -25,5 +25,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
   const out = join(repoRoot, 'skills', 'angular-material', 'references', '_index.md');
   await writeFile(out, renderIndex(SOURCES), 'utf8');
-  console.log(`_index.md escrito com ${SOURCES.length} referências`);
+  console.log(`_index.md written with ${SOURCES.length} references`);
 }

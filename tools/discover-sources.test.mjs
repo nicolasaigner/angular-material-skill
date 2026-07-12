@@ -7,9 +7,9 @@ const TREE = [
   'src/material/button/button.md',
   'src/material/button/button.ts',
   'src/material/button/testing/button-harness.ts',
-  'src/material/button/README.md',            // dir != basename → ignora
+  'src/material/button/README.md',            // dir != basename → ignored
   'src/material/form-field/form-field.md',
-  'src/material/core/core.md',                // regra objetiva: entra
+  'src/material/core/core.md',                // objective rule: included
   'src/cdk/overlay/overlay.md',
   'src/cdk/drag-drop/drag-drop.md',
   'guides/theming.md',
@@ -17,7 +17,7 @@ const TREE = [
   'README.md',
 ];
 
-test('deriveSource: componente Material vira name simples', () => {
+test('deriveSource: a Material component becomes a plain name', () => {
   assert.deepEqual(deriveSource('src/material/button/button.md'), {
     name: 'button', category: 'component',
     prosePath: 'src/material/button/button.md',
@@ -25,7 +25,7 @@ test('deriveSource: componente Material vira name simples', () => {
   });
 });
 
-test('deriveSource: CDK vira cdk-* com examplesDir de cdk', () => {
+test('deriveSource: CDK becomes cdk-* with a cdk examplesDir', () => {
   assert.deepEqual(deriveSource('src/cdk/drag-drop/drag-drop.md'), {
     name: 'cdk-drag-drop', category: 'component',
     prosePath: 'src/cdk/drag-drop/drag-drop.md',
@@ -33,20 +33,20 @@ test('deriveSource: CDK vira cdk-* com examplesDir de cdk', () => {
   });
 });
 
-test('deriveSource: guia tem category guide e sem examplesDir', () => {
+test('deriveSource: a guide has category guide and no examplesDir', () => {
   assert.deepEqual(deriveSource('guides/theming.md'), {
     name: 'theming', category: 'guide', prosePath: 'guides/theming.md',
   });
 });
 
-test('deriveSource: ignora paths que não casam (dir != basename, .ts, raiz)', () => {
+test('deriveSource: ignores paths that do not match (dir != basename, .ts, root)', () => {
   assert.equal(deriveSource('src/material/button/button.ts'), null);
   assert.equal(deriveSource('src/material/button/README.md'), null);
   assert.equal(deriveSource('src/material/button/testing/button-harness.ts'), null);
   assert.equal(deriveSource('README.md'), null);
 });
 
-test('discoverSources: deriva, ordena por name e é determinístico', async () => {
+test('discoverSources: derives, sorts by name, and is deterministic', async () => {
   const treeGet = async () => TREE;
   const a = await discoverSources('v1', treeGet);
   const b = await discoverSources('v1', treeGet);
@@ -56,7 +56,7 @@ test('discoverSources: deriva, ordena por name e é determinístico', async () =
   ]);
 });
 
-test('discoverSources: lança em nome duplicado', async () => {
+test('discoverSources: throws on a duplicate name', async () => {
   const treeGet = async () => ['guides/button.md', 'src/material/button/button.md'];
-  await assert.rejects(() => discoverSources('v1', treeGet), /duplicad/i);
+  await assert.rejects(() => discoverSources('v1', treeGet), /duplicate/i);
 });

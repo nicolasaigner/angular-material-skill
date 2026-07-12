@@ -36,14 +36,14 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       process.exit(0);
     }
     if (r.behind) {
-      console.log(`⚠️  angular/components ${r.latest} disponível (skill gerada em ${r.current}). Rode: npm run sync -- ${r.latest}`);
+      console.log(`⚠️  angular/components ${r.latest} available (skill generated at ${r.current}). Run: npm run sync -- ${r.latest}`);
       process.exit(10);
     }
-    console.log(`✅ em dia com ${r.latest}`);
+    console.log(`✅ up to date with ${r.latest}`);
     process.exit(0);
   } catch (err) {
-    console.error(`✖ não foi possível consultar a API do GitHub: ${err.message}`);
-    console.error(`  Defina GITHUB_TOKEN para elevar o rate-limit. Ver docs/agendamento.md.`);
+    console.error(`✖ could not query the GitHub API: ${err.message}`);
+    console.error(`  Set GITHUB_TOKEN to raise the rate limit. See docs/scheduling.md.`);
     process.exit(1);
   }
 }

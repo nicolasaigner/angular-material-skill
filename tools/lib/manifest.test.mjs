@@ -5,19 +5,19 @@ import { join } from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { hashContent, emptyManifest, readManifest, writeManifest, changedSources } from './manifest.mjs';
 
-test('hashContent é determinístico e sensível a mudança', () => {
+test('hashContent is deterministic and sensitive to change', () => {
   assert.equal(hashContent('abc'), hashContent('abc'));
   assert.notEqual(hashContent('abc'), hashContent('abd'));
   assert.equal(hashContent('abc').length, 16);
 });
 
-test('readManifest devolve manifest vazio quando arquivo não existe', async () => {
+test('readManifest returns an empty manifest when the file does not exist', async () => {
   const m = await readManifest(join(tmpdir(), 'nao-existe-xyz.json'));
   assert.equal(m.generatedTag, null);
   assert.deepEqual(m.perFile, {});
 });
 
-test('write→read roundtrip preserva conteúdo', async () => {
+test('write→read roundtrip preserves content', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'ams-'));
   try {
     const path = join(dir, 'manifest.json');
@@ -30,7 +30,7 @@ test('write→read roundtrip preserva conteúdo', async () => {
   }
 });
 
-test('changedSources detecta novos e modificados, ignora iguais', () => {
+test('changedSources detects new and modified entries, ignores unchanged ones', () => {
   const manifest = { ...emptyManifest(), perFile: { button: 'h1', table: 'h2' } };
   const current = { button: 'h1', table: 'h2-NOVO', dialog: 'h3' };
   assert.deepEqual(changedSources(manifest, current).sort(), ['dialog', 'table']);
