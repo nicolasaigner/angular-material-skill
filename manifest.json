@@ -1,6 +1,6 @@
 {
   "upstreamRepo": "angular/components",
-  "generatedTag": "v22.0.6",
+  "generatedTag": "v22.1.0",
   "perFile": {
     "autocomplete": "18c2a58ad77debde",
     "badge": "ee7cd50e0f028ae6",
@@ -55,11 +55,11 @@
     "schematics": "23335e37ca1dc998",
     "select": "18b18e6ee204ee33",
     "sidenav": "de54c3eaa8aa016e",
-    "slide-toggle": "75b42a65a7243dc4",
+    "slide-toggle": "08852f33ad049539",
     "slider": "ebc5bdfdbde24603",
     "snack-bar": "79f85ae7c9c6091e",
     "sort": "a5f5896ecd1f097c",
-    "stepper": "151a6200643d43bf",
+    "stepper": "921731094340a47c",
     "table": "07f240fcdadac042",
     "tabs": "a7fc487f0ff19da7",
     "theming": "2724faab6a043167",
