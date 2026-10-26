@@ -1,6 +1,6 @@
 {
   "upstreamRepo": "angular/components",
-  "discoveredTag": "v22.0.6",
+  "discoveredTag": "v22.2.4",
   "sources": [
     {
       "name": "autocomplete",
